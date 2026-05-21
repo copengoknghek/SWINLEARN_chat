@@ -1,0 +1,65 @@
+@import '../../components/Navbar/Navbar.css';
+@import '../../components/Hero/Hero.css';
+@import '../../components/FeatureGrid/FeatureGrid.css';
+
+.page {
+  min-height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.page::before,
+.page::after {
+  content: '';
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  opacity: 0.8;
+  z-index: 0;
+}
+
+.page::before {
+  top: -240px;
+  right: -160px;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(225, 26, 43, 0.22),
+    rgba(225, 26, 43, 0)
+  );
+}
+
+.page::after {
+  bottom: -260px;
+  left: -180px;
+  background: radial-gradient(
+    circle at 70% 30%,
+    rgba(255, 181, 90, 0.18),
+    rgba(255, 181, 90, 0)
+  );
+}
+
+.main {
+  position: relative;
+  z-index: 1;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 72px 24px 88px;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 620px) {
+  .main {
+    padding: 56px 16px 72px;
+  }
+}

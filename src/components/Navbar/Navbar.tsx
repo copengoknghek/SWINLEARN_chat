@@ -5,7 +5,7 @@ function Navbar() {
     <header className="site-header">
       <div className="nav-wrap">
         <a className="brand" href="#" aria-label="Swinburne University">
-          Swinburne
+          <img src="/swinburneLogo.png" alt="Swinburne" className="brand-logo" />
         </a>
         <PageLinks />
         <div className="nav-actions">

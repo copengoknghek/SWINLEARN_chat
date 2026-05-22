@@ -3,7 +3,7 @@ function Hero() {
     <section className="hero">
       <p className="hero-eyebrow">Swinburne University</p>
       <h1 className="hero-title">
-        Study smarter with <span className="hero-highlight">SWINLEARN</span>.
+        Study smarter with <span className="hero-highlight"><span className="text-swin">SWIN</span><span className="text-learn">LEARN</span></span>.
       </h1>
       <p className="hero-subtitle">
         Your courses, deadlines, classmates and an{' '}

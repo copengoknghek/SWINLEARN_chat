@@ -39,6 +39,17 @@
   gap: 4px;
 }
 
+/* Make event dates use alternating colors from the moodboard */
+.event-card:nth-child(2n) .event-date {
+  background: rgba(0, 91, 172, 0.1);
+  color: var(--fpt-blue);
+}
+
+.event-card:nth-child(3n) .event-date {
+  background: rgba(255, 107, 0, 0.1);
+  color: var(--fpt-orange);
+}
+
 .event-month {
   text-transform: uppercase;
   font-size: 0.7rem;

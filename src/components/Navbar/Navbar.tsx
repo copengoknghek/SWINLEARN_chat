@@ -1,17 +1,18 @@
+import { Link } from 'react-router-dom'
 import PageLinks from '../PageLinks/PageLinks'
 
 function Navbar() {
   return (
     <header className="site-header">
       <div className="nav-wrap">
-        <a className="brand" href="#" aria-label="Swinburne University">
-          Swinburne
-        </a>
+        <Link className="brand" to="/" aria-label="Swinburne University">
+          <img src="/swinburneLogo.png" alt="Swinburne" className="brand-logo" />
+        </Link>
         <PageLinks />
         <div className="nav-actions">
-          <button className="nav-pill nav-pill--outline" type="button">
+          <Link className="nav-pill nav-pill--outline" to="/login">
             Login
-          </button>
+          </Link>
         </div>
       </div>
     </header>

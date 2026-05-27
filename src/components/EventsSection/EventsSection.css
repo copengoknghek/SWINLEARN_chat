@@ -1,0 +1,101 @@
+.events-section {
+  margin-top: 56px;
+  display: grid;
+  gap: 24px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.events-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+}
+
+.event-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 16px;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow);
+}
+
+.event-date {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 16px;
+  padding: 12px;
+  min-width: 70px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+}
+
+/* Make event dates use alternating colors from the moodboard */
+.event-card:nth-child(2n) .event-date {
+  background: rgba(0, 91, 172, 0.1);
+  color: var(--fpt-blue);
+}
+
+.event-card:nth-child(3n) .event-date {
+  background: rgba(255, 107, 0, 0.1);
+  color: var(--fpt-orange);
+}
+
+.event-month {
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  font-weight: 600;
+}
+
+.event-day {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.event-body h3 {
+  font-family: var(--font-head);
+  font-size: 1.05rem;
+  color: var(--text);
+}
+
+.event-body p {
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 6px;
+}
+
+.event-meta {
+  margin-top: 10px;
+  font-size: 0.85rem;
+  color: #7b7f84;
+}
+
+@media (max-width: 1024px) {
+  .events-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 700px) {
+  .events-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .event-card {
+    grid-template-columns: 1fr;
+  }
+
+  .event-date {
+    justify-self: start;
+  }
+}

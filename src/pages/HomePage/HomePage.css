@@ -1,6 +1,11 @@
 @import '../../components/Navbar/Navbar.css';
 @import '../../components/Hero/Hero.css';
 @import '../../components/FeatureGrid/FeatureGrid.css';
+@import '../../components/AboutSection/AboutSection.css';
+@import '../../components/NewsSection/NewsSection.css';
+@import '../../components/EventsSection/EventsSection.css';
+@import '../../components/ContactSection/ContactSection.css';
+@import '../../components/Footer/Footer.css';
 
 .page {
   min-height: 100vh;
@@ -45,6 +50,37 @@
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 72px 24px 88px;
+}
+
+.scroll-section {
+  scroll-margin-top: 120px;
+}
+
+.section-header {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+}
+
+.section-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.section-title {
+  font-family: var(--font-head);
+  font-size: clamp(1.8rem, 3.2vw, 2.6rem);
+  color: var(--text);
+  line-height: 1.15;
+}
+
+.section-lead {
+  color: var(--muted);
+  line-height: 1.6;
+  font-size: 1rem;
 }
 
 @keyframes fadeUp {

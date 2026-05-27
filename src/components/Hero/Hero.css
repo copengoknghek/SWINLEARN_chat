@@ -18,10 +18,11 @@
 
 .hero-title {
   font-family: var(--font-head);
-  font-weight: 700;
+  font-weight: 900;
   font-size: clamp(2.6rem, 5.2vw, 4.1rem);
   line-height: 1.05;
   color: var(--text);
+  letter-spacing: -1px;
 }
 
 .hero-highlight {
@@ -60,16 +61,21 @@
 }
 
 .btn-primary {
+  background: #fff;
+  color: var(--text);
+  border-color: var(--border);
+}
+
+.btn-secondary {
   background: var(--accent);
   color: #fff;
   box-shadow: 0 14px 24px rgba(225, 26, 43, 0.25);
 }
 
-.btn-secondary {
-  background: #fff;
-  color: var(--text);
-  border-color: var(--border);
-}
+/*.btn-secondary:hover {
+  border-color: var(--accent);
+  color: var(--accent); 
+}*/
 
 .btn:hover,
 .btn:focus-visible {

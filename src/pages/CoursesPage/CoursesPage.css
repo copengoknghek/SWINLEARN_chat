@@ -1,0 +1,194 @@
+.courses-main {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 40px 24px;
+}
+
+.courses-header {
+  margin-bottom: 40px;
+  animation: fadeUp 0.6s ease both;
+}
+
+.courses-header .page-title {
+  font-family: var(--font-head);
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 12px;
+}
+
+.courses-header .page-subtitle {
+  color: var(--muted);
+  font-size: 1.1rem;
+}
+
+.semester-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 30px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 2px;
+}
+
+.tab-btn {
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  position: relative;
+  transition: color 0.2s;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+}
+
+.tab-btn.active {
+  color: var(--accent);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background-color: var(--accent);
+  border-radius: 3px 3px 0 0;
+}
+
+.courses-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 24px;
+  animation: fadeUp 0.8s ease both;
+  animation-delay: 0.1s;
+}
+
+.course-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.course-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow);
+}
+
+.course-banner {
+  height: 120px;
+  width: 100%;
+}
+
+.course-banner.fpt-blue { background-color: var(--fpt-blue); }
+.course-banner.fpt-orange { background-color: var(--fpt-orange); }
+.course-banner.fpt-green { background-color: var(--fpt-green); }
+.course-banner.swin-red { background-color: var(--accent); }
+
+.course-content {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.course-meta {
+  display: none; /* Removed based on image layout */
+}
+
+.course-code {
+  font-family: monospace; /* Monospace font looks cleaner for codes */
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+
+.course-term {
+  font-size: 0.8rem;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.course-title {
+  font-family: var(--font-body); /* Switch from head font to body to match image */
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 12px;
+}
+
+.course-desc {
+  color: var(--muted);
+  font-size: 0.95rem;
+  line-height: 1.5;
+  margin-bottom: 24px;
+}
+
+.course-tutor {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: auto; /* Pushthe tutor to the bottom */
+}
+
+.course-progress-container {
+  margin-top: auto;
+  margin-bottom: 24px;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.progress-label {
+  color: var(--text);
+}
+
+.progress-value {
+  color: var(--accent);
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background-color: var(--accent);
+  border-radius: 999px;
+  transition: width 1s ease-out;
+}
+
+.fpt-blue ~ .course-content .progress-fill, .fpt-blue ~ .course-content .progress-value { color: var(--fpt-blue); background-color: var(--fpt-blue); }
+.fpt-orange ~ .course-content .progress-fill, .fpt-orange ~ .course-content .progress-value { color: var(--fpt-orange); background-color: var(--fpt-orange); }
+.fpt-green ~ .course-content .progress-fill, .fpt-green ~ .course-content .progress-value { color: var(--fpt-green); background-color: var(--fpt-green); }
+
+
+.course-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  flex: 1;
+  text-align: center;
+}

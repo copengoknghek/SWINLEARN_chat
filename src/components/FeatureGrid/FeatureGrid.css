@@ -51,6 +51,22 @@
   height: 22px;
 }
 
+/* Add FPT colors to subsequent feature cards */
+.feature-card:nth-child(2) .feature-icon {
+  background: rgba(0, 91, 172, 0.1); /* FPT Blue soft */
+  color: var(--fpt-blue);
+}
+
+.feature-card:nth-child(3) .feature-icon {
+  background: rgba(255, 107, 0, 0.1); /* FPT Orange soft */
+  color: var(--fpt-orange);
+}
+
+.feature-card:nth-child(4) .feature-icon {
+  background: rgba(0, 165, 80, 0.1); /* FPT Green soft */
+  color: var(--fpt-green);
+}
+
 .feature-card:nth-child(2) {
   animation-delay: 0.05s;
 }

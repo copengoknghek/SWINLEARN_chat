@@ -24,7 +24,7 @@ function ContactSection() {
             </li>
             <li className="contact-item">
               <span className="contact-label">Office hours</span>
-              <span className="contact-value">Mon to Fri · 9:00 AM to 5:00 PM</span>
+              <span className="contact-value">Mon to Fri - 9:00 AM to 5:00 PM</span>
             </li>
           </ul>
         </div>

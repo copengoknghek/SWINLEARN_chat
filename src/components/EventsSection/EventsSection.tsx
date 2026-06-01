@@ -1,26 +1,4 @@
-const events = [
-  {
-    month: 'May',
-    day: '30',
-    title: 'Orientation Week Kickoff',
-    description: 'Meet new classmates and get set up for the semester.',
-    meta: 'Campus Atrium · 10:00 AM',
-  },
-  {
-    month: 'Jun',
-    day: '04',
-    title: 'Study Sprint: AI Tutor Lab',
-    description: 'Hands-on session to plan revision with SWINLEARN.',
-    meta: 'Library Studio · 2:00 PM',
-  },
-  {
-    month: 'Jun',
-    day: '12',
-    title: 'Career Ready Resume Clinic',
-    description: 'Bring your draft and get feedback from industry mentors.',
-    meta: 'Hawthorn Hall · 1:00 PM',
-  },
-]
+import { fanpageEvents } from '../../data/fanpageContent'
 
 function EventsSection() {
   return (
@@ -34,7 +12,7 @@ function EventsSection() {
         </p>
       </div>
       <div className="events-grid">
-        {events.map((event) => (
+        {fanpageEvents.map((event) => (
           <article className="event-card" key={event.title}>
             <div className="event-date">
               <span className="event-month">{event.month}</span>

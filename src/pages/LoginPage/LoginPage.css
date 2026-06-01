@@ -107,6 +107,23 @@
   padding: 14px;
 }
 
+.login-secondary-btn {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 700;
+  padding: 12px 14px;
+}
+
+.login-secondary-btn:hover,
+.login-secondary-btn:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
 .login-footer {
   margin-top: 30px;
   text-align: center;

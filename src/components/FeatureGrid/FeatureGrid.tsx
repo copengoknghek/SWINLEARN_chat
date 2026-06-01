@@ -15,7 +15,25 @@ const CourseIcon = () => (
   </svg>
 )
 
-const CalendarIcon = () => (
+const NewsIcon = () => (
+  <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
+    <path
+      d="M5 5h14v14H5z"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+    />
+    <path
+      d="M8 9h8M8 13h8M8 17h5"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeWidth="1.7"
+    />
+  </svg>
+)
+
+const EventIcon = () => (
   <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
     <rect
       x="3"
@@ -28,34 +46,16 @@ const CalendarIcon = () => (
       strokeWidth="1.7"
     />
     <path
-      d="M3 9h18"
+      d="M3 9h18M8 3v4m8-4v4"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.7"
-    />
-    <path
-      d="M8 3v4m8-4v4"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.7"
       strokeLinecap="round"
-    />
-  </svg>
-)
-
-const InboxIcon = () => (
-  <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
-    <path
-      d="M5 6.5h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H9l-4 3v-3H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2z"
-      fill="none"
-      stroke="currentColor"
       strokeWidth="1.7"
-      strokeLinejoin="round"
     />
   </svg>
 )
 
-const HelpIcon = () => (
+const SupportIcon = () => (
   <svg viewBox="0 0 24 24" role="img" aria-hidden="true">
     <circle
       cx="12"
@@ -69,8 +69,8 @@ const HelpIcon = () => (
       d="M12 8v4l2.5 2.5"
       fill="none"
       stroke="currentColor"
-      strokeWidth="1.7"
       strokeLinecap="round"
+      strokeWidth="1.7"
     />
   </svg>
 )
@@ -78,29 +78,29 @@ const HelpIcon = () => (
 const features = [
   {
     title: 'Courses',
-    description: 'All your enrolled units, in one tidy view.',
+    description: 'Browse study areas and pathways before logging in.',
     Icon: CourseIcon,
   },
   {
-    title: 'Calendar',
-    description: 'Never miss an assignment deadline again.',
-    Icon: CalendarIcon,
+    title: 'News',
+    description: 'Read platform updates and student service announcements.',
+    Icon: NewsIcon,
   },
   {
-    title: 'Inbox',
-    description: 'Chat with classmates and teachers.',
-    Icon: InboxIcon,
+    title: 'Events',
+    description: 'Find upcoming orientation, study, and career activities.',
+    Icon: EventIcon,
   },
   {
-    title: 'IT Help',
-    description: 'Stuck on tech? Send a ticket to IT.',
-    Icon: HelpIcon,
+    title: 'Help',
+    description: 'Contact the support team for access or platform questions.',
+    Icon: SupportIcon,
   },
 ]
 
 function FeatureGrid() {
   return (
-    <section className="features" aria-label="Student tools">
+    <section className="features" aria-label="Guest links">
       {features.map(({ title, description, Icon }) => (
         <article className="feature-card" key={title}>
           <div className="feature-icon" aria-hidden="true">

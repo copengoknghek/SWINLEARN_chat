@@ -1,0 +1,12 @@
+@import '../NewsPage/NewsPage.css';
+
+.event-page-card {
+  border-radius: 8px;
+}
+
+.event-page-card .event-body h2 {
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: 1.12rem;
+  line-height: 1.35;
+}

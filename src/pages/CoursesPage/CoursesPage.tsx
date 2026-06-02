@@ -1,143 +1,156 @@
 import { useState } from 'react'
-import { majorDatabase, type MainMajor } from '../../data/majorDatabase'
 import Navbar from '../../components/Navbar/Navbar'
 import Footer from '../../components/Footer/Footer'
 import './CoursesPage.css'
 
-function CoursesPage() {
-  const [activeMajorId, setActiveMajorId] = useState(majorDatabase[0].id)
-  const [activeChildId, setActiveChildId] = useState(majorDatabase[0].childMajors[0].id)
-  const [searchQuery, setSearchQuery] = useState('')
+type Semester = 'last' | 'present' | 'next';
 
-  const activeMajor = majorDatabase.find((major) => major.id === activeMajorId) ?? majorDatabase[0]
-  const activeChild =
-    activeMajor.childMajors.find((childMajor) => childMajor.id === activeChildId) ?? activeMajor.childMajors[0]
+const myCourses = [
+  // LAST SEMESTER (3 courses)
+  {
+    id: 101,
+    code: 'COS10009',
+    title: 'Introduction to Programming',
+    description: 'Foundations of programming using Python: variables, control flow, functions, lists, dictionaries...',
+    tutor: 'Dr. Markus Lumpe',
+    progress: 100,
+    tag: 'Swin Red',
+    semester: 'last',
+  },
+  {
+    id: 102,
+    code: 'TNE10006',
+    title: 'Networks and Switching',
+    description: 'Explore the principles of networking, routing protocols, and digital communication networks.',
+    tutor: 'Prof. Alice Roberts',
+    progress: 100,
+    tag: 'FPT Orange',
+    semester: 'last',
+  },
+  {
+    id: 103,
+    code: 'COS10011',
+    title: 'Creating Web Applications',
+    description: 'Learn HTML, CSS, JavaScript and foundational backend integration for modern websites.',
+    tutor: 'Mark Spencer',
+    progress: 100,
+    tag: 'Swin Red',
+    semester: 'last',
+  },
 
-  const filteredChildMajors = (() => {
-    const query = searchQuery.trim().toLowerCase()
+  // PRESENT SEMESTER (4 courses)
+  {
+    id: 1,
+    code: 'COS30043',
+    title: 'Interface Design and Development',
+    description: 'Principles of creating user-centric digital interfaces and interactive front-end web design.',
+    tutor: 'Dr. Jane Smith',
+    progress: 75,
+    tag: 'FPT Blue',
+    semester: 'present',
+  },
+  {
+    id: 2,
+    code: 'SWE20001',
+    title: 'Development Project 1 - Tools and Practices',
+    description: 'Agile methodologies, version control, and collaborative software engineering toolchains.',
+    tutor: 'Prof. Alan Turing',
+    progress: 40,
+    tag: 'FPT Orange',
+    semester: 'present',
+  },
+  {
+    id: 3,
+    code: 'COS20000',
+    title: 'Programming 2',
+    description: 'Object-oriented programming concepts using languages like C++ and Java.',
+    tutor: 'Sarah Johnson',
+    progress: 90,
+    tag: 'FPT Green',
+    semester: 'present',
+  },
+  {
+    id: 4,
+    code: 'ICT30005',
+    title: 'Professional Issues in IT',
+    description: 'Ethics, privacy, legal frameworks, and professional standards in the tech industry.',
+    tutor: 'Michael Lee',
+    progress: 15,
+    tag: 'Swin Red',
+    semester: 'present',
+  },
 
-    if (!query) {
-      return activeMajor.childMajors
-    }
-
-    return activeMajor.childMajors.filter((childMajor) => {
-      const searchableText = [
-        childMajor.title,
-        childMajor.tagline,
-        childMajor.description,
-        ...childMajor.topics,
-        ...childMajor.pathways,
-      ]
-        .join(' ')
-        .toLowerCase()
-
-      return searchableText.includes(query)
-    })
-  })()
-
-  const handleMajorChange = (major: MainMajor) => {
-    setActiveMajorId(major.id)
-    setActiveChildId(major.childMajors[0].id)
-    setSearchQuery('')
+  // NEXT SEMESTER (2 courses)
+  {
+    id: 201,
+    code: 'COS30017',
+    title: 'Software Development for Mobile Devices',
+    description: 'Building native and cross-platform applications for iOS and Android environments.',
+    tutor: 'Emily White',
+    progress: 0,
+    tag: 'FPT Green',
+    semester: 'next',
+  },
+  {
+    id: 202,
+    code: 'COS30019',
+    title: 'Introduction to Artificial Intelligence',
+    description: 'Fundamentals of AI, machine learning algorithms, and intelligent systems design.',
+    tutor: 'Dr. AI Researcher',
+    progress: 0,
+    tag: 'FPT Blue',
+    semester: 'next',
   }
+];
+
+function CoursesPage() {
+  const [activeSemester, setActiveSemester] = useState<Semester>('present');
+
+  const filteredCourses = myCourses.filter(course => course.semester === activeSemester);
 
   return (
     <div className="page">
       <Navbar />
       <main className="main courses-main">
         <header className="courses-header">
-          <div>
-            <span className="courses-eyebrow">Guest course catalog</span>
-            <h1 className="page-title">Courses</h1>
-          </div>
-          <p className="page-subtitle">
-            Browse study areas by major and explore the pathways available before logging in.
-          </p>
+          <h1 className="page-title">My Courses</h1>
+          <p className="page-subtitle">Manage your enrolled subjects, assignments, and grades.</p>
         </header>
 
-        <section className="major-tabs" aria-label="Main majors">
-          {majorDatabase.map((major) => (
-            <button
-              key={major.id}
-              type="button"
-              className={`major-tab major-tab--${major.accent} ${activeMajor.id === major.id ? 'active' : ''}`}
-              onClick={() => handleMajorChange(major)}
-            >
-              <span className="major-tab-title">{major.title}</span>
-              <span className="major-tab-count">{major.childMajors.length} majors</span>
-            </button>
+        <div className="semester-tabs">
+          <button
+            className={`tab-btn ${activeSemester === 'last' ? 'active' : ''}`}
+            onClick={() => setActiveSemester('last')}
+          >
+            Last Semester
+          </button>
+          <button
+            className={`tab-btn ${activeSemester === 'present' ? 'active' : ''}`}
+            onClick={() => setActiveSemester('present')}
+          >
+            Present Semester
+          </button>
+          <button
+            className={`tab-btn ${activeSemester === 'next' ? 'active' : ''}`}
+            onClick={() => setActiveSemester('next')}
+          >
+            Next Semester
+          </button>
+        </div>
+
+        <section className="courses-grid" key={activeSemester}>
+          {filteredCourses.map(course => (
+            <div key={course.id} className="course-card">
+              <div className={`course-banner ${course.tag.toLowerCase().replace(' ', '-')}`}></div>
+              <div className="course-content">
+                <span className="course-code">{course.code}</span>
+                <h2 className="course-title">{course.title}</h2>
+                <p className="course-desc">{course.description}</p>
+                <p className="course-tutor">{course.tutor}</p>
+              </div>
+            </div>
           ))}
         </section>
-
-        <div className="course-browser">
-          <section className="major-panel">
-            <div className="major-panel-header">
-              <div>
-                <h2>{activeMajor.title}</h2>
-                <p>{activeMajor.summary}</p>
-              </div>
-              <label className="major-search">
-                <span>Search {activeMajor.title}</span>
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onChange={(event) => setSearchQuery(event.target.value)}
-                  placeholder="Search child majors"
-                />
-              </label>
-            </div>
-
-            <div className="child-major-grid">
-              {filteredChildMajors.map((childMajor) => (
-                <button
-                  key={childMajor.id}
-                  type="button"
-                  className={`child-major-card ${activeChild.id === childMajor.id ? 'active' : ''}`}
-                  onClick={() => setActiveChildId(childMajor.id)}
-                >
-                  <span className="child-major-title">{childMajor.title}</span>
-                  <span className="child-major-tagline">{childMajor.tagline}</span>
-                </button>
-              ))}
-            </div>
-
-            {filteredChildMajors.length === 0 && (
-              <div className="major-empty-state">
-                No child majors match "{searchQuery}" in {activeMajor.title}.
-              </div>
-            )}
-          </section>
-
-          <aside className={`major-detail major-detail--${activeMajor.accent}`} aria-label={`${activeChild.title} detail`}>
-            <div className="major-detail-header">
-              <span>{activeMajor.title}</span>
-              <h2>{activeChild.title}</h2>
-              <p>{activeChild.tagline}</p>
-            </div>
-
-            <p className="major-detail-description">{activeChild.description}</p>
-
-            <div className="detail-section">
-              <h3>Core Topics</h3>
-              <div className="detail-chip-list">
-                {activeChild.topics.map((topic) => (
-                  <span key={topic} className="detail-chip">
-                    {topic}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="detail-section">
-              <h3>Career Pathways</h3>
-              <ul className="pathway-list">
-                {activeChild.pathways.map((pathway) => (
-                  <li key={pathway}>{pathway}</li>
-                ))}
-              </ul>
-            </div>
-          </aside>
-        </div>
       </main>
       <Footer />
     </div>

@@ -1,22 +1,23 @@
+import { Link } from 'react-router-dom'
+
 function Hero() {
   return (
     <section className="hero">
       <p className="hero-eyebrow">Swinburne University</p>
       <h1 className="hero-title">
-        Study smarter with <span className="hero-highlight"><span className="text-swin">SWIN</span><span className="text-learn">LEARN</span></span>.
+        Connect with <span className="hero-highlight">Swinburne</span>.
       </h1>
       <p className="hero-subtitle">
-        Your courses, deadlines, classmates and an{' '}
-        <span className="hero-link">AI tutor</span> - in one place. Built for
-        Swinburne students.
+        Explore courses, campus news, upcoming events, and support information
+        before entering your SWINLEARN workspace.
       </p>
       <div className="hero-actions">
-        <button className="btn btn-primary" type="button">
-          Get started
-        </button>
-        <button className="btn btn-secondary" type="button">
-          Try SWINLEARN
-        </button>
+        <Link className="btn btn-primary" to="/courses">
+          Explore courses
+        </Link>
+        <Link className="btn btn-secondary" to="/events">
+          View events
+        </Link>
       </div>
     </section>
   )

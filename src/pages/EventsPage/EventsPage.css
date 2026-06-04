@@ -1,0 +1,215 @@
+@import '../NewsPage/NewsPage.css';
+
+.event-feature-list {
+  display: grid;
+  gap: 18px;
+  animation: fadeUp 0.8s ease both;
+}
+
+.event-feature {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(24px, 5vw, 56px);
+  padding: clamp(28px, 4vw, 44px) 0;
+  border-top: 1px solid rgba(26, 26, 46, 0.1);
+}
+
+.event-feature:last-child {
+  border-bottom: 1px solid rgba(26, 26, 46, 0.1);
+}
+
+.event-feature--reverse .event-feature-media {
+  order: 2;
+}
+
+.event-feature--reverse .event-feature-content {
+  order: 1;
+}
+
+.event-feature-media {
+  position: relative;
+  border-radius: 8px;
+  overflow: hidden;
+  aspect-ratio: 7 / 4;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.event-feature-media img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.event-feature:hover .event-feature-media img {
+  transform: scale(1.025);
+}
+
+.event-video-control {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text);
+  font-size: 0.8rem;
+  font-weight: 700;
+  box-shadow: 0 10px 22px rgba(26, 26, 46, 0.16);
+}
+
+.event-play-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--accent);
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.event-play-icon::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 53%;
+  width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  border-left: 9px solid #ffffff;
+  transform: translate(-45%, -50%);
+}
+
+.event-feature-content {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: start;
+  gap: 20px;
+}
+
+.event-feature-date {
+  min-width: 82px;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  padding: 14px 12px;
+  border-radius: 8px;
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.event-feature:nth-child(2n) .event-feature-date {
+  background: rgba(0, 91, 172, 0.1);
+  color: var(--fpt-blue);
+}
+
+.event-feature:nth-child(3n) .event-feature-date {
+  background: rgba(255, 107, 0, 0.12);
+  color: var(--fpt-orange);
+}
+
+.event-feature-month {
+  text-transform: uppercase;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+}
+
+.event-feature-day {
+  font-size: 1.85rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.event-feature-copy {
+  display: grid;
+  gap: 12px;
+}
+
+.event-feature-copy h2 {
+  color: var(--text);
+  font-family: var(--font-head);
+  font-size: clamp(1.6rem, 3vw, 2.35rem);
+  font-weight: 800;
+  letter-spacing: 0;
+  line-height: 1.08;
+}
+
+.event-feature-copy p {
+  color: var(--muted);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+.event-feature-meta {
+  color: var(--accent);
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.event-feature-link {
+  width: fit-content;
+  margin-top: 4px;
+  color: var(--accent);
+  font-size: 0.92rem;
+  font-weight: 800;
+  text-decoration: none;
+  border-bottom: 2px solid currentColor;
+  padding-bottom: 3px;
+}
+
+.event-feature-link:hover {
+  color: var(--text);
+}
+
+@media (max-width: 860px) {
+  .event-feature,
+  .event-feature--reverse {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .event-feature--reverse .event-feature-media {
+    order: 1;
+  }
+
+  .event-feature--reverse .event-feature-content {
+    order: 2;
+  }
+
+  .event-feature-content {
+    grid-template-columns: 1fr;
+  }
+
+  .event-feature-date {
+    width: fit-content;
+    grid-template-columns: auto auto;
+    gap: 8px;
+  }
+}
+
+@media (max-width: 520px) {
+  .event-feature {
+    padding: 26px 0;
+  }
+
+  .event-video-control {
+    left: 12px;
+    bottom: 12px;
+  }
+
+  .event-feature-copy h2 {
+    font-size: 1.45rem;
+    line-height: 1.16;
+  }
+}

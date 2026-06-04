@@ -22,7 +22,7 @@
   font-size: clamp(2.6rem, 5.2vw, 4.1rem);
   line-height: 1.05;
   color: var(--text);
-  letter-spacing: -1px;
+  letter-spacing: 0;
 }
 
 .hero-highlight {
@@ -57,6 +57,10 @@
   font-size: 0.95rem;
   border: 1px solid transparent;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 

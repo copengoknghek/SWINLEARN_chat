@@ -37,7 +37,7 @@ const myCourses = [
     tag: 'Swin Red',
     semester: 'last',
   },
-  
+
   // PRESENT SEMESTER (4 courses)
   {
     id: 1,
@@ -108,12 +108,6 @@ function CoursesPage() {
 
   const filteredCourses = myCourses.filter(course => course.semester === activeSemester);
 
-  const getSemesterLabel = (semester: string) => {
-    if (semester === 'last') return 'Last Semester';
-    if (semester === 'present') return 'Present Semester';
-    return 'Next Semester';
-  };
-
   return (
     <div className="page">
       <Navbar />
@@ -124,20 +118,20 @@ function CoursesPage() {
         </header>
 
         <div className="semester-tabs">
-          <button 
-            className={`tab-btn ${activeSemester === 'last' ? 'active' : ''}`} 
+          <button
+            className={`tab-btn ${activeSemester === 'last' ? 'active' : ''}`}
             onClick={() => setActiveSemester('last')}
           >
             Last Semester
           </button>
-          <button 
-            className={`tab-btn ${activeSemester === 'present' ? 'active' : ''}`} 
+          <button
+            className={`tab-btn ${activeSemester === 'present' ? 'active' : ''}`}
             onClick={() => setActiveSemester('present')}
           >
             Present Semester
           </button>
-          <button 
-            className={`tab-btn ${activeSemester === 'next' ? 'active' : ''}`} 
+          <button
+            className={`tab-btn ${activeSemester === 'next' ? 'active' : ''}`}
             onClick={() => setActiveSemester('next')}
           >
             Next Semester

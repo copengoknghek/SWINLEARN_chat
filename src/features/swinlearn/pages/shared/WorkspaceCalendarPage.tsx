@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import type { Role } from '../../hooks/useAuth'
+import type { Role } from '../../../../hooks/useAuth'
 import {
   courseLabel,
   fetchAssignments,

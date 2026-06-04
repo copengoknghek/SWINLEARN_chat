@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { useAuthContext } from '../../context/AuthContext'
-import type { Role } from '../../hooks/useAuth'
+import { useAuthContext } from '../../../../context/AuthContext'
+import type { Role } from '../../../../hooks/useAuth'
 import {
   courseLabel,
   createAssignment,

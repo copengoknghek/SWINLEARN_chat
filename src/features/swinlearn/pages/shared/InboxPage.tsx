@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
-import { useAuthContext } from '../../context/AuthContext'
-import type { Role } from '../../hooks/useAuth'
-import { supabase } from '../../lib/supabase/client'
+import { useAuthContext } from '../../../../context/AuthContext'
+import type { Role } from '../../../../hooks/useAuth'
+import { supabase } from '../../../../lib/supabase/client'
 import {
   createInboxThread,
   fetchInboxData,

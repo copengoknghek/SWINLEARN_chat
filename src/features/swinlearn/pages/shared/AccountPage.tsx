@@ -1,6 +1,6 @@
 import { useNavigate, useOutletContext } from 'react-router-dom'
-import { useAuthContext } from '../../context/AuthContext'
-import type { Role } from '../../hooks/useAuth'
+import { useAuthContext } from '../../../../context/AuthContext'
+import type { Role } from '../../../../hooks/useAuth'
 
 const roleName: Record<Role, string> = {
   admin: 'Admin',

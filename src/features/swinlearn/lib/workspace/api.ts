@@ -1,5 +1,5 @@
-import { supabase } from '../supabase/client'
-import type { Role } from '../../hooks/useAuth'
+import { supabase } from '../../../../lib/supabase/client'
+import type { Role } from '../../../../hooks/useAuth'
 import type {
   AdminCourseData,
   AdminUserCreateInput,

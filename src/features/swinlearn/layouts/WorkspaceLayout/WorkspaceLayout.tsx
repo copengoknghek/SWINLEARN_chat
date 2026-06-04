@@ -1,14 +1,14 @@
 import { useState } from 'react'
 import { Navigate, NavLink, Outlet, useNavigate } from 'react-router-dom'
-import { useAuthContext } from '../../context/AuthContext'
-import type { Role } from '../../hooks/useAuth'
+import { useAuthContext } from '../../../../context/AuthContext'
+import type { Role } from '../../../../hooks/useAuth'
 import {
   roleLabel,
   workspaceHomePath,
   workspaceLinksByRole,
 } from '../../lib/workspace/navigation'
 import './WorkspaceLayout.css'
-import '../../pages/workspace/WorkspacePages.css'
+import '../../styles/WorkspacePages.css'
 
 type WorkspaceLayoutProps = {
   workspaceRole?: Role

@@ -1,4 +1,4 @@
-import type { Role } from '../../hooks/useAuth'
+import type { Role } from '../../../../hooks/useAuth'
 
 export type ProfileStatus = 'active' | 'inactive'
 export type ProfileCampus = 'hanoi' | 'danang' | 'hcm'

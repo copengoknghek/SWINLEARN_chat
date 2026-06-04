@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useAuthContext } from '../../context/AuthContext'
+import { useAuthContext } from '../../../../context/AuthContext'
 import { workspaceHomePath } from '../../lib/workspace/navigation'
 import './LoginPage.css'
 

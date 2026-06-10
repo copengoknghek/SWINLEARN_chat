@@ -1,0 +1,313 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  admin
+  teacher
+  student
+}
+
+enum ProfileStatus {
+  active
+  inactive
+}
+
+enum Campus {
+  hanoi
+  danang
+  hcm
+}
+
+enum CourseStatus {
+  active
+  archived
+}
+
+enum CurriculumRuleType {
+  core
+  elective
+  major
+}
+
+enum CurriculumScope {
+  global
+  main_major
+  child_major
+}
+
+enum CourseStaffRole {
+  teacher
+  teaching_assistant
+}
+
+enum AssignmentStatus {
+  draft
+  published
+  archived
+}
+
+enum SessionType {
+  class
+  lab
+  event
+  consultation
+}
+
+model User {
+  id                 String                    @id @default(cuid())
+  email              String                    @unique
+  passwordHash       String                    @map("password_hash")
+  role               UserRole
+  fullName           String?                   @map("full_name")
+  displayName        String?                   @map("display_name")
+  campus             Campus?
+  studentId          String?                   @unique @map("student_id")
+  mustChangePassword Boolean                   @default(true) @map("must_change_password")
+  status             ProfileStatus            @default(active)
+  childMajorId       String?                   @map("child_major_id")
+  createdAt          DateTime                  @default(now()) @map("created_at")
+  updatedAt          DateTime                  @updatedAt @map("updated_at")
+  childMajor         ChildMajor?               @relation(fields: [childMajorId], references: [id], onDelete: SetNull)
+  createdCourses     Course[]                  @relation("CourseCreator")
+  createdOfferings   CourseOffering[]          @relation("OfferingCreator")
+  courseStaff        CourseStaff[]
+  enrollments        Enrollment[]
+  createdAssignments Assignment[]              @relation("AssignmentCreator")
+  submissions        AssignmentSubmission[]
+  createdThreads     InboxThread[]             @relation("ThreadCreator")
+  sentMessages        InboxMessage[]            @relation("MessageSender")
+  inboxParticipants  InboxThreadParticipant[]
+  sessions           UserSession[]
+  managedCredentials ManagedUserCredential[]    @relation("ManagedCredentialUser")
+  createdCredentials ManagedUserCredential[]    @relation("ManagedCredentialCreator")
+
+  @@map("users")
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String   @map("user_id")
+  tokenHash String   @unique @map("token_hash")
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("user_sessions")
+}
+
+model ManagedUserCredential {
+  id           String   @id @default(cuid())
+  userId       String   @unique @map("user_id")
+  tempPassword String   @map("temp_password")
+  createdById  String?  @map("created_by")
+  createdAt    DateTime @default(now()) @map("created_at")
+  user         User     @relation("ManagedCredentialUser", fields: [userId], references: [id], onDelete: Cascade)
+  createdBy    User?    @relation("ManagedCredentialCreator", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@map("managed_user_credentials")
+}
+
+model MainMajor {
+  id              String           @id @default(cuid())
+  title           String
+  summary         String           @db.Text
+  sortOrder       Int              @default(0) @map("sort_order")
+  childMajors     ChildMajor[]
+  curriculumRules CurriculumRule[]
+
+  @@map("main_majors")
+}
+
+model ChildMajor {
+  id              String           @id @default(cuid())
+  mainMajorId     String           @map("main_major_id")
+  title           String
+  summary         String           @db.Text
+  sortOrder       Int              @default(0) @map("sort_order")
+  mainMajor       MainMajor        @relation(fields: [mainMajorId], references: [id], onDelete: Cascade)
+  students        User[]
+  curriculumRules CurriculumRule[]
+
+  @@index([mainMajorId])
+  @@map("child_majors")
+}
+
+model Course {
+  id              String           @id @default(cuid())
+  code            String           @unique
+  title           String
+  description     String           @db.Text
+  createdById     String?          @map("created_by")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  createdBy       User?            @relation("CourseCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  curriculumRules CurriculumRule[]
+  offerings       CourseOffering[]
+
+  @@map("courses")
+}
+
+model CurriculumRule {
+  id           String             @id @default(cuid())
+  courseId     String             @map("course_id")
+  ruleType     CurriculumRuleType @map("rule_type")
+  scope        CurriculumScope
+  scopeKey     String             @map("scope_key")
+  mainMajorId  String?            @map("main_major_id")
+  childMajorId String?            @map("child_major_id")
+  createdAt    DateTime           @default(now()) @map("created_at")
+  course       Course             @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  mainMajor    MainMajor?         @relation(fields: [mainMajorId], references: [id], onDelete: Cascade)
+  childMajor   ChildMajor?        @relation(fields: [childMajorId], references: [id], onDelete: Cascade)
+
+  @@unique([courseId, ruleType, scope, scopeKey])
+  @@index([mainMajorId])
+  @@index([childMajorId])
+  @@map("curriculum_rules")
+}
+
+model CourseOffering {
+  id           String          @id @default(cuid())
+  courseId     String          @map("course_id")
+  term         String
+  academicYear Int             @map("academic_year")
+  status       CourseStatus    @default(active)
+  createdById  String?         @map("created_by")
+  createdAt    DateTime        @default(now()) @map("created_at")
+  updatedAt    DateTime        @updatedAt @map("updated_at")
+  course       Course          @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdBy    User?           @relation("OfferingCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  staff        CourseStaff[]
+  enrollments  Enrollment[]
+  assignments  Assignment[]
+  sessions     CourseSession[]
+
+  @@unique([courseId, term, academicYear])
+  @@index([courseId])
+  @@map("course_offerings")
+}
+
+model CourseStaff {
+  id         String          @id @default(cuid())
+  offeringId String          @map("offering_id")
+  userId     String          @map("user_id")
+  role       CourseStaffRole
+  createdAt  DateTime        @default(now()) @map("created_at")
+  offering   CourseOffering  @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  user       User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([offeringId, userId])
+  @@index([userId])
+  @@map("course_staff")
+}
+
+model Enrollment {
+  id         String         @id @default(cuid())
+  offeringId String         @map("offering_id")
+  userId     String         @map("user_id")
+  createdAt  DateTime       @default(now()) @map("created_at")
+  offering   CourseOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([offeringId, userId])
+  @@index([userId])
+  @@map("enrollments")
+}
+
+model Assignment {
+  id          String                 @id @default(cuid())
+  offeringId  String                 @map("offering_id")
+  title       String
+  description String                 @db.Text
+  dueAt       DateTime               @map("due_at")
+  status      AssignmentStatus       @default(published)
+  createdById String?                @map("created_by")
+  createdAt   DateTime               @default(now()) @map("created_at")
+  updatedAt   DateTime               @updatedAt @map("updated_at")
+  offering    CourseOffering         @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  createdBy   User?                  @relation("AssignmentCreator", fields: [createdById], references: [id], onDelete: SetNull)
+  submissions AssignmentSubmission[]
+
+  @@index([offeringId])
+  @@map("assignments")
+}
+
+model AssignmentSubmission {
+  id           String     @id @default(cuid())
+  assignmentId String     @map("assignment_id")
+  studentId    String     @map("student_id")
+  body         String     @db.Text
+  filePaths    Json       @map("file_paths")
+  submittedAt  DateTime   @default(now()) @map("submitted_at")
+  updatedAt    DateTime   @updatedAt @map("updated_at")
+  assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student      User       @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([assignmentId, studentId])
+  @@index([studentId])
+  @@map("assignment_submissions")
+}
+
+model CourseSession {
+  id          String         @id @default(cuid())
+  offeringId  String         @map("offering_id")
+  title       String
+  sessionType SessionType    @map("session_type")
+  startsAt    DateTime       @map("starts_at")
+  endsAt      DateTime       @map("ends_at")
+  location    String
+  createdById String?        @map("created_by")
+  createdAt   DateTime       @default(now()) @map("created_at")
+  offering    CourseOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+
+  @@index([offeringId])
+  @@map("course_sessions")
+}
+
+model InboxThread {
+  id           String                   @id @default(cuid())
+  subject      String
+  createdById  String                   @map("created_by")
+  createdAt    DateTime                 @default(now()) @map("created_at")
+  updatedAt    DateTime                 @updatedAt @map("updated_at")
+  createdBy    User                     @relation("ThreadCreator", fields: [createdById], references: [id], onDelete: Cascade)
+  participants InboxThreadParticipant[]
+  messages     InboxMessage[]
+
+  @@map("inbox_threads")
+}
+
+model InboxThreadParticipant {
+  id         String      @id @default(cuid())
+  threadId   String      @map("thread_id")
+  userId     String      @map("user_id")
+  lastReadAt DateTime?   @map("last_read_at")
+  createdAt  DateTime    @default(now()) @map("created_at")
+  thread     InboxThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([threadId, userId])
+  @@index([userId])
+  @@map("inbox_thread_participants")
+}
+
+model InboxMessage {
+  id        String      @id @default(cuid())
+  threadId  String      @map("thread_id")
+  senderId  String      @map("sender_id")
+  body      String      @db.Text
+  createdAt DateTime    @default(now()) @map("created_at")
+  thread    InboxThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  sender    User        @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+
+  @@index([threadId])
+  @@index([senderId])
+  @@map("inbox_messages")
+}

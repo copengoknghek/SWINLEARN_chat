@@ -3,6 +3,7 @@ import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
 import {
   createAdminUser,
+  fetchCatalog,
   fetchManagedUserCredentials,
   fetchProfiles,
   getErrorMessage,
@@ -16,6 +17,7 @@ import {
 import type {
   AdminUserCreateInput,
   AdminUserImportResult,
+  ChildMajorRow,
   ManagedUserCredentialRow,
   ProfileCampus,
   ProfileRow,
@@ -27,6 +29,7 @@ type CreateUserForm = {
   role: 'student' | 'teacher'
   campus: ProfileCampus
   userId: string
+  childMajorId: string
 }
 
 type EditUserForm = {
@@ -35,6 +38,7 @@ type EditUserForm = {
   role: Role
   campus: ProfileCampus | ''
   studentId: string
+  childMajorId: string
   status: ProfileStatus
 }
 
@@ -55,6 +59,7 @@ const emptyCreateForm: CreateUserForm = {
   role: 'student',
   campus: 'hanoi',
   userId: '',
+  childMajorId: '',
 }
 
 const emptyEditForm: EditUserForm = {
@@ -63,6 +68,7 @@ const emptyEditForm: EditUserForm = {
   role: 'student',
   campus: '',
   studentId: '',
+  childMajorId: '',
   status: 'active',
 }
 
@@ -175,6 +181,7 @@ const csvRowsToUsers = (text: string): AdminUserCreateInput[] => {
         role,
         campus: normalizeCampus(campusValue),
         user_id: valueFor(row, ['user_id', 'userid', 'student_id', 'studentid', 'student_number']),
+        child_major_id: valueFor(row, ['child_major_id', 'child_major', 'major_id']) || null,
       }
     })
     .filter((record) => record.full_name !== '' && record.user_id !== '')
@@ -183,6 +190,7 @@ const csvRowsToUsers = (text: string): AdminUserCreateInput[] => {
 function AdminUsersPage() {
   const { user } = useAuthContext()
   const [profiles, setProfiles] = useState<ProfileRow[]>([])
+  const [childMajors, setChildMajors] = useState<ChildMajorRow[]>([])
   const [storedCredentials, setStoredCredentials] = useState<ManagedUserCredentialRow[]>([])
   const [selectedProfileId, setSelectedProfileId] = useState('')
   const [createForm, setCreateForm] = useState<CreateUserForm>(emptyCreateForm)
@@ -202,10 +210,12 @@ function AdminUsersPage() {
         fetchProfiles(),
         fetchManagedUserCredentials(),
       ])
+      const catalog = await fetchCatalog()
       const nextSelectedProfile =
         nextProfiles.find((profile) => profile.id === selectedProfileId) ?? nextProfiles[0] ?? null
 
       setProfiles(nextProfiles)
+      setChildMajors(catalog.childMajors)
       setStoredCredentials(nextCredentials)
       setSelectedProfileId(nextSelectedProfile?.id ?? '')
 
@@ -216,6 +226,7 @@ function AdminUsersPage() {
           role: nextSelectedProfile.role,
           campus: nextSelectedProfile.campus ?? '',
           studentId: nextSelectedProfile.student_id ?? '',
+          childMajorId: nextSelectedProfile.child_major_id ?? '',
           status: nextSelectedProfile.status,
         })
       }
@@ -272,6 +283,7 @@ function AdminUsersPage() {
         role: createForm.role,
         campus: createForm.campus,
         user_id: createForm.userId.trim().toUpperCase(),
+        child_major_id: createForm.role === 'student' ? createForm.childMajorId || null : null,
       })
 
       setCredentials((current) => [
@@ -341,6 +353,7 @@ function AdminUsersPage() {
       role: profile.role,
       campus: profile.campus ?? '',
       studentId: profile.student_id ?? '',
+      childMajorId: profile.child_major_id ?? '',
       status: profile.status,
     })
   }
@@ -363,6 +376,7 @@ function AdminUsersPage() {
         role: editForm.role,
         campus: editForm.campus || null,
         student_id: editForm.role === 'admin' ? null : editForm.studentId.trim().toUpperCase() || null,
+        child_major_id: editForm.role === 'student' ? editForm.childMajorId || null : null,
         status: editForm.status,
       })
 
@@ -643,6 +657,28 @@ function AdminUsersPage() {
                     </select>
                   </label>
                 </div>
+                {createForm.role === 'student' && (
+                  <label>
+                    <span>Child major</span>
+                    <select
+                      value={createForm.childMajorId}
+                      onChange={(event) =>
+                        setCreateForm((current) => ({
+                          ...current,
+                          childMajorId: event.target.value,
+                        }))
+                      }
+                      required
+                    >
+                      <option value="">Choose child major</option>
+                      {childMajors.map((childMajor) => (
+                        <option key={childMajor.id} value={childMajor.id}>
+                          {childMajor.title}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
                 <button type="submit" disabled={saving}>
                   {saving ? 'Creating...' : 'Create account'}
                 </button>
@@ -732,6 +768,28 @@ function AdminUsersPage() {
                           }))
                         }
                       />
+                    </label>
+                  )}
+                  {editForm.role === 'student' && (
+                    <label>
+                      <span>Child major</span>
+                      <select
+                        value={editForm.childMajorId}
+                        onChange={(event) =>
+                          setEditForm((current) => ({
+                            ...current,
+                            childMajorId: event.target.value,
+                          }))
+                        }
+                        required
+                      >
+                        <option value="">Choose child major</option>
+                        {childMajors.map((childMajor) => (
+                          <option key={childMajor.id} value={childMajor.id}>
+                            {childMajor.title}
+                          </option>
+                        ))}
+                      </select>
                     </label>
                   )}
                   <label>

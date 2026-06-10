@@ -1,4 +1,4 @@
-import { supabase } from '../../../../lib/supabase/client'
+import { apiRequest } from '../../../../lib/api/client'
 import type { Role } from '../../../../hooks/useAuth'
 import type {
   AdminCourseData,
@@ -9,30 +9,26 @@ import type {
   AssignmentRow,
   AssignmentSubmissionRow,
   CatalogData,
-  ChildMajorRow,
+  CourseCatalogInput,
   CourseMemberRole,
-  CourseMembershipRow,
-  CourseMutationInput,
-  CourseRow,
+  CourseOfferingInput,
   CourseSessionRow,
   CourseWithMembers,
+  CurriculumRuleInput,
   InboxData,
-  InboxMessageRow,
-  InboxParticipantRow,
-  InboxThreadRow,
-  MainMajorRow,
   ManagedUserCredentialRow,
-  ProfileRow,
   ProfileCampus,
+  ProfileRow,
   ProfileStatus,
 } from './types'
 
-type SupabaseErrorLike = {
-  message?: string
-}
-
-type EdgeFunctionErrorLike = SupabaseErrorLike & {
-  context?: unknown
+type ApiAuthPayload = {
+  user: {
+    id: string
+    email: string
+  } | null
+  role?: Role | null
+  mustChangePassword?: boolean
 }
 
 export const getErrorMessage = (error: unknown, fallback = 'Something went wrong') => {
@@ -41,217 +37,154 @@ export const getErrorMessage = (error: unknown, fallback = 'Something went wrong
   }
 
   if (typeof error === 'object' && error !== null && 'message' in error) {
-    return (error as SupabaseErrorLike).message ?? fallback
+    return String((error as { message?: unknown }).message ?? fallback)
   }
 
   return fallback
 }
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null
+const userAdminData = () =>
+  apiRequest<{
+    profiles: ProfileRow[]
+    managedCredentials: ManagedUserCredentialRow[]
+  }>('/api/admin/users')
 
-const readBodyErrorMessage = (body: unknown) => {
-  if (!isRecord(body)) {
-    return ''
-  }
-
-  const error = body.error ?? body.message
-
-  return typeof error === 'string' ? error : ''
+export async function getCurrentAuth() {
+  return apiRequest<ApiAuthPayload>('/api/auth/me')
 }
 
-const getEdgeFunctionErrorMessage = async (error: unknown) => {
-  const fallback = getErrorMessage(error)
-  const context = isRecord(error) ? (error as EdgeFunctionErrorLike).context : null
-
-  if (!context || !isRecord(context)) {
-    return fallback
-  }
-
-  const response = context as unknown as Response
-
-  try {
-    const body = await response.clone().json()
-    const bodyMessage = readBodyErrorMessage(body)
-
-    if (bodyMessage) {
-      return bodyMessage
-    }
-  } catch {
-    try {
-      const text = await response.clone().text()
-
-      if (text.trim()) {
-        return text
-      }
-    } catch {
-      return fallback
-    }
-  }
-
-  return fallback
+export async function login(email: string, password: string) {
+  return apiRequest<ApiAuthPayload>('/api/auth/login', {
+    method: 'POST',
+    body: { email, password },
+  })
 }
 
-const throwIfError = (error: unknown) => {
-  if (error) {
-    throw new Error(getErrorMessage(error))
-  }
+export async function logout() {
+  await apiRequest<{ success: boolean }>('/api/auth/logout', { method: 'POST' })
 }
 
-const byTitle = <T extends { title: string }>(items: T[]) =>
-  [...items].sort((first, second) => first.title.localeCompare(second.title))
-
-const mergeCoursesWithMembers = (
-  courses: CourseRow[],
-  memberships: CourseMembershipRow[],
-): CourseWithMembers[] =>
-  courses.map((course) => ({
-    ...course,
-    members: memberships.filter((membership) => membership.course_id === course.id),
-  }))
+export async function changePassword(password: string) {
+  return apiRequest<ApiAuthPayload>('/api/auth/change-password', {
+    method: 'POST',
+    body: { password },
+  })
+}
 
 export async function fetchCatalog(): Promise<CatalogData> {
-  const [mainMajorsResult, childMajorsResult] = await Promise.all([
-    supabase.from('main_majors').select('*').order('sort_order', { ascending: true }),
-    supabase.from('child_majors').select('*').order('sort_order', { ascending: true }),
-  ])
-
-  throwIfError(mainMajorsResult.error)
-  throwIfError(childMajorsResult.error)
-
-  return {
-    mainMajors: (mainMajorsResult.data ?? []) as MainMajorRow[],
-    childMajors: (childMajorsResult.data ?? []) as ChildMajorRow[],
-  }
+  return apiRequest<CatalogData>('/api/workspace/catalog')
 }
 
 export async function fetchProfiles(): Promise<ProfileRow[]> {
-  const { data, error } = await supabase
-    .from('profiles')
-    .select(
-      'id,email,role,full_name,display_name,campus,student_id,must_change_password,status,created_at,updated_at',
-    )
-    .order('display_name', { ascending: true })
-
-  throwIfError(error)
-
-  return (data ?? []) as ProfileRow[]
+  return apiRequest<ProfileRow[]>('/api/workspace/profiles')
 }
 
 export async function fetchManagedUserCredentials(): Promise<ManagedUserCredentialRow[]> {
-  const { data, error } = await supabase
-    .from('managed_user_credentials')
-    .select('user_id,temp_password,created_by,created_at')
-    .order('created_at', { ascending: false })
+  const data = await userAdminData()
 
-  throwIfError(error)
-
-  return (data ?? []) as ManagedUserCredentialRow[]
+  return data.managedCredentials
 }
 
 export async function fetchAdminCourseData(): Promise<AdminCourseData> {
-  const [catalog, coursesResult, membershipsResult, profiles] = await Promise.all([
-    fetchCatalog(),
-    supabase.from('courses').select('*').order('code', { ascending: true }),
-    supabase.from('course_memberships').select('*'),
-    fetchProfiles(),
-  ])
-
-  throwIfError(coursesResult.error)
-  throwIfError(membershipsResult.error)
-
-  const courses = mergeCoursesWithMembers(
-    (coursesResult.data ?? []) as CourseRow[],
-    (membershipsResult.data ?? []) as CourseMembershipRow[],
-  )
-
-  return {
-    ...catalog,
-    courses,
-    profiles,
-  }
+  return apiRequest<AdminCourseData>('/api/admin/course-data')
 }
 
 export async function fetchWorkspaceCourses(): Promise<CourseWithMembers[]> {
-  const [coursesResult, membershipsResult] = await Promise.all([
-    supabase.from('courses').select('*').order('code', { ascending: true }),
-    supabase.from('course_memberships').select('*'),
-  ])
-
-  throwIfError(coursesResult.error)
-  throwIfError(membershipsResult.error)
-
-  return mergeCoursesWithMembers(
-    (coursesResult.data ?? []) as CourseRow[],
-    (membershipsResult.data ?? []) as CourseMembershipRow[],
-  )
+  return apiRequest<CourseWithMembers[]>('/api/workspace/courses')
 }
 
-export async function createCourseWithTeacher(
-  input: CourseMutationInput,
-  teacherId: string,
-): Promise<string> {
-  const { data, error } = await supabase.rpc('create_course_with_teacher', {
-    p_child_major_id: input.child_major_id,
-    p_code: input.code,
-    p_title: input.title,
-    p_description: input.description,
-    p_semester: input.semester,
-    p_academic_year: input.academic_year,
-    p_status: input.status,
-    p_teacher_id: teacherId,
+export async function createCourse(input: CourseCatalogInput): Promise<string> {
+  const course = await apiRequest<{ id: string }>('/api/admin/courses', {
+    method: 'POST',
+    body: input,
   })
 
-  throwIfError(error)
-
-  return data as string
+  return course.id
 }
 
-export async function updateCourse(courseId: string, input: CourseMutationInput) {
-  const { error } = await supabase.from('courses').update(input).eq('id', courseId)
-
-  throwIfError(error)
+export async function updateCourse(courseId: string, input: Partial<CourseCatalogInput>) {
+  await apiRequest(`/api/admin/courses/${courseId}`, {
+    method: 'PATCH',
+    body: input,
+  })
 }
 
 export async function deleteCourse(courseId: string) {
-  const { error } = await supabase.from('courses').delete().eq('id', courseId)
+  await apiRequest(`/api/admin/courses/${courseId}`, { method: 'DELETE' })
+}
 
-  throwIfError(error)
+export async function createCurriculumRule(input: CurriculumRuleInput): Promise<string> {
+  const rule = await apiRequest<{ id: string }>('/api/admin/curriculum-rules', {
+    method: 'POST',
+    body: input,
+  })
+
+  return rule.id
+}
+
+export async function updateCurriculumRule(ruleId: string, input: CurriculumRuleInput) {
+  await apiRequest(`/api/admin/curriculum-rules/${ruleId}`, {
+    method: 'PATCH',
+    body: input,
+  })
+}
+
+export async function deleteCurriculumRule(ruleId: string) {
+  await apiRequest(`/api/admin/curriculum-rules/${ruleId}`, { method: 'DELETE' })
+}
+
+export async function createCourseOffering(
+  input: CourseOfferingInput,
+  teacherId: string,
+): Promise<string> {
+  const offering = await apiRequest<{ id: string }>('/api/admin/course-offerings', {
+    method: 'POST',
+    body: {
+      ...input,
+      teacher_id: teacherId || null,
+    },
+  })
+
+  return offering.id
+}
+
+export async function updateCourseOffering(
+  offeringId: string,
+  input: Partial<CourseOfferingInput>,
+) {
+  await apiRequest(`/api/admin/course-offerings/${offeringId}`, {
+    method: 'PATCH',
+    body: input,
+  })
+}
+
+export async function deleteCourseOffering(offeringId: string) {
+  await apiRequest(`/api/admin/course-offerings/${offeringId}`, { method: 'DELETE' })
 }
 
 export async function addCourseMember(courseId: string, userId: string, role: CourseMemberRole) {
-  const { error } = await supabase.from('course_memberships').upsert(
-    {
-      course_id: courseId,
+  await apiRequest(`/api/admin/course-offerings/${courseId}/members`, {
+    method: 'POST',
+    body: {
       user_id: userId,
       role,
     },
-    { onConflict: 'course_id,user_id' },
-  )
-
-  throwIfError(error)
+  })
 }
 
 export async function removeCourseMember(membershipId: string) {
-  const { error } = await supabase.from('course_memberships').delete().eq('id', membershipId)
-
-  throwIfError(error)
+  await apiRequest(`/api/admin/course-memberships/${encodeURIComponent(membershipId)}`, {
+    method: 'DELETE',
+  })
 }
 
 export async function setTeachingAssistant(courseId: string, userId: string | null) {
-  const { error: deleteError } = await supabase
-    .from('course_memberships')
-    .delete()
-    .eq('course_id', courseId)
-    .eq('role', 'teaching_assistant')
-
-  throwIfError(deleteError)
-
-  if (userId === null) {
-    return
-  }
-
-  await addCourseMember(courseId, userId, 'teaching_assistant')
+  await apiRequest(`/api/admin/course-offerings/${courseId}/teaching-assistant`, {
+    method: 'PUT',
+    body: {
+      user_id: userId,
+    },
+  })
 }
 
 export async function updateProfile(
@@ -261,44 +194,54 @@ export async function updateProfile(
     display_name?: string
     campus?: ProfileCampus | null
     student_id?: string | null
+    child_major_id?: string | null
     role?: Role
     status?: ProfileStatus
   },
 ) {
-  const { error } = await supabase.from('profiles').update(updates).eq('id', profileId)
-
-  throwIfError(error)
+  await apiRequest(`/api/admin/users/${profileId}`, {
+    method: 'PATCH',
+    body: updates,
+  })
 }
 
 export async function invokeAdminUserAction(body: Record<string, unknown>) {
-  const { data, error } = await supabase.functions.invoke('admin-users', { body })
+  const action = body.action
 
-  if (error) {
-    const message = await getEdgeFunctionErrorMessage(error)
-
-    if (message.toLowerCase().includes('failed to send a request')) {
-      throw new Error(
-        'Could not reach the admin-users Edge Function. Deploy admin-users in Supabase Edge Functions and make sure SUPABASE_SERVICE_ROLE_KEY is configured.',
-      )
-    }
-
-    throw new Error(message)
+  if (action === 'create') {
+    return apiRequest<AdminUserCreateResult>('/api/admin/users', {
+      method: 'POST',
+      body,
+    })
   }
 
-  if (data && typeof data === 'object' && 'error' in data) {
-    throw new Error(String((data as { error: unknown }).error))
+  if (action === 'import') {
+    return apiRequest<{ results: AdminUserImportResult[] }>('/api/admin/users/import', {
+      method: 'POST',
+      body,
+    })
   }
 
-  return data
+  if (action === 'reset_password') {
+    return apiRequest<AdminUserCreateResult>(`/api/admin/users/${body.userId}/reset-password`, {
+      method: 'POST',
+    })
+  }
+
+  if (action === 'delete') {
+    return apiRequest<{ success: boolean }>(`/api/admin/users/${body.userId}`, {
+      method: 'DELETE',
+    })
+  }
+
+  throw new Error('Unsupported admin user action.')
 }
 
 export async function createAdminUser(input: AdminUserCreateInput) {
-  const data = await invokeAdminUserAction({
+  return invokeAdminUserAction({
     action: 'create',
     ...input,
-  })
-
-  return data as AdminUserCreateResult
+  }) as Promise<AdminUserCreateResult>
 }
 
 export async function importAdminUsers(records: AdminUserCreateInput[]) {
@@ -311,243 +254,106 @@ export async function importAdminUsers(records: AdminUserCreateInput[]) {
 }
 
 export async function resetAdminUserPassword(userId: string) {
-  const data = await invokeAdminUserAction({
+  return invokeAdminUserAction({
     action: 'reset_password',
     userId,
-  })
-
-  return data as {
-    success: boolean
-    user_id: string
-    email: string
-    temp_password: string
-  }
-}
-
-export async function completePasswordChange() {
-  const { error } = await supabase.rpc('complete_password_change')
-
-  throwIfError(error)
+  }) as Promise<AdminUserCreateResult>
 }
 
 export async function fetchAssignments(): Promise<AssignmentRow[]> {
-  const { data, error } = await supabase
-    .from('assignments')
-    .select('*')
-    .order('due_at', { ascending: true })
-
-  throwIfError(error)
-
-  return (data ?? []) as AssignmentRow[]
+  return apiRequest<AssignmentRow[]>('/api/workspace/assignments')
 }
 
-export async function createAssignment(input: AssignmentMutationInput, userId: string) {
-  const { error } = await supabase.from('assignments').insert({
-    ...input,
-    created_by: userId,
-  })
+export async function createAssignment(input: AssignmentMutationInput, _userId?: string) {
+  void _userId
 
-  throwIfError(error)
+  await apiRequest('/api/workspace/assignments', {
+    method: 'POST',
+    body: input,
+  })
 }
 
 export async function updateAssignment(
   assignmentId: string,
   updates: Partial<AssignmentMutationInput>,
 ) {
-  const { error } = await supabase.from('assignments').update(updates).eq('id', assignmentId)
-
-  throwIfError(error)
+  await apiRequest(`/api/workspace/assignments/${assignmentId}`, {
+    method: 'PATCH',
+    body: updates,
+  })
 }
 
 export async function fetchSubmissions(): Promise<AssignmentSubmissionRow[]> {
-  const { data, error } = await supabase
-    .from('assignment_submissions')
-    .select('*')
-    .order('submitted_at', { ascending: false })
-
-  throwIfError(error)
-
-  return (data ?? []) as AssignmentSubmissionRow[]
+  return apiRequest<AssignmentSubmissionRow[]>('/api/workspace/submissions')
 }
 
 export async function submitAssignment(
   assignmentId: string,
-  studentId: string,
+  _studentId: string,
   body: string,
   files: FileList | null,
 ) {
-  const uploadedPaths: string[] = []
+  void _studentId
 
-  if (files !== null) {
-    for (const file of Array.from(files)) {
-      const safeFileName = file.name.replace(/[^a-zA-Z0-9._-]/g, '-')
-      const filePath = `${assignmentId}/${studentId}/${Date.now()}-${safeFileName}`
-      const { error } = await supabase.storage.from('assignment-files').upload(filePath, file, {
-        upsert: false,
-      })
+  const formData = new FormData()
 
-      throwIfError(error)
-      uploadedPaths.push(filePath)
-    }
+  formData.set('body', body)
+
+  for (const file of Array.from(files ?? [])) {
+    formData.append('files', file)
   }
 
-  const { data: existing, error: existingError } = await supabase
-    .from('assignment_submissions')
-    .select('file_paths')
-    .eq('assignment_id', assignmentId)
-    .eq('student_id', studentId)
-    .maybeSingle()
-
-  throwIfError(existingError)
-
-  const existingPaths = ((existing?.file_paths ?? []) as string[]).filter(Boolean)
-
-  const { error } = await supabase.from('assignment_submissions').upsert(
-    {
-      assignment_id: assignmentId,
-      student_id: studentId,
-      body,
-      file_paths: [...existingPaths, ...uploadedPaths],
-      submitted_at: new Date().toISOString(),
-    },
-    { onConflict: 'assignment_id,student_id' },
-  )
-
-  throwIfError(error)
+  await apiRequest(`/api/workspace/assignments/${assignmentId}/submission`, {
+    method: 'POST',
+    body: formData,
+  })
 }
 
 export async function fetchCalendarSessions(): Promise<CourseSessionRow[]> {
-  const { data, error } = await supabase
-    .from('course_sessions')
-    .select('*')
-    .order('starts_at', { ascending: true })
-
-  throwIfError(error)
-
-  return (data ?? []) as CourseSessionRow[]
+  return apiRequest<CourseSessionRow[]>('/api/workspace/sessions')
 }
 
-export async function fetchInboxData(userId: string): Promise<InboxData> {
-  const [profiles, participantResult] = await Promise.all([
-    fetchProfiles(),
-    supabase.from('inbox_thread_participants').select('*').eq('user_id', userId),
-  ])
+export async function fetchInboxData(_userId: string): Promise<InboxData> {
+  void _userId
 
-  throwIfError(participantResult.error)
-
-  const ownParticipants = (participantResult.data ?? []) as InboxParticipantRow[]
-  const threadIds = ownParticipants.map((participant) => participant.thread_id)
-
-  if (threadIds.length === 0) {
-    return {
-      profiles,
-      threads: [],
-      participants: ownParticipants,
-      messages: [],
-    }
-  }
-
-  const [threadsResult, allParticipantsResult, messagesResult] = await Promise.all([
-    supabase.from('inbox_threads').select('*').in('id', threadIds).order('updated_at', {
-      ascending: false,
-    }),
-    supabase.from('inbox_thread_participants').select('*').in('thread_id', threadIds),
-    supabase.from('inbox_messages').select('*').in('thread_id', threadIds).order('created_at', {
-      ascending: true,
-    }),
-  ])
-
-  throwIfError(threadsResult.error)
-  throwIfError(allParticipantsResult.error)
-  throwIfError(messagesResult.error)
-
-  return {
-    profiles,
-    threads: (threadsResult.data ?? []) as InboxThreadRow[],
-    participants: (allParticipantsResult.data ?? []) as InboxParticipantRow[],
-    messages: (messagesResult.data ?? []) as InboxMessageRow[],
-  }
+  return apiRequest<InboxData>('/api/workspace/inbox')
 }
 
 export async function createInboxThread(
-  currentUserId: string,
+  _currentUserId: string,
   recipientId: string,
   subject: string,
   messageBody: string,
 ) {
-  const { data: thread, error: threadError } = await supabase
-    .from('inbox_threads')
-    .insert({
+  void _currentUserId
+
+  const data = await apiRequest<{ id: string }>('/api/workspace/inbox/threads', {
+    method: 'POST',
+    body: {
+      recipient_id: recipientId,
       subject,
-      created_by: currentUserId,
-    })
-    .select('id')
-    .single()
-
-  throwIfError(threadError)
-
-  if (!thread) {
-    throw new Error('Thread could not be created')
-  }
-
-  const threadId = thread.id as string
-
-  const { error: participantError } = await supabase.from('inbox_thread_participants').insert([
-    {
-      thread_id: threadId,
-      user_id: currentUserId,
-      last_read_at: new Date().toISOString(),
+      body: messageBody,
     },
-    {
-      thread_id: threadId,
-      user_id: recipientId,
-      last_read_at: null,
-    },
-  ])
-
-  throwIfError(participantError)
-
-  const { error: messageError } = await supabase.from('inbox_messages').insert({
-    thread_id: threadId,
-    sender_id: currentUserId,
-    body: messageBody,
   })
 
-  throwIfError(messageError)
-
-  return threadId
+  return data.id
 }
 
-export async function sendInboxMessage(threadId: string, senderId: string, body: string) {
-  const timestamp = new Date().toISOString()
-  const [{ error: messageError }, { error: threadError }, { error: participantError }] =
-    await Promise.all([
-      supabase.from('inbox_messages').insert({
-        thread_id: threadId,
-        sender_id: senderId,
-        body,
-      }),
-      supabase.from('inbox_threads').update({ updated_at: timestamp }).eq('id', threadId),
-      supabase
-        .from('inbox_thread_participants')
-        .update({ last_read_at: timestamp })
-        .eq('thread_id', threadId)
-        .eq('user_id', senderId),
-    ])
+export async function sendInboxMessage(threadId: string, _senderId: string, body: string) {
+  void _senderId
 
-  throwIfError(messageError)
-  throwIfError(threadError)
-  throwIfError(participantError)
+  await apiRequest(`/api/workspace/inbox/threads/${threadId}/messages`, {
+    method: 'POST',
+    body: { body },
+  })
 }
 
-export async function markThreadRead(threadId: string, userId: string) {
-  const { error } = await supabase
-    .from('inbox_thread_participants')
-    .update({ last_read_at: new Date().toISOString() })
-    .eq('thread_id', threadId)
-    .eq('user_id', userId)
+export async function markThreadRead(threadId: string, _userId: string) {
+  void _userId
 
-  throwIfError(error)
+  await apiRequest(`/api/workspace/inbox/threads/${threadId}/read`, {
+    method: 'PATCH',
+  })
 }
 
 export function profileName(profile: ProfileRow | undefined) {
@@ -574,9 +380,12 @@ export function roleAllowedRecipient(currentRole: Role, candidate: ProfileRow) {
   return candidate.role === 'admin' || candidate.role === 'teacher'
 }
 
-export function courseLabel(course: Pick<CourseRow, 'code' | 'title'>) {
+export function courseLabel(course: Pick<CourseWithMembers, 'code' | 'title'>) {
   return `${course.code} - ${course.title}`
 }
+
+const byTitle = <T extends { title: string }>(items: T[]) =>
+  [...items].sort((first, second) => first.title.localeCompare(second.title))
 
 export function orderedProfiles(profiles: ProfileRow[]) {
   return byTitle(

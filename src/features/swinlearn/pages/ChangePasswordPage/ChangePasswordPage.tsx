@@ -1,8 +1,7 @@
 import { useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { useAuthContext } from '../../../../context/AuthContext'
-import { supabase } from '../../../../lib/supabase/client'
-import { completePasswordChange, getErrorMessage } from '../../lib/workspace/api'
+import { changePassword, getErrorMessage } from '../../lib/workspace/api'
 import { workspaceHomePath } from '../../lib/workspace/navigation'
 import '../LoginPage/LoginPage.css'
 
@@ -47,13 +46,7 @@ function ChangePasswordPage() {
     setSaving(true)
 
     try {
-      const { error: updateError } = await supabase.auth.updateUser({ password })
-
-      if (updateError) {
-        throw updateError
-      }
-
-      await completePasswordChange()
+      await changePassword(password)
       await refreshProfile()
 
       if (role !== null) {

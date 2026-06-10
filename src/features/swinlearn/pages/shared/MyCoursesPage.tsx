@@ -18,7 +18,7 @@ import type {
   AssignmentMutationInput,
   AssignmentRow,
   AssignmentSubmissionRow,
-  CourseSemester,
+  CourseTerm,
   CourseWithMembers,
   ProfileRow,
 } from '../../lib/workspace/types'
@@ -58,7 +58,7 @@ function MyCoursesPage() {
   const [submissions, setSubmissions] = useState<AssignmentSubmissionRow[]>([])
   const [profiles, setProfiles] = useState<ProfileRow[]>([])
   const [selectedCourseId, setSelectedCourseId] = useState('')
-  const [semesterFilter, setSemesterFilter] = useState<CourseSemester>('current')
+  const [termFilter, setTermFilter] = useState<CourseTerm>('semester_1')
   const [assignmentForm, setAssignmentForm] = useState<AssignmentMutationInput>(
     defaultAssignmentForm(),
   )
@@ -109,7 +109,7 @@ function MyCoursesPage() {
     return map
   }, [profiles])
 
-  const visibleStudentCourses = courses.filter((course) => course.semester === semesterFilter)
+  const visibleStudentCourses = courses.filter((course) => course.term === termFilter)
   const selectedCourse = courses.find((course) => course.id === selectedCourseId) ?? courses[0] ?? null
   const selectedCourseAssignments = assignments.filter(
     (assignment) => assignment.course_id === selectedCourse?.id,
@@ -263,7 +263,7 @@ function MyCoursesPage() {
                   <span className="workspace-chip">{course.code}</span>
                   <h2>{course.title}</h2>
                   <p>
-                    {course.semester} {course.academic_year}
+                    {course.term.replace('_', ' ')} {course.academic_year}
                   </p>
                 </button>
               ))}
@@ -405,19 +405,19 @@ function MyCoursesPage() {
       ) : (
         <div className="workspace-grid workspace-grid--two">
           <section className="workspace-grid">
-            <div className="workspace-toolbar" aria-label="Semester filter">
-              {(['previous', 'current', 'next'] as CourseSemester[]).map((semester) => (
+            <div className="workspace-toolbar" aria-label="Term filter">
+              {(['semester_1', 'semester_2', 'summer'] as CourseTerm[]).map((term) => (
                 <button
-                  key={semester}
+                  key={term}
                   type="button"
-                  className={`workspace-tab${semesterFilter === semester ? ' workspace-tab--active' : ''}`}
-                  onClick={() => setSemesterFilter(semester)}
+                  className={`workspace-tab${termFilter === term ? ' workspace-tab--active' : ''}`}
+                  onClick={() => setTermFilter(term)}
                 >
-                  {semester === 'previous'
-                    ? 'Last semester'
-                    : semester === 'next'
-                      ? 'Next semester'
-                      : 'This semester'}
+                  {term === 'semester_1'
+                    ? 'Semester 1'
+                    : term === 'semester_2'
+                      ? 'Semester 2'
+                      : 'Summer'}
                 </button>
               ))}
             </div>

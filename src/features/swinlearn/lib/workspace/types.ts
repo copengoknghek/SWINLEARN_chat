@@ -2,9 +2,11 @@ import type { Role } from '../../../../hooks/useAuth'
 
 export type ProfileStatus = 'active' | 'inactive'
 export type ProfileCampus = 'hanoi' | 'danang' | 'hcm'
-export type CourseSemester = 'previous' | 'current' | 'next'
+export type CourseTerm = 'semester_1' | 'semester_2' | 'summer'
 export type CourseStatus = 'active' | 'archived'
 export type CourseMemberRole = 'teacher' | 'teaching_assistant' | 'student'
+export type CurriculumRuleType = 'core' | 'elective' | 'major'
+export type CurriculumScope = 'global' | 'main_major' | 'child_major'
 export type AssignmentStatus = 'draft' | 'published' | 'archived'
 export type SessionType = 'class' | 'lab' | 'event' | 'consultation'
 
@@ -16,6 +18,7 @@ export type ProfileRow = {
   display_name: string | null
   campus: ProfileCampus | null
   student_id: string | null
+  child_major_id: string | null
   must_change_password: boolean
   status: ProfileStatus
   created_at?: string
@@ -27,6 +30,7 @@ export type AdminUserCreateInput = {
   role: 'teacher' | 'student'
   campus: ProfileCampus
   user_id: string
+  child_major_id?: string | null
 }
 
 export type AdminUserCreateResult = {
@@ -67,19 +71,42 @@ export type ChildMajorRow = {
   sort_order: number
 }
 
-export type CourseRow = {
+export type CourseCatalogRow = {
   id: string
-  child_major_id: string
   code: string
   title: string
   description: string
-  semester: CourseSemester
+  created_by: string | null
+  created_at?: string
+  updated_at?: string
+}
+
+export type CurriculumRuleRow = {
+  id: string
+  course_id: string
+  rule_type: CurriculumRuleType
+  scope: CurriculumScope
+  scope_key: string
+  main_major_id: string | null
+  child_major_id: string | null
+  created_at?: string
+}
+
+export type CourseOfferingRow = {
+  id: string
+  catalog_course_id: string
+  code: string
+  title: string
+  description: string
+  term: CourseTerm
   academic_year: number
   status: CourseStatus
   created_by: string | null
   created_at?: string
   updated_at?: string
 }
+
+export type CourseRow = CourseOfferingRow
 
 export type CourseMembershipRow = {
   id: string
@@ -158,16 +185,29 @@ export type CourseWithMembers = CourseRow & {
 }
 
 export type AdminCourseData = CatalogData & {
-  courses: CourseWithMembers[]
+  courses: CourseCatalogRow[]
+  curriculumRules: CurriculumRuleRow[]
+  offerings: CourseWithMembers[]
   profiles: ProfileRow[]
 }
 
-export type CourseMutationInput = {
-  child_major_id: string
+export type CourseCatalogInput = {
   code: string
   title: string
   description: string
-  semester: CourseSemester
+}
+
+export type CurriculumRuleInput = {
+  course_id: string
+  rule_type: CurriculumRuleType
+  scope: CurriculumScope
+  main_major_id: string | null
+  child_major_id: string | null
+}
+
+export type CourseOfferingInput = {
+  course_id: string
+  term: CourseTerm
   academic_year: number
   status: CourseStatus
 }

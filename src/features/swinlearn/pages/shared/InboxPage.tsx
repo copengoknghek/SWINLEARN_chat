@@ -2,7 +2,6 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
-import { supabase } from '../../../../lib/supabase/client'
 import {
   createInboxThread,
   fetchInboxData,
@@ -72,30 +71,6 @@ function InboxPage() {
 
     return () => window.clearTimeout(timeoutId)
   }, [loadInbox])
-
-  useEffect(() => {
-    if (!user) {
-      return undefined
-    }
-
-    const channel = supabase
-      .channel(`workspace-inbox-${user.id}`)
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'inbox_messages' },
-        () => void loadInbox(),
-      )
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'inbox_thread_participants' },
-        () => void loadInbox(),
-      )
-      .subscribe()
-
-    return () => {
-      void supabase.removeChannel(channel)
-    }
-  }, [loadInbox, user])
 
   const profilesById = useMemo(() => {
     const map = new Map<string, ProfileRow>()

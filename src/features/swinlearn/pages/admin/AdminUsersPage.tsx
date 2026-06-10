@@ -448,7 +448,7 @@ function AdminUsersPage() {
         <span className="workspace-eyebrow">Admin workspace</span>
         <h1 className="workspace-page-title">User management</h1>
         <p className="workspace-page-subtitle">
-          Create teachers and students without opening the Supabase dashboard,
+          Create teachers and students from the admin workspace,
           import CSV users, issue temporary passwords, and reset access when needed.
         </p>
       </header>

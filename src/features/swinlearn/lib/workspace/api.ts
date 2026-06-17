@@ -2,6 +2,7 @@ import { apiRequest } from '../../../../lib/api/client'
 import type { Role } from '../../../../hooks/useAuth'
 import type {
   AdminCourseData,
+  AdminUserData,
   AdminUserCreateInput,
   AdminUserCreateResult,
   AdminUserImportResult,
@@ -12,6 +13,7 @@ import type {
   CourseCatalogInput,
   CourseMemberRole,
   CourseOfferingInput,
+  CoursePrerequisiteGroupInput,
   CourseSessionRow,
   CourseWithMembers,
   CurriculumRuleInput,
@@ -20,6 +22,8 @@ import type {
   ProfileCampus,
   ProfileRow,
   ProfileStatus,
+  RegistrationBasketResult,
+  RegistrationData,
 } from './types'
 
 type ApiAuthPayload = {
@@ -43,11 +47,9 @@ export const getErrorMessage = (error: unknown, fallback = 'Something went wrong
   return fallback
 }
 
-const userAdminData = () =>
-  apiRequest<{
-    profiles: ProfileRow[]
-    managedCredentials: ManagedUserCredentialRow[]
-  }>('/api/admin/users')
+export async function fetchAdminUserData(): Promise<AdminUserData> {
+  return apiRequest<AdminUserData>('/api/admin/users')
+}
 
 export async function getCurrentAuth() {
   return apiRequest<ApiAuthPayload>('/api/auth/me')
@@ -80,7 +82,7 @@ export async function fetchProfiles(): Promise<ProfileRow[]> {
 }
 
 export async function fetchManagedUserCredentials(): Promise<ManagedUserCredentialRow[]> {
-  const data = await userAdminData()
+  const data = await fetchAdminUserData()
 
   return data.managedCredentials
 }
@@ -93,10 +95,18 @@ export async function fetchWorkspaceCourses(): Promise<CourseWithMembers[]> {
   return apiRequest<CourseWithMembers[]>('/api/workspace/courses')
 }
 
-export async function createCourse(input: CourseCatalogInput): Promise<string> {
+type CourseCreateCurriculumRuleInput = Omit<CurriculumRuleInput, 'course_id'>
+
+export async function createCourse(
+  input: CourseCatalogInput,
+  curriculumRule: CourseCreateCurriculumRuleInput,
+): Promise<string> {
   const course = await apiRequest<{ id: string }>('/api/admin/courses', {
     method: 'POST',
-    body: input,
+    body: {
+      ...input,
+      curriculum_rule: curriculumRule,
+    },
   })
 
   return course.id
@@ -111,6 +121,16 @@ export async function updateCourse(courseId: string, input: Partial<CourseCatalo
 
 export async function deleteCourse(courseId: string) {
   await apiRequest(`/api/admin/courses/${courseId}`, { method: 'DELETE' })
+}
+
+export async function saveCoursePrerequisites(
+  courseId: string,
+  groups: CoursePrerequisiteGroupInput[],
+) {
+  await apiRequest(`/api/admin/courses/${courseId}/prerequisites`, {
+    method: 'PUT',
+    body: { groups },
+  })
 }
 
 export async function createCurriculumRule(input: CurriculumRuleInput): Promise<string> {
@@ -178,6 +198,33 @@ export async function removeCourseMember(membershipId: string) {
   })
 }
 
+export async function approveCourseRegistrationRequest(requestId: string) {
+  await apiRequest(`/api/admin/course-registration-requests/${requestId}/approve`, {
+    method: 'POST',
+  })
+}
+
+export async function rejectCourseRegistrationRequest(requestId: string) {
+  await apiRequest(`/api/admin/course-registration-requests/${requestId}/reject`, {
+    method: 'POST',
+  })
+}
+
+export async function addStudentCourseCompletion(studentId: string, courseId: string) {
+  await apiRequest(`/api/admin/users/${studentId}/completed-courses`, {
+    method: 'POST',
+    body: {
+      course_id: courseId,
+    },
+  })
+}
+
+export async function removeStudentCourseCompletion(completionId: string) {
+  await apiRequest(`/api/admin/student-course-completions/${completionId}`, {
+    method: 'DELETE',
+  })
+}
+
 export async function setTeachingAssistant(courseId: string, userId: string | null) {
   await apiRequest(`/api/admin/course-offerings/${courseId}/teaching-assistant`, {
     method: 'PUT',
@@ -194,6 +241,7 @@ export async function updateProfile(
     display_name?: string
     campus?: ProfileCampus | null
     student_id?: string | null
+    main_major_id?: string | null
     child_major_id?: string | null
     role?: Role
     status?: ProfileStatus
@@ -262,6 +310,30 @@ export async function resetAdminUserPassword(userId: string) {
 
 export async function fetchAssignments(): Promise<AssignmentRow[]> {
   return apiRequest<AssignmentRow[]>('/api/workspace/assignments')
+}
+
+export async function fetchRegistrationData(): Promise<RegistrationData> {
+  return apiRequest<RegistrationData>('/api/workspace/registration')
+}
+
+export async function checkRegistrationBasket(
+  offeringIds: string[],
+): Promise<RegistrationBasketResult> {
+  return apiRequest<RegistrationBasketResult>('/api/workspace/registration/check', {
+    method: 'POST',
+    body: {
+      offering_ids: offeringIds,
+    },
+  })
+}
+
+export async function registerForOfferings(offeringIds: string[]) {
+  await apiRequest('/api/workspace/registration', {
+    method: 'POST',
+    body: {
+      offering_ids: offeringIds,
+    },
+  })
 }
 
 export async function createAssignment(input: AssignmentMutationInput, _userId?: string) {

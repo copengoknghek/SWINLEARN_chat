@@ -7,6 +7,7 @@ import EventsPage from './features/swinburne/pages/EventsPage/EventsPage'
 import LoginPage from './features/swinlearn/pages/LoginPage/LoginPage'
 import ChangePasswordPage from './features/swinlearn/pages/ChangePasswordPage/ChangePasswordPage'
 import WorkspaceLayout from './features/swinlearn/layouts/WorkspaceLayout/WorkspaceLayout'
+import AdminCourseOfferPage from './features/swinlearn/pages/admin/AdminCourseOfferPage'
 import AdminCoursesPage from './features/swinlearn/pages/admin/AdminCoursesPage'
 import AdminUsersPage from './features/swinlearn/pages/admin/AdminUsersPage'
 import AccountPage from './features/swinlearn/pages/shared/AccountPage'
@@ -14,6 +15,7 @@ import HelpPage from './features/swinlearn/pages/shared/HelpPage'
 import InboxPage from './features/swinlearn/pages/shared/InboxPage'
 import MyCoursesPage from './features/swinlearn/pages/shared/MyCoursesPage'
 import WorkspaceCalendarPage from './features/swinlearn/pages/shared/WorkspaceCalendarPage'
+import RegisterCoursesPage from './features/swinlearn/pages/student/RegisterCoursesPage'
 import SwinlearnPage from './features/swinlearn/pages/student/SwinlearnPage/SwinlearnPage'
 
 function App() {
@@ -32,6 +34,7 @@ function App() {
           <Route path="dashboard" element={<Navigate to="/admin/courses" replace />} />
           <Route path="my-courses" element={<Navigate to="/admin/courses" replace />} />
           <Route path="courses" element={<AdminCoursesPage />} />
+          <Route path="course-offer" element={<AdminCourseOfferPage />} />
           <Route path="users" element={<AdminUsersPage />} />
           <Route path="inbox" element={<InboxPage />} />
           <Route path="account" element={<AccountPage />} />
@@ -53,6 +56,7 @@ function App() {
           <Route index element={<Navigate to="my-courses" replace />} />
           <Route path="dashboard" element={<Navigate to="/student/my-courses" replace />} />
           <Route path="my-courses" element={<MyCoursesPage />} />
+          <Route path="register" element={<RegisterCoursesPage />} />
           <Route path="calendar" element={<WorkspaceCalendarPage />} />
           <Route path="inbox" element={<InboxPage />} />
           <Route path="help" element={<HelpPage />} />

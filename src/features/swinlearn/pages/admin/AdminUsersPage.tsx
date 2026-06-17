@@ -2,15 +2,16 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
 import {
+  addStudentCourseCompletion,
   createAdminUser,
+  fetchAdminUserData,
   fetchCatalog,
-  fetchManagedUserCredentials,
-  fetchProfiles,
   getErrorMessage,
   importAdminUsers,
   invokeAdminUserAction,
   orderedProfiles,
   profileName,
+  removeStudentCourseCompletion,
   resetAdminUserPassword,
   updateProfile,
 } from '../../lib/workspace/api'
@@ -18,10 +19,13 @@ import type {
   AdminUserCreateInput,
   AdminUserImportResult,
   ChildMajorRow,
+  CourseCatalogRow,
+  MainMajorRow,
   ManagedUserCredentialRow,
   ProfileCampus,
   ProfileRow,
   ProfileStatus,
+  StudentCourseCompletionRow,
 } from '../../lib/workspace/types'
 
 type CreateUserForm = {
@@ -29,6 +33,7 @@ type CreateUserForm = {
   role: 'student' | 'teacher'
   campus: ProfileCampus
   userId: string
+  mainMajorId: string
   childMajorId: string
 }
 
@@ -38,6 +43,7 @@ type EditUserForm = {
   role: Role
   campus: ProfileCampus | ''
   studentId: string
+  mainMajorId: string
   childMajorId: string
   status: ProfileStatus
 }
@@ -59,6 +65,7 @@ const emptyCreateForm: CreateUserForm = {
   role: 'student',
   campus: 'hanoi',
   userId: '',
+  mainMajorId: '',
   childMajorId: '',
 }
 
@@ -68,6 +75,7 @@ const emptyEditForm: EditUserForm = {
   role: 'student',
   campus: '',
   studentId: '',
+  mainMajorId: '',
   childMajorId: '',
   status: 'active',
 }
@@ -181,6 +189,9 @@ const csvRowsToUsers = (text: string): AdminUserCreateInput[] => {
         role,
         campus: normalizeCampus(campusValue),
         user_id: valueFor(row, ['user_id', 'userid', 'student_id', 'studentid', 'student_number']),
+        main_major_id: role === 'teacher'
+          ? valueFor(row, ['main_major_id', 'main_major']) || null
+          : null,
         child_major_id: valueFor(row, ['child_major_id', 'child_major', 'major_id']) || null,
       }
     })
@@ -190,11 +201,15 @@ const csvRowsToUsers = (text: string): AdminUserCreateInput[] => {
 function AdminUsersPage() {
   const { user } = useAuthContext()
   const [profiles, setProfiles] = useState<ProfileRow[]>([])
+  const [mainMajors, setMainMajors] = useState<MainMajorRow[]>([])
   const [childMajors, setChildMajors] = useState<ChildMajorRow[]>([])
+  const [courses, setCourses] = useState<CourseCatalogRow[]>([])
+  const [studentCompletions, setStudentCompletions] = useState<StudentCourseCompletionRow[]>([])
   const [storedCredentials, setStoredCredentials] = useState<ManagedUserCredentialRow[]>([])
   const [selectedProfileId, setSelectedProfileId] = useState('')
   const [createForm, setCreateForm] = useState<CreateUserForm>(emptyCreateForm)
   const [editForm, setEditForm] = useState<EditUserForm>(emptyEditForm)
+  const [courseToComplete, setCourseToComplete] = useState('')
   const [roleFilter, setRoleFilter] = useState<Role | 'all'>('all')
   const [campusFilter, setCampusFilter] = useState<ProfileCampus | 'all'>('all')
   const [credentials, setCredentials] = useState<CredentialResult[]>([])
@@ -206,18 +221,19 @@ function AdminUsersPage() {
 
   const loadProfiles = useCallback(async () => {
     try {
-      const [nextProfiles, nextCredentials] = await Promise.all([
-        fetchProfiles(),
-        fetchManagedUserCredentials(),
-      ])
-      const catalog = await fetchCatalog()
+      const [userData, catalog] = await Promise.all([fetchAdminUserData(), fetchCatalog()])
+      const nextProfiles = userData.profiles
       const nextSelectedProfile =
         nextProfiles.find((profile) => profile.id === selectedProfileId) ?? nextProfiles[0] ?? null
 
       setProfiles(nextProfiles)
+      setMainMajors(catalog.mainMajors)
       setChildMajors(catalog.childMajors)
-      setStoredCredentials(nextCredentials)
+      setCourses(userData.courses)
+      setStudentCompletions(userData.studentCompletions)
+      setStoredCredentials(userData.managedCredentials)
       setSelectedProfileId(nextSelectedProfile?.id ?? '')
+      setCourseToComplete((current) => current || userData.courses[0]?.id || '')
 
       if (nextSelectedProfile) {
         setEditForm({
@@ -226,6 +242,7 @@ function AdminUsersPage() {
           role: nextSelectedProfile.role,
           campus: nextSelectedProfile.campus ?? '',
           studentId: nextSelectedProfile.student_id ?? '',
+          mainMajorId: nextSelectedProfile.main_major_id ?? '',
           childMajorId: nextSelectedProfile.child_major_id ?? '',
           status: nextSelectedProfile.status,
         })
@@ -251,6 +268,42 @@ function AdminUsersPage() {
     return roleMatches && campusMatches
   })
   const selectedProfile = profiles.find((profile) => profile.id === selectedProfileId) ?? null
+  const mainMajorsById = useMemo(() => {
+    const map = new Map<string, MainMajorRow>()
+
+    for (const mainMajor of mainMajors) {
+      map.set(mainMajor.id, mainMajor)
+    }
+
+    return map
+  }, [mainMajors])
+  const childMajorsById = useMemo(() => {
+    const map = new Map<string, ChildMajorRow>()
+
+    for (const childMajor of childMajors) {
+      map.set(childMajor.id, childMajor)
+    }
+
+    return map
+  }, [childMajors])
+  const coursesById = useMemo(() => {
+    const map = new Map<string, CourseCatalogRow>()
+
+    for (const course of courses) {
+      map.set(course.id, course)
+    }
+
+    return map
+  }, [courses])
+  const selectedStudentCompletions = selectedProfile
+    ? studentCompletions.filter((completion) => completion.student_id === selectedProfile.id)
+    : []
+  const selectedCompletedCourseIds = new Set(
+    selectedStudentCompletions.map((completion) => completion.course_id),
+  )
+  const availableCompletionCourses = courses.filter(
+    (course) => !selectedCompletedCourseIds.has(course.id),
+  )
   const credentialsByUserId = useMemo(() => {
     const map = new Map<string, ManagedUserCredentialRow>()
 
@@ -270,6 +323,22 @@ function AdminUsersPage() {
     [profiles],
   )
 
+  const profileMajorLabel = (profile: ProfileRow) => {
+    if (profile.role === 'teacher') {
+      return profile.main_major_id
+        ? mainMajorsById.get(profile.main_major_id)?.title ?? 'Main major'
+        : 'No main major'
+    }
+
+    if (profile.role === 'student') {
+      return profile.child_major_id
+        ? childMajorsById.get(profile.child_major_id)?.title ?? 'Child major'
+        : 'No child major'
+    }
+
+    return 'No major'
+  }
+
   const handleCreateUser = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     setSaving(true)
@@ -283,6 +352,7 @@ function AdminUsersPage() {
         role: createForm.role,
         campus: createForm.campus,
         user_id: createForm.userId.trim().toUpperCase(),
+        main_major_id: createForm.role === 'teacher' ? createForm.mainMajorId || null : null,
         child_major_id: createForm.role === 'student' ? createForm.childMajorId || null : null,
       })
 
@@ -353,6 +423,7 @@ function AdminUsersPage() {
       role: profile.role,
       campus: profile.campus ?? '',
       studentId: profile.student_id ?? '',
+      mainMajorId: profile.main_major_id ?? '',
       childMajorId: profile.child_major_id ?? '',
       status: profile.status,
     })
@@ -376,6 +447,7 @@ function AdminUsersPage() {
         role: editForm.role,
         campus: editForm.campus || null,
         student_id: editForm.role === 'admin' ? null : editForm.studentId.trim().toUpperCase() || null,
+        main_major_id: editForm.role === 'teacher' ? editForm.mainMajorId || null : null,
         child_major_id: editForm.role === 'student' ? editForm.childMajorId || null : null,
         status: editForm.status,
       })
@@ -412,6 +484,43 @@ function AdminUsersPage() {
       await loadProfiles()
     } catch (resetError) {
       setError(getErrorMessage(resetError, 'Password could not be reset'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleAddCompletion = async () => {
+    if (!selectedProfile || selectedProfile.role !== 'student' || !courseToComplete) {
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await addStudentCourseCompletion(selectedProfile.id, courseToComplete)
+      setCourseToComplete('')
+      setNotice('Completed course added.')
+      await loadProfiles()
+    } catch (completionError) {
+      setError(getErrorMessage(completionError, 'Completed course could not be added'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleRemoveCompletion = async (completionId: string) => {
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await removeStudentCourseCompletion(completionId)
+      setNotice('Completed course removed.')
+      await loadProfiles()
+    } catch (completionError) {
+      setError(getErrorMessage(completionError, 'Completed course could not be removed'))
     } finally {
       setSaving(false)
     }
@@ -585,7 +694,10 @@ function AdminUsersPage() {
                       </small>
                     </span>
                     <span>{profile.role}</span>
-                    <span>{profile.campus ? campusLabels[profile.campus] : 'No campus'}</span>
+                    <span>
+                      {profile.campus ? campusLabels[profile.campus] : 'No campus'}
+                      <small>{profileMajorLabel(profile)}</small>
+                    </span>
                     <span>
                       {visiblePassword !== ''
                         ? visiblePassword
@@ -633,6 +745,8 @@ function AdminUsersPage() {
                         setCreateForm((current) => ({
                           ...current,
                           role: event.target.value as CreateUserForm['role'],
+                          mainMajorId: event.target.value === 'teacher' ? current.mainMajorId : '',
+                          childMajorId: event.target.value === 'student' ? current.childMajorId : '',
                         }))
                       }
                     >
@@ -657,6 +771,28 @@ function AdminUsersPage() {
                     </select>
                   </label>
                 </div>
+                {createForm.role === 'teacher' && (
+                  <label>
+                    <span>Main major</span>
+                    <select
+                      value={createForm.mainMajorId}
+                      onChange={(event) =>
+                        setCreateForm((current) => ({
+                          ...current,
+                          mainMajorId: event.target.value,
+                        }))
+                      }
+                      required
+                    >
+                      <option value="">Choose main major</option>
+                      {mainMajors.map((mainMajor) => (
+                        <option key={mainMajor.id} value={mainMajor.id}>
+                          {mainMajor.title}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                )}
                 {createForm.role === 'student' && (
                   <label>
                     <span>Child major</span>
@@ -688,8 +824,8 @@ function AdminUsersPage() {
             <section className="workspace-panel">
               <h2>CSV import</h2>
               <p>
-                Upload columns: full_name, role, campus, user_id.
-                Role must be student or teacher.
+                Upload columns: full_name, role, campus, user_id, plus main_major_id for teachers
+                or child_major_id for students.
               </p>
               <form className="workspace-form">
                 <label>
@@ -702,60 +838,63 @@ function AdminUsersPage() {
             <section className="workspace-panel">
               <h2>Edit selected user</h2>
               {selectedProfile ? (
-                <form className="workspace-form" onSubmit={(event) => void handleUpdateUser(event)}>
-                  <label>
-                    <span>Full name</span>
-                    <input
-                      value={editForm.fullName}
-                      onChange={(event) =>
-                        setEditForm((current) => ({ ...current, fullName: event.target.value }))
-                      }
-                    />
-                  </label>
-                  <label>
-                    <span>Display name</span>
-                    <input
-                      value={editForm.displayName}
-                      onChange={(event) =>
-                        setEditForm((current) => ({ ...current, displayName: event.target.value }))
-                      }
-                    />
-                  </label>
-                  <div className="workspace-form-grid">
+                <>
+                  <form className="workspace-form" onSubmit={(event) => void handleUpdateUser(event)}>
                     <label>
-                      <span>Role</span>
-                      <select
-                        value={editForm.role}
+                      <span>Full name</span>
+                      <input
+                        value={editForm.fullName}
                         onChange={(event) =>
-                          setEditForm((current) => ({
-                            ...current,
-                            role: event.target.value as Role,
-                          }))
+                          setEditForm((current) => ({ ...current, fullName: event.target.value }))
                         }
-                      >
-                        {selectedProfile.role === 'admin' && <option value="admin">Admin</option>}
-                        <option value="student">Student</option>
-                        <option value="teacher">Teacher</option>
-                      </select>
+                      />
                     </label>
                     <label>
-                      <span>Campus</span>
-                      <select
-                        value={editForm.campus}
+                      <span>Display name</span>
+                      <input
+                        value={editForm.displayName}
                         onChange={(event) =>
-                          setEditForm((current) => ({
-                            ...current,
-                            campus: event.target.value as ProfileCampus | '',
-                          }))
+                          setEditForm((current) => ({ ...current, displayName: event.target.value }))
                         }
-                      >
-                        <option value="">No campus</option>
-                        <option value="hanoi">Hanoi</option>
-                        <option value="danang">Da Nang</option>
-                        <option value="hcm">HCM</option>
-                      </select>
+                      />
                     </label>
-                  </div>
+                    <div className="workspace-form-grid">
+                      <label>
+                        <span>Role</span>
+                        <select
+                          value={editForm.role}
+                          onChange={(event) =>
+                            setEditForm((current) => ({
+                              ...current,
+                              role: event.target.value as Role,
+                              mainMajorId: event.target.value === 'teacher' ? current.mainMajorId : '',
+                              childMajorId: event.target.value === 'student' ? current.childMajorId : '',
+                            }))
+                          }
+                        >
+                          {selectedProfile.role === 'admin' && <option value="admin">Admin</option>}
+                          <option value="student">Student</option>
+                          <option value="teacher">Teacher</option>
+                        </select>
+                      </label>
+                      <label>
+                        <span>Campus</span>
+                        <select
+                          value={editForm.campus}
+                          onChange={(event) =>
+                            setEditForm((current) => ({
+                              ...current,
+                              campus: event.target.value as ProfileCampus | '',
+                            }))
+                          }
+                        >
+                          <option value="">No campus</option>
+                          <option value="hanoi">Hanoi</option>
+                          <option value="danang">Da Nang</option>
+                          <option value="hcm">HCM</option>
+                        </select>
+                      </label>
+                    </div>
                   {editForm.role !== 'admin' && (
                     <label>
                       <span>User ID</span>
@@ -768,6 +907,28 @@ function AdminUsersPage() {
                           }))
                         }
                       />
+                    </label>
+                  )}
+                  {editForm.role === 'teacher' && (
+                    <label>
+                      <span>Main major</span>
+                      <select
+                        value={editForm.mainMajorId}
+                        onChange={(event) =>
+                          setEditForm((current) => ({
+                            ...current,
+                            mainMajorId: event.target.value,
+                          }))
+                        }
+                        required
+                      >
+                        <option value="">Choose main major</option>
+                        {mainMajors.map((mainMajor) => (
+                          <option key={mainMajor.id} value={mainMajor.id}>
+                            {mainMajor.title}
+                          </option>
+                        ))}
+                      </select>
                     </label>
                   )}
                   {editForm.role === 'student' && (
@@ -821,7 +982,73 @@ function AdminUsersPage() {
                   >
                     Delete auth user
                   </button>
-                </form>
+                  </form>
+
+                  {selectedProfile.role === 'student' && (
+                    <div className="workspace-grid">
+                      <div className="workspace-section-heading">
+                        <div>
+                          <h3>Completed courses</h3>
+                          <p>Passed courses count toward prerequisites and completed credit points.</p>
+                        </div>
+                      </div>
+
+                      <div className="workspace-table">
+                        {selectedStudentCompletions.map((completion) => {
+                          const course = coursesById.get(completion.course_id)
+
+                          return (
+                            <div className="workspace-row" key={completion.id}>
+                              <span>
+                                <strong>{course?.code ?? 'Course'}</strong>
+                                <small>{course?.title ?? 'Completed course'}</small>
+                              </span>
+                              <span>
+                                {course?.credit_points ?? 0} credit points
+                              </span>
+                              <button
+                                type="button"
+                                className="workspace-danger-action"
+                                onClick={() => void handleRemoveCompletion(completion.id)}
+                                disabled={saving}
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          )
+                        })}
+
+                        {selectedStudentCompletions.length === 0 && (
+                          <div className="workspace-empty-state">No completed courses recorded.</div>
+                        )}
+                      </div>
+
+                      <div className="workspace-form workspace-form--inline">
+                        <label>
+                          <span>Add completed course</span>
+                          <select
+                            value={courseToComplete}
+                            onChange={(event) => setCourseToComplete(event.target.value)}
+                          >
+                            <option value="">Choose course</option>
+                            {availableCompletionCourses.map((course) => (
+                              <option key={course.id} value={course.id}>
+                                {course.code} - {course.title}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <button
+                          type="button"
+                          onClick={() => void handleAddCompletion()}
+                          disabled={saving || !courseToComplete}
+                        >
+                          Add
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </>
               ) : (
                 <p>Select a user to edit their profile.</p>
               )}

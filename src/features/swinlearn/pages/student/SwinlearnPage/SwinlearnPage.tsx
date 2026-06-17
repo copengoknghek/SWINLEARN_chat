@@ -75,7 +75,7 @@ function SwinlearnPage() {
             <div className="chat-empty-state">
               <div className="chat-empty-icon">AI</div>
               <h2>Ask me anything about your courses.</h2>
-              <p>Try: "Summarize week 4 of COS10009" or "Explain eigenvalues simply".</p>
+              <p>Try: "Summarize week 4" or "Explain eigenvalues simply".</p>
             </div>
           </div>
 

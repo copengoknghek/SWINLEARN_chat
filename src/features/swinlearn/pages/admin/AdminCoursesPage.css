@@ -1,0 +1,251 @@
+.admin-courses-page .admin-course-browser {
+  align-content: start;
+  gap: 10px;
+  grid-auto-rows: min-content;
+}
+
+.admin-courses-page .admin-course-picker-group {
+  border: 1px solid transparent;
+  border-radius: 8px;
+  display: grid;
+  gap: 7px;
+  padding: 10px;
+}
+
+.admin-courses-page .admin-course-picker-group--main {
+  background: #fff7f7;
+  border-color: #ffd7d7;
+}
+
+.admin-courses-page .admin-course-picker-group--child {
+  background: #ffffff;
+  border-color: var(--border);
+}
+
+.admin-courses-page .admin-course-picker-label {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.admin-courses-page .admin-course-picker-group--main .admin-course-picker-label {
+  color: var(--accent);
+}
+
+.admin-courses-page .admin-course-picker {
+  align-content: flex-start;
+  align-items: center;
+  gap: 6px;
+}
+
+.admin-courses-page .admin-course-tab {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 1 auto;
+  justify-content: center;
+  line-height: 1.2;
+  max-width: 220px;
+  min-height: 34px;
+  overflow: hidden;
+  padding: 7px 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: auto;
+}
+
+.admin-courses-page .admin-course-picker--main .admin-course-tab {
+  background: #ffffff;
+  border-color: #ffc5c5;
+  box-shadow: 0 6px 12px rgba(168, 0, 0, 0.08);
+  font-size: 0.86rem;
+  min-height: 36px;
+  padding: 8px 12px;
+}
+
+.admin-courses-page .admin-course-picker--main .admin-course-tab:hover,
+.admin-courses-page .admin-course-picker--main .admin-course-tab:focus-visible {
+  background: #fff0f0;
+}
+
+.admin-courses-page .admin-course-picker--main .admin-course-tab.workspace-tab--active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.admin-courses-page .admin-course-picker--child .admin-course-tab {
+  font-size: 0.82rem;
+  max-width: 240px;
+}
+
+.admin-courses-page .admin-course-list-search {
+  display: grid;
+  gap: 7px;
+  margin-bottom: 12px;
+}
+
+.admin-courses-page .admin-course-list-search span {
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 900;
+}
+
+.admin-courses-page .admin-course-list-search input {
+  background: #f8f9fb;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.92rem;
+  max-width: 100%;
+  min-width: 0;
+  outline: none;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.admin-courses-page .admin-course-list-search input:focus {
+  background: #ffffff;
+  border-color: var(--accent);
+}
+
+.admin-courses-page .admin-course-pagination {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 12px;
+}
+
+.admin-courses-page .admin-course-pagination span {
+  color: var(--muted);
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.admin-courses-page .admin-course-pagination .workspace-secondary-action {
+  min-width: 96px;
+  padding: 9px 12px;
+}
+
+.admin-courses-page .workspace-modal,
+.admin-courses-page .workspace-modal * {
+  box-sizing: border-box;
+}
+
+.admin-courses-page .workspace-modal {
+  max-width: calc(100vw - 48px);
+  overflow-x: hidden;
+}
+
+.admin-courses-page .workspace-modal-body,
+.admin-courses-page .workspace-modal-body > .workspace-panel,
+.admin-courses-page .workspace-form,
+.admin-courses-page .workspace-form label {
+  min-width: 0;
+}
+
+.admin-courses-page .workspace-modal .workspace-form input,
+.admin-courses-page .workspace-modal .workspace-form select,
+.admin-courses-page .workspace-modal .workspace-form textarea,
+.admin-courses-page .workspace-modal .workspace-form button {
+  max-width: 100%;
+  min-width: 0;
+  width: 100%;
+}
+
+.admin-courses-page .workspace-modal .workspace-row {
+  min-width: 0;
+}
+
+.admin-courses-page .workspace-modal .workspace-row > * {
+  min-width: 0;
+}
+
+.admin-courses-page .workspace-modal .workspace-row--four {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr) minmax(0, 0.8fr) auto;
+}
+
+.admin-courses-page .admin-course-rule-fieldset {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  min-width: 0;
+  padding: 16px;
+}
+
+.admin-courses-page .admin-course-rule-fieldset legend {
+  color: var(--text);
+  font-weight: 900;
+  padding: 0 6px;
+}
+
+.admin-courses-page .admin-course-rule-fieldset p {
+  margin: 0;
+}
+
+.admin-courses-page .admin-course-rules-list {
+  display: grid;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.admin-courses-page .admin-course-compact-field {
+  display: grid;
+  gap: 6px;
+  min-width: 150px;
+}
+
+.admin-courses-page .admin-course-compact-field span {
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.admin-courses-page .admin-course-compact-field input,
+.admin-courses-page .admin-prerequisite-options select {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 10px 12px;
+}
+
+.admin-courses-page .admin-prerequisite-options {
+  display: grid;
+  gap: 10px;
+  min-width: min(520px, 100%);
+}
+
+.admin-courses-page .admin-course-prerequisite-save {
+  justify-self: start;
+  margin-top: 12px;
+}
+
+@media (max-width: 540px) {
+  .admin-courses-page .workspace-modal {
+    max-width: calc(100vw - 24px);
+  }
+
+  .admin-courses-page .admin-course-tab {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .admin-courses-page .admin-course-pagination {
+    justify-content: stretch;
+  }
+
+  .admin-courses-page .admin-course-pagination .workspace-secondary-action {
+    flex: 1 1 120px;
+  }
+
+  .admin-courses-page .workspace-modal .workspace-row--four {
+    grid-template-columns: 1fr;
+  }
+}

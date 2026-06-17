@@ -20,6 +20,7 @@ export const roleLabel: Record<Role, string> = {
 export const workspaceLinksByRole: Record<Role, WorkspaceLink[]> = {
   admin: [
     { label: 'Courses', path: 'courses' },
+    { label: 'Course Offer', path: 'course-offer' },
     { label: 'Users', path: 'users' },
     { label: 'Inbox', path: 'inbox' },
     { label: 'Account', path: 'account' },
@@ -33,6 +34,7 @@ export const workspaceLinksByRole: Record<Role, WorkspaceLink[]> = {
   ],
   student: [
     { label: 'My courses', path: 'my-courses' },
+    { label: 'Register', path: 'register' },
     { label: 'Calendar', path: 'calendar' },
     { label: 'Inbox', path: 'inbox' },
     { label: 'Help', path: 'help' },

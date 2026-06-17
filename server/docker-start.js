@@ -1,5 +1,7 @@
 import { spawn } from 'node:child_process'
+import { readdir } from 'node:fs/promises'
 import process from 'node:process'
+import { fileURLToPath } from 'node:url'
 
 const databaseWaitAttempts = 30
 const databaseWaitMs = 2000
@@ -37,6 +39,20 @@ async function createPrismaClient() {
   return new PrismaClient()
 }
 
+function countFromQueryRow(row) {
+  const value = Object.values(row)[0]
+
+  return Number(value)
+}
+
+export function shouldBaselineExistingDatabase({ hasPrismaMigrationsTable, userTableCount }) {
+  return !hasPrismaMigrationsTable && userTableCount > 0
+}
+
+export function shouldSeedDemoData({ userCount, seedDemoData }) {
+  return userCount === 0 && seedDemoData === 'true'
+}
+
 async function waitForDatabase() {
   let lastError
 
@@ -61,9 +77,10 @@ async function waitForDatabase() {
 
 async function seedIfEmpty() {
   const prisma = await createPrismaClient()
+  let userCount
 
   try {
-    const userCount = await prisma.user.count()
+    userCount = await prisma.user.count()
 
     if (userCount > 0) {
       console.log('Database already has users; skipping seed.')
@@ -73,19 +90,88 @@ async function seedIfEmpty() {
     await prisma.$disconnect()
   }
 
+  if (!shouldSeedDemoData({ userCount, seedDemoData: process.env.SWINLEARN_SEED_DEMO_DATA })) {
+    console.log('Database has no users; skipping demo seed. Set SWINLEARN_SEED_DEMO_DATA=true to load demo data.')
+    return
+  }
+
   console.log('Database has no users; seeding demo data.')
   await run(executable('npm'), ['run', 'prisma:seed'])
+}
+
+async function getMigrationNames() {
+  const entries = await readdir(new URL('../prisma/migrations', import.meta.url), {
+    withFileTypes: true,
+  })
+
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort()
+}
+
+async function getDatabaseMigrationState() {
+  const prisma = await createPrismaClient()
+
+  try {
+    const [migrationTableRows, userTableRows] = await Promise.all([
+      prisma.$queryRaw`
+        SELECT COUNT(*) AS count
+        FROM information_schema.tables
+        WHERE table_schema = DATABASE()
+          AND table_name = '_prisma_migrations'
+      `,
+      prisma.$queryRaw`
+        SELECT COUNT(*) AS count
+        FROM information_schema.tables
+        WHERE table_schema = DATABASE()
+          AND table_name <> '_prisma_migrations'
+      `,
+    ])
+
+    return {
+      hasPrismaMigrationsTable: countFromQueryRow(migrationTableRows[0]) > 0,
+      userTableCount: countFromQueryRow(userTableRows[0]),
+    }
+  } finally {
+    await prisma.$disconnect()
+  }
+}
+
+async function baselineExistingDatabaseIfNeeded() {
+  const state = await getDatabaseMigrationState()
+
+  if (!shouldBaselineExistingDatabase(state)) {
+    return
+  }
+
+  const migrationNames = await getMigrationNames()
+
+  if (migrationNames.length === 0) {
+    throw new Error('Database has tables but no Prisma migrations were found to baseline.')
+  }
+
+  console.log(
+    `Database has ${state.userTableCount} existing tables but no Prisma migration history; baselining ${migrationNames.length} migration(s).`,
+  )
+
+  for (const migrationName of migrationNames) {
+    await run(executable('npx'), ['prisma', 'migrate', 'resolve', '--applied', migrationName])
+  }
 }
 
 async function main() {
   await run(executable('npx'), ['prisma', 'generate'])
   await waitForDatabase()
-  await run(executable('npx'), ['prisma', 'db', 'push'])
+  await baselineExistingDatabaseIfNeeded()
+  await run(executable('npx'), ['prisma', 'migrate', 'deploy'])
   await seedIfEmpty()
   await import('./index.js')
 }
 
-main().catch((error) => {
-  console.error(error)
-  process.exit(1)
-})
+if (process.argv[1] === fileURLToPath(import.meta.url)) {
+  main().catch((error) => {
+    console.error(error)
+    process.exit(1)
+  })
+}

@@ -4,18 +4,22 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "docker compose up --build",
+    "dev:down": "docker compose down",
     "dev:api": "node server/index.js",
     "dev:web": "vite",
-    "docker:dev": "docker compose up --build",
-    "docker:down": "docker compose down",
+    "dev:native:api": "node server/index.js",
+    "dev:native:web": "vite",
+    "docker:dev": "npm run dev",
+    "docker:down": "npm run dev:down",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:seed": "prisma db seed",
-    "test:curriculum": "node --test server/services/curriculum.test.js"
+    "prisma:clear-demo": "node prisma/clear-demo-data.js"
   },
   "dependencies": {
     "@prisma/client": "6.19.0",

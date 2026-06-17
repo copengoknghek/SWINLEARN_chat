@@ -12,6 +12,10 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
     headers,
   }
 
+  if (!headers.has('Accept')) {
+    headers.set('Accept', 'application/json')
+  }
+
   if (body && !isFormData) {
     headers.set('Content-Type', 'application/json')
     requestInit.body = JSON.stringify(body)
@@ -21,6 +25,19 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
 
   const response = await fetch(path, requestInit)
   const text = await response.text()
+  const contentType = response.headers.get('Content-Type') ?? ''
+  const hasJsonContent = contentType.toLowerCase().includes('application/json')
+
+  if (text && !hasJsonContent) {
+    if (text.trimStart().startsWith('<!DOCTYPE') || text.trimStart().startsWith('<html')) {
+      throw new Error(
+        'API returned HTML instead of JSON. Check that the API server is running and the request is being proxied correctly.',
+      )
+    }
+
+    throw new Error(response.ok ? 'API returned a non-JSON response.' : text)
+  }
+
   const data = text ? JSON.parse(text) : null
 
   if (!response.ok) {

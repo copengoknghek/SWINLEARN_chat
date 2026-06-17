@@ -14,4 +14,4 @@ COPY . .
 
 EXPOSE 3001 5173
 
-CMD ["npm", "run", "dev:web", "--", "--host", "0.0.0.0"]
+CMD ["npm", "run", "dev:native:web", "--", "--host", "0.0.0.0"]

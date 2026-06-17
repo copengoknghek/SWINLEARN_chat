@@ -1,0 +1,68 @@
+.admin-course-offer-page .admin-course-offer-layout {
+  align-items: start;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+}
+
+.admin-course-offer-page .admin-course-offer-summary {
+  margin-bottom: 16px;
+}
+
+.admin-course-offer-page .admin-course-offer-filters {
+  align-items: end;
+  grid-template-columns: minmax(220px, 1.4fr) repeat(3, minmax(130px, 0.8fr));
+  margin-bottom: 16px;
+}
+
+.admin-course-offer-page .admin-course-offer-search {
+  min-width: 0;
+}
+
+.admin-course-offer-page .admin-course-offer-row {
+  grid-template-columns: minmax(180px, 1.4fr) minmax(110px, 0.8fr) auto auto auto;
+}
+
+.admin-course-offer-page .admin-course-offer-detail {
+  position: sticky;
+  top: 28px;
+}
+
+.admin-course-offer-page .admin-course-offer-member-section {
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 12px;
+  margin-top: 18px;
+  padding-top: 18px;
+}
+
+.admin-course-offer-page .admin-course-offer-member-section h3 {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+.admin-course-offer-page .admin-registration-request-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+@media (max-width: 1120px) {
+  .admin-course-offer-page .admin-course-offer-layout,
+  .admin-course-offer-page .admin-course-offer-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-course-offer-page .admin-course-offer-detail {
+    position: static;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-course-offer-page .admin-course-offer-row {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-course-offer-page .admin-registration-request-actions {
+    justify-content: flex-start;
+  }
+}

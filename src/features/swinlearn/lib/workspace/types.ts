@@ -4,9 +4,12 @@ export type ProfileStatus = 'active' | 'inactive'
 export type ProfileCampus = 'hanoi' | 'danang' | 'hcm'
 export type CourseTerm = 'semester_1' | 'semester_2' | 'summer'
 export type CourseStatus = 'active' | 'archived'
+export type RegistrationRequestStatus = 'pending' | 'approved' | 'rejected'
 export type CourseMemberRole = 'teacher' | 'teaching_assistant' | 'student'
 export type CurriculumRuleType = 'core' | 'elective' | 'major'
 export type CurriculumScope = 'global' | 'main_major' | 'child_major'
+export type CoursePrerequisiteGroupType = 'completed_credit_points' | 'course_alternatives'
+export type CoursePrerequisiteOptionMode = 'passed' | 'passed_or_concurrent'
 export type AssignmentStatus = 'draft' | 'published' | 'archived'
 export type SessionType = 'class' | 'lab' | 'event' | 'consultation'
 
@@ -18,6 +21,7 @@ export type ProfileRow = {
   display_name: string | null
   campus: ProfileCampus | null
   student_id: string | null
+  main_major_id: string | null
   child_major_id: string | null
   must_change_password: boolean
   status: ProfileStatus
@@ -30,6 +34,7 @@ export type AdminUserCreateInput = {
   role: 'teacher' | 'student'
   campus: ProfileCampus
   user_id: string
+  main_major_id?: string | null
   child_major_id?: string | null
 }
 
@@ -76,6 +81,7 @@ export type CourseCatalogRow = {
   code: string
   title: string
   description: string
+  credit_points: number
   created_by: string | null
   created_at?: string
   updated_at?: string
@@ -90,6 +96,32 @@ export type CurriculumRuleRow = {
   main_major_id: string | null
   child_major_id: string | null
   created_at?: string
+}
+
+export type CoursePrerequisiteGroupRow = {
+  id: string
+  course_id: string
+  requirement_type: CoursePrerequisiteGroupType
+  minimum_credit_points: number | null
+  sort_order: number
+  created_at?: string
+}
+
+export type CoursePrerequisiteOptionRow = {
+  id: string
+  group_id: string
+  required_course_id: string
+  requirement_mode: CoursePrerequisiteOptionMode
+  sort_order: number
+  created_at?: string
+}
+
+export type StudentCourseCompletionRow = {
+  id: string
+  student_id: string
+  course_id: string
+  completed_at: string
+  created_by: string | null
 }
 
 export type CourseOfferingRow = {
@@ -114,6 +146,16 @@ export type CourseMembershipRow = {
   user_id: string
   role: CourseMemberRole
   created_at?: string
+}
+
+export type CourseRegistrationRequestRow = {
+  id: string
+  offering_id: string
+  user_id: string
+  status: RegistrationRequestStatus
+  requested_at?: string
+  decided_at: string | null
+  decided_by: string | null
 }
 
 export type AssignmentRow = {
@@ -184,17 +226,54 @@ export type CourseWithMembers = CourseRow & {
   members: CourseMembershipRow[]
 }
 
+export type RegistrationRequirementFailure = {
+  group_id: string
+  type: CoursePrerequisiteGroupType
+  message: string
+}
+
+export type RegistrationEligibilityRow = {
+  offering_id: string
+  course_id: string
+  eligible: boolean
+  completed_credit_points: number
+  unmet_requirements: RegistrationRequirementFailure[]
+}
+
+export type RegistrationData = {
+  offerings: CourseWithMembers[]
+  eligibility: RegistrationEligibilityRow[]
+  registrationRequests: CourseRegistrationRequestRow[]
+}
+
+export type RegistrationBasketResult = {
+  eligible: boolean
+  results: RegistrationEligibilityRow[]
+}
+
 export type AdminCourseData = CatalogData & {
   courses: CourseCatalogRow[]
   curriculumRules: CurriculumRuleRow[]
+  prerequisiteGroups: CoursePrerequisiteGroupRow[]
+  prerequisiteOptions: CoursePrerequisiteOptionRow[]
+  studentCompletions: StudentCourseCompletionRow[]
   offerings: CourseWithMembers[]
+  registrationRequests: CourseRegistrationRequestRow[]
   profiles: ProfileRow[]
+}
+
+export type AdminUserData = {
+  profiles: ProfileRow[]
+  managedCredentials: ManagedUserCredentialRow[]
+  courses: CourseCatalogRow[]
+  studentCompletions: StudentCourseCompletionRow[]
 }
 
 export type CourseCatalogInput = {
   code: string
   title: string
   description: string
+  credit_points: number
 }
 
 export type CurriculumRuleInput = {
@@ -203,6 +282,17 @@ export type CurriculumRuleInput = {
   scope: CurriculumScope
   main_major_id: string | null
   child_major_id: string | null
+}
+
+export type CoursePrerequisiteOptionInput = {
+  required_course_id: string
+  requirement_mode: CoursePrerequisiteOptionMode
+}
+
+export type CoursePrerequisiteGroupInput = {
+  requirement_type: CoursePrerequisiteGroupType
+  minimum_credit_points: number | null
+  options: CoursePrerequisiteOptionInput[]
 }
 
 export type CourseOfferingInput = {

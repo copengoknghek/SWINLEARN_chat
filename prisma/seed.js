@@ -3,6 +3,276 @@ import { hashPassword } from '../server/services/passwords.js'
 
 const passwordHash = hashPassword('Password123!')
 
+const aiCurriculumCourses = [
+  {
+    code: 'COS30019',
+    title: 'Introduction to Artificial Intelligence',
+    description: 'Search, knowledge representation, learning, and applied AI problem solving.',
+    ruleType: 'major',
+  },
+  {
+    code: 'COS20019',
+    title: 'Cloud Computing Architecture',
+    description: 'Core cloud architecture concepts, services, deployment models, and tradeoffs.',
+    ruleType: 'major',
+  },
+  {
+    code: 'COS20031',
+    title: 'Computing Technology Design Project',
+    description: 'Course description pending.',
+    ruleType: 'major',
+  },
+  {
+    code: 'COS30082',
+    title: 'Applied Machine Learning',
+    description: 'Course description pending.',
+    ruleType: 'major',
+  },
+  {
+    code: 'COS30049',
+    title: 'Computing Technology Innovation Project',
+    description: 'Course description pending.',
+    ruleType: 'major',
+  },
+  {
+    code: 'SWE30003',
+    title: 'Software Architectures and Design',
+    description: 'Course description pending.',
+    ruleType: 'major',
+  },
+  {
+    code: 'COS40007',
+    title: 'Artificial Intelligence for Engineering',
+    description: 'Course description pending.',
+    ruleType: 'major',
+  },
+  {
+    code: 'COS30018',
+    title: 'Intelligent Systems',
+    description: 'Course description pending.',
+    ruleType: 'major',
+  },
+  {
+    code: 'COS10005',
+    title: 'Web Development',
+    description: 'Course description pending.',
+    ruleType: 'elective',
+  },
+  {
+    code: 'COS30008',
+    title: 'Data Structures and Patterns',
+    description: 'Reusable data structures, design patterns, and implementation techniques.',
+    ruleType: 'elective',
+  },
+  {
+    code: 'COS40003',
+    title: 'Concurrent Programming',
+    description: 'Course description pending.',
+    ruleType: 'elective',
+  },
+  {
+    code: 'STA10003',
+    title: 'Foundations of Statistics',
+    description: 'Course description pending.',
+    ruleType: 'elective',
+  },
+  {
+    code: 'SWE30009',
+    title: 'Software Testing and Reliability',
+    description: 'Course description pending.',
+    ruleType: 'elective',
+  },
+  {
+    code: 'COS30043',
+    title: 'Interface Design and Development',
+    description: 'Course description pending.',
+    ruleType: 'elective',
+  },
+  {
+    code: 'ICT20016',
+    title: 'Work Integrated Learning Placement - Information and Communication Technology (3 months)',
+    description: 'Course description pending.',
+    ruleType: 'elective',
+  },
+  {
+    code: 'COS10009',
+    title: 'Introduction to Programming',
+    description: 'Programming fundamentals and computational thinking.',
+    ruleType: 'core',
+  },
+  {
+    code: 'COS10004',
+    title: 'Computer Systems',
+    description: 'Computer systems fundamentals, operating environments, data representation, and hardware-software interaction.',
+    ruleType: 'core',
+  },
+  {
+    code: 'COS10025',
+    title: 'Technology in an Indigenous Context Project',
+    description: 'Course description pending.',
+    ruleType: 'core',
+  },
+  {
+    code: 'COS10026',
+    title: 'Computing Technology Inquiry Project',
+    description: 'Course description pending.',
+    ruleType: 'core',
+  },
+  {
+    code: 'TNE10006',
+    title: 'Networks and Switching',
+    description: 'Course description pending.',
+    ruleType: 'core',
+  },
+  {
+    code: 'COS20007',
+    title: 'Object Oriented Programming',
+    description: 'Course description pending.',
+    ruleType: 'core',
+  },
+  {
+    code: 'COS40005',
+    title: 'Computing Technology Project A',
+    description: 'Course description pending.',
+    ruleType: 'core',
+  },
+  {
+    code: 'COS40006',
+    title: 'Computing Technology Project B',
+    description: 'Continuation of the computing technology capstone with implementation, evaluation, and final delivery.',
+    ruleType: 'core',
+  },
+]
+
+const aiPrerequisitesByCourseCode = {
+  COS30019: [
+    {
+      requirementType: 'course_alternatives',
+      options: [
+        { code: 'COS20007', requirementMode: 'passed_or_concurrent' },
+        { code: 'COS30008', requirementMode: 'passed_or_concurrent' },
+      ],
+    },
+  ],
+  COS30082: [
+    {
+      requirementType: 'course_alternatives',
+      options: [
+        { code: 'COS30018', requirementMode: 'passed_or_concurrent' },
+        { code: 'COS30019', requirementMode: 'passed_or_concurrent' },
+      ],
+    },
+  ],
+  COS40007: [
+    {
+      requirementType: 'course_alternatives',
+      options: [{ code: 'COS10009', requirementMode: 'passed' }],
+    },
+    {
+      requirementType: 'completed_credit_points',
+      minimumCreditPoints: 100,
+    },
+  ],
+  ICT20016: [
+    {
+      requirementType: 'completed_credit_points',
+      minimumCreditPoints: 150,
+    },
+  ],
+  COS20007: [
+    {
+      requirementType: 'course_alternatives',
+      options: [{ code: 'COS10009', requirementMode: 'passed' }],
+    },
+  ],
+  COS40005: [
+    {
+      requirementType: 'completed_credit_points',
+      minimumCreditPoints: 100,
+    },
+  ],
+  COS40006: [
+    {
+      requirementType: 'course_alternatives',
+      options: [{ code: 'COS40005', requirementMode: 'passed' }],
+    },
+  ],
+}
+
+const seededCourseId = (code) => `course-${code.toLowerCase()}`
+
+const curriculumRuleForCourse = (course, cs, aiMajor) => {
+  if (course.ruleType === 'core') {
+    return {
+      courseId: seededCourseId(course.code),
+      ruleType: 'core',
+      scope: 'main_major',
+      scopeKey: cs.id,
+      mainMajorId: cs.id,
+    }
+  }
+
+  if (course.ruleType === 'major') {
+    return {
+      courseId: seededCourseId(course.code),
+      ruleType: 'major',
+      scope: 'child_major',
+      scopeKey: aiMajor.id,
+      childMajorId: aiMajor.id,
+    }
+  }
+
+  return {
+    courseId: seededCourseId(course.code),
+    ruleType: 'elective',
+    scope: 'global',
+    scopeKey: 'global',
+  }
+}
+
+async function seedAiPrerequisites(courseByCode) {
+  const targetCourseIds = aiCurriculumCourses.map((course) => courseByCode[course.code]?.id).filter(Boolean)
+
+  if (targetCourseIds.length !== aiCurriculumCourses.length) {
+    const missingCodes = aiCurriculumCourses
+      .filter((course) => !courseByCode[course.code])
+      .map((course) => course.code)
+      .join(', ')
+
+    throw new Error(`Cannot seed AI prerequisites because these courses are missing: ${missingCodes}`)
+  }
+
+  await prisma.coursePrerequisiteGroup.deleteMany({
+    where: {
+      courseId: {
+        in: targetCourseIds,
+      },
+    },
+  })
+
+  for (const [courseCode, groups] of Object.entries(aiPrerequisitesByCourseCode)) {
+    const course = courseByCode[courseCode]
+
+    for (const [groupIndex, group] of groups.entries()) {
+      await prisma.coursePrerequisiteGroup.create({
+        data: {
+          courseId: course.id,
+          requirementType: group.requirementType,
+          minimumCreditPoints: group.minimumCreditPoints ?? null,
+          sortOrder: groupIndex,
+          options: {
+            create: (group.options ?? []).map((option, optionIndex) => ({
+              requiredCourseId: courseByCode[option.code].id,
+              requirementMode: option.requirementMode,
+              sortOrder: optionIndex,
+            })),
+          },
+        },
+      })
+    }
+  }
+}
+
 async function main() {
   await prisma.inboxMessage.deleteMany()
   await prisma.inboxThreadParticipant.deleteMany()
@@ -10,9 +280,13 @@ async function main() {
   await prisma.courseSession.deleteMany()
   await prisma.assignmentSubmission.deleteMany()
   await prisma.assignment.deleteMany()
+  await prisma.courseRegistrationRequest.deleteMany()
   await prisma.enrollment.deleteMany()
   await prisma.courseStaff.deleteMany()
   await prisma.courseOffering.deleteMany()
+  await prisma.studentCourseCompletion.deleteMany()
+  await prisma.coursePrerequisiteOption.deleteMany()
+  await prisma.coursePrerequisiteGroup.deleteMany()
   await prisma.curriculumRule.deleteMany()
   await prisma.course.deleteMany()
   await prisma.managedUserCredential.deleteMany()
@@ -146,6 +420,7 @@ async function main() {
         displayName: 'Teacher Demo',
         campus: 'hanoi',
         studentId: 'TCH0001',
+        mainMajorId: cs.id,
         mustChangePassword: false,
       },
     }),
@@ -165,84 +440,39 @@ async function main() {
     }),
   ])
 
-  const [cloud, aiIntro, patterns, programming] = await Promise.all([
-    prisma.course.create({
-      data: {
-        code: 'COS20019',
-        title: 'Cloud Computing Architecture',
-        description: 'Core cloud architecture concepts, services, deployment models, and tradeoffs.',
-        createdById: admin.id,
-      },
-    }),
-    prisma.course.create({
-      data: {
-        code: 'COS30019',
-        title: 'Introduction to Artificial Intelligence',
-        description: 'Search, knowledge representation, learning, and applied AI problem solving.',
-        createdById: admin.id,
-      },
-    }),
-    prisma.course.create({
-      data: {
-        code: 'COS30008',
-        title: 'Data Structures and Patterns',
-        description: 'Reusable data structures, design patterns, and implementation techniques.',
-        createdById: admin.id,
-      },
-    }),
-    prisma.course.create({
-      data: {
-        code: 'COS10009',
-        title: 'Introduction to Programming',
-        description: 'Programming fundamentals and computational thinking.',
-        createdById: admin.id,
-      },
-    }),
-  ])
+  const courses = await Promise.all(
+    aiCurriculumCourses.map((course) =>
+      prisma.course.create({
+        data: {
+          id: seededCourseId(course.code),
+          code: course.code,
+          title: course.title,
+          description: course.description,
+          createdById: admin.id,
+        },
+      }),
+    ),
+  )
+  const courseByCode = Object.fromEntries(courses.map((course) => [course.code, course]))
 
   await prisma.curriculumRule.createMany({
-    data: [
-      {
-        courseId: cloud.id,
-        ruleType: 'core',
-        scope: 'main_major',
-        scopeKey: cs.id,
-        mainMajorId: cs.id,
-      },
-      {
-        courseId: programming.id,
-        ruleType: 'core',
-        scope: 'main_major',
-        scopeKey: cs.id,
-        mainMajorId: cs.id,
-      },
-      {
-        courseId: aiIntro.id,
-        ruleType: 'major',
-        scope: 'child_major',
-        scopeKey: childById.ai.id,
-        childMajorId: childById.ai.id,
-      },
-      {
-        courseId: aiIntro.id,
-        ruleType: 'elective',
-        scope: 'child_major',
-        scopeKey: childById['software-development'].id,
-        childMajorId: childById['software-development'].id,
-      },
-      {
-        courseId: patterns.id,
-        ruleType: 'elective',
-        scope: 'global',
-        scopeKey: 'global',
-      },
-    ],
+    data: aiCurriculumCourses.map((course) => curriculumRuleForCourse(course, cs, childById.ai)),
+  })
+
+  await seedAiPrerequisites(courseByCode)
+
+  await prisma.studentCourseCompletion.create({
+    data: {
+      studentId: student.id,
+      courseId: courseByCode.COS10009.id,
+      createdById: admin.id,
+    },
   })
 
   const [cloudOffering, aiOffering] = await Promise.all([
     prisma.courseOffering.create({
       data: {
-        courseId: cloud.id,
+        courseId: courseByCode.COS20019.id,
         term: 'semester_1',
         academicYear: 2026,
         status: 'active',
@@ -262,7 +492,7 @@ async function main() {
     }),
     prisma.courseOffering.create({
       data: {
-        courseId: aiIntro.id,
+        courseId: courseByCode.COS30019.id,
         term: 'semester_1',
         academicYear: 2026,
         status: 'active',

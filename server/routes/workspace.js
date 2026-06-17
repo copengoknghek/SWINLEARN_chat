@@ -19,6 +19,12 @@ import {
   mapUserProfile,
 } from '../mappers.js'
 import { getCurriculumForChildMajor } from '../services/curriculum.js'
+import {
+  evaluateCourseEligibility,
+  evaluateRegistrationBasket,
+  loadPrerequisiteContext,
+} from '../services/prerequisites.js'
+import { requestApprovalDeniedMessage, submitRegistrationRequests } from '../services/registrationRequests.js'
 
 export const workspaceRouter = express.Router()
 
@@ -42,6 +48,15 @@ workspaceRouter.get(
       mainMajors: mainMajors.map(mapMainMajor),
       childMajors: childMajors.map(mapChildMajor),
     })
+  }),
+)
+
+workspaceRouter.get(
+  '/catalog/courses',
+  asyncHandler(async (_request, response) => {
+    const courses = await prisma.course.findMany({ orderBy: { code: 'asc' } })
+
+    response.json(courses.map(mapCourse))
   }),
 )
 
@@ -111,6 +126,129 @@ workspaceRouter.get(
     })
 
     response.json(offerings.map(mapOffering))
+  }),
+)
+
+const requireStudentRegistrationContext = async (request, response) => {
+  const user = requireRole(request, response, ['student'])
+
+  if (!user) {
+    return null
+  }
+
+  return loadPrerequisiteContext(prisma, user.id)
+}
+
+const readOfferingIds = (body) =>
+  Array.isArray(body.offering_ids)
+    ? [...new Set(body.offering_ids.map((offeringId) => String(offeringId)).filter(Boolean))]
+    : []
+
+const activeRegistrationOfferings = (context) =>
+  context.offerings.filter((offering) => offering.status === 'active')
+
+const evaluateRegistrationSelection = (context, offeringIds) => {
+  const activeOfferings = activeRegistrationOfferings(context)
+  const activeOfferingIds = new Set(activeOfferings.map((offering) => offering.id))
+  const invalidOfferingIds = offeringIds.filter((offeringId) => !activeOfferingIds.has(offeringId))
+
+  if (offeringIds.length === 0) {
+    return {
+      error: 'Choose at least one active course offering.',
+    }
+  }
+
+  if (invalidOfferingIds.length > 0) {
+    return {
+      error: 'One or more selected offerings are not available for registration.',
+    }
+  }
+
+  return {
+    result: evaluateRegistrationBasket({
+      ...context,
+      selectedOfferingIds: offeringIds,
+      offerings: activeOfferings,
+    }),
+  }
+}
+
+workspaceRouter.get(
+  '/registration',
+  asyncHandler(async (request, response) => {
+    const context = await requireStudentRegistrationContext(request, response)
+
+    if (!context) {
+      return
+    }
+
+    const offerings = activeRegistrationOfferings(context)
+    const eligibility = offerings.map((targetOffering) =>
+      evaluateCourseEligibility({
+        ...context,
+        targetOffering,
+      }),
+    )
+
+    response.json({
+      offerings,
+      eligibility,
+      registrationRequests: context.registrationRequests,
+    })
+  }),
+)
+
+workspaceRouter.post(
+  '/registration/check',
+  asyncHandler(async (request, response) => {
+    const context = await requireStudentRegistrationContext(request, response)
+
+    if (!context) {
+      return
+    }
+
+    const evaluation = evaluateRegistrationSelection(context, readOfferingIds(request.body))
+
+    if (evaluation.error) {
+      sendError(response, 400, evaluation.error)
+      return
+    }
+
+    response.json(evaluation.result)
+  }),
+)
+
+workspaceRouter.post(
+  '/registration',
+  asyncHandler(async (request, response) => {
+    const context = await requireStudentRegistrationContext(request, response)
+
+    if (!context) {
+      return
+    }
+
+    const offeringIds = readOfferingIds(request.body)
+    const evaluation = evaluateRegistrationSelection(context, offeringIds)
+
+    if (evaluation.error) {
+      sendError(response, 400, evaluation.error)
+      return
+    }
+
+    if (!evaluation.result.eligible) {
+      const firstFailure = evaluation.result.results.find((result) => !result.eligible)
+
+      sendError(response, 400, requestApprovalDeniedMessage(firstFailure))
+      return
+    }
+
+    await submitRegistrationRequests(prisma, {
+      studentId: request.currentUser.id,
+      offeringIds,
+      context,
+    })
+
+    response.status(201).json({ success: true })
   }),
 )
 

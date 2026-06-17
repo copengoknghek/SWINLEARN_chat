@@ -29,6 +29,12 @@ enum CourseStatus {
   archived
 }
 
+enum RegistrationRequestStatus {
+  pending
+  approved
+  rejected
+}
+
 enum CurriculumRuleType {
   core
   elective
@@ -39,6 +45,16 @@ enum CurriculumScope {
   global
   main_major
   child_major
+}
+
+enum CoursePrerequisiteGroupType {
+  completed_credit_points
+  course_alternatives
+}
+
+enum CoursePrerequisiteOptionMode {
+  passed
+  passed_or_concurrent
 }
 
 enum CourseStaffRole {
@@ -70,16 +86,22 @@ model User {
   studentId          String?                   @unique @map("student_id")
   mustChangePassword Boolean                   @default(true) @map("must_change_password")
   status             ProfileStatus            @default(active)
+  mainMajorId        String?                   @map("main_major_id")
   childMajorId       String?                   @map("child_major_id")
   createdAt          DateTime                  @default(now()) @map("created_at")
   updatedAt          DateTime                  @updatedAt @map("updated_at")
+  mainMajor          MainMajor?                @relation(fields: [mainMajorId], references: [id], onDelete: SetNull)
   childMajor         ChildMajor?               @relation(fields: [childMajorId], references: [id], onDelete: SetNull)
   createdCourses     Course[]                  @relation("CourseCreator")
   createdOfferings   CourseOffering[]          @relation("OfferingCreator")
   courseStaff        CourseStaff[]
   enrollments        Enrollment[]
+  registrationRequests CourseRegistrationRequest[] @relation("RegistrationRequestUser")
+  decidedRegistrationRequests CourseRegistrationRequest[] @relation("RegistrationRequestDecider")
   createdAssignments Assignment[]              @relation("AssignmentCreator")
   submissions        AssignmentSubmission[]
+  completedCourses   StudentCourseCompletion[] @relation("StudentCompletions")
+  recordedCompletions StudentCourseCompletion[] @relation("CompletionRecorder")
   createdThreads     InboxThread[]             @relation("ThreadCreator")
   sentMessages        InboxMessage[]            @relation("MessageSender")
   inboxParticipants  InboxThreadParticipant[]
@@ -87,6 +109,7 @@ model User {
   managedCredentials ManagedUserCredential[]    @relation("ManagedCredentialUser")
   createdCredentials ManagedUserCredential[]    @relation("ManagedCredentialCreator")
 
+  @@index([mainMajorId])
   @@map("users")
 }
 
@@ -119,6 +142,7 @@ model MainMajor {
   title           String
   summary         String           @db.Text
   sortOrder       Int              @default(0) @map("sort_order")
+  teachers        User[]
   childMajors     ChildMajor[]
   curriculumRules CurriculumRule[]
 
@@ -144,11 +168,15 @@ model Course {
   code            String           @unique
   title           String
   description     String           @db.Text
+  creditPoints    Float            @default(12.5) @map("credit_points")
   createdById     String?          @map("created_by")
   createdAt       DateTime         @default(now()) @map("created_at")
   updatedAt       DateTime         @updatedAt @map("updated_at")
   createdBy       User?            @relation("CourseCreator", fields: [createdById], references: [id], onDelete: SetNull)
   curriculumRules CurriculumRule[]
+  prerequisiteGroups CoursePrerequisiteGroup[]
+  requiredByOptions CoursePrerequisiteOption[] @relation("PrerequisiteRequiredCourse")
+  completions      StudentCourseCompletion[]
   offerings       CourseOffering[]
 
   @@map("courses")
@@ -173,6 +201,51 @@ model CurriculumRule {
   @@map("curriculum_rules")
 }
 
+model CoursePrerequisiteGroup {
+  id                  String                       @id @default(cuid())
+  courseId            String                       @map("course_id")
+  requirementType     CoursePrerequisiteGroupType  @map("requirement_type")
+  minimumCreditPoints Float?                       @map("minimum_credit_points")
+  sortOrder           Int                          @default(0) @map("sort_order")
+  createdAt           DateTime                     @default(now()) @map("created_at")
+  course              Course                       @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  options             CoursePrerequisiteOption[]
+
+  @@index([courseId])
+  @@map("course_prerequisite_groups")
+}
+
+model CoursePrerequisiteOption {
+  id               String                         @id @default(cuid())
+  groupId          String                         @map("group_id")
+  requiredCourseId String                         @map("required_course_id")
+  requirementMode  CoursePrerequisiteOptionMode   @map("requirement_mode")
+  sortOrder        Int                            @default(0) @map("sort_order")
+  createdAt        DateTime                       @default(now()) @map("created_at")
+  group            CoursePrerequisiteGroup        @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  requiredCourse   Course                         @relation("PrerequisiteRequiredCourse", fields: [requiredCourseId], references: [id], onDelete: Cascade)
+
+  @@index([groupId])
+  @@index([requiredCourseId])
+  @@map("course_prerequisite_options")
+}
+
+model StudentCourseCompletion {
+  id            String   @id @default(cuid())
+  studentId     String   @map("student_id")
+  courseId      String   @map("course_id")
+  completedAt   DateTime @default(now()) @map("completed_at")
+  createdById   String?  @map("created_by")
+  student       User     @relation("StudentCompletions", fields: [studentId], references: [id], onDelete: Cascade)
+  course        Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdBy     User?    @relation("CompletionRecorder", fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([studentId, courseId])
+  @@index([courseId])
+  @@index([createdById])
+  @@map("student_course_completions")
+}
+
 model CourseOffering {
   id           String          @id @default(cuid())
   courseId     String          @map("course_id")
@@ -186,6 +259,7 @@ model CourseOffering {
   createdBy    User?           @relation("OfferingCreator", fields: [createdById], references: [id], onDelete: SetNull)
   staff        CourseStaff[]
   enrollments  Enrollment[]
+  registrationRequests CourseRegistrationRequest[]
   assignments  Assignment[]
   sessions     CourseSession[]
 
@@ -219,6 +293,24 @@ model Enrollment {
   @@unique([offeringId, userId])
   @@index([userId])
   @@map("enrollments")
+}
+
+model CourseRegistrationRequest {
+  id          String                    @id @default(cuid())
+  offeringId  String                    @map("offering_id")
+  userId      String                    @map("user_id")
+  status      RegistrationRequestStatus @default(pending)
+  requestedAt DateTime                  @default(now()) @map("requested_at")
+  decidedAt   DateTime?                 @map("decided_at")
+  decidedById String?                   @map("decided_by")
+  offering    CourseOffering            @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  user        User                      @relation("RegistrationRequestUser", fields: [userId], references: [id], onDelete: Cascade)
+  decidedBy   User?                     @relation("RegistrationRequestDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+
+  @@unique([offeringId, userId])
+  @@index([userId])
+  @@index([decidedById])
+  @@map("course_registration_requests")
 }
 
 model Assignment {

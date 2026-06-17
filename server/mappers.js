@@ -6,6 +6,7 @@ export const mapUserProfile = (user) => ({
   display_name: user.displayName,
   campus: user.campus,
   student_id: user.studentId,
+  main_major_id: user.mainMajorId,
   child_major_id: user.childMajorId,
   must_change_password: user.mustChangePassword,
   status: user.status,
@@ -40,9 +41,36 @@ export const mapCourse = (course) => ({
   code: course.code,
   title: course.title,
   description: course.description,
+  credit_points: course.creditPoints,
   created_by: course.createdById,
   created_at: course.createdAt?.toISOString(),
   updated_at: course.updatedAt?.toISOString(),
+})
+
+export const mapCoursePrerequisiteGroup = (group) => ({
+  id: group.id,
+  course_id: group.courseId,
+  requirement_type: group.requirementType,
+  minimum_credit_points: group.minimumCreditPoints,
+  sort_order: group.sortOrder,
+  created_at: group.createdAt?.toISOString(),
+})
+
+export const mapCoursePrerequisiteOption = (option) => ({
+  id: option.id,
+  group_id: option.groupId,
+  required_course_id: option.requiredCourseId,
+  requirement_mode: option.requirementMode,
+  sort_order: option.sortOrder,
+  created_at: option.createdAt?.toISOString(),
+})
+
+export const mapStudentCourseCompletion = (completion) => ({
+  id: completion.id,
+  student_id: completion.studentId,
+  course_id: completion.courseId,
+  completed_at: completion.completedAt?.toISOString(),
+  created_by: completion.createdById,
 })
 
 export const mapCurriculumRule = (rule) => ({
@@ -54,6 +82,16 @@ export const mapCurriculumRule = (rule) => ({
   main_major_id: rule.mainMajorId,
   child_major_id: rule.childMajorId,
   created_at: rule.createdAt?.toISOString(),
+})
+
+export const mapCourseRegistrationRequest = (request) => ({
+  id: request.id,
+  offering_id: request.offeringId,
+  user_id: request.userId,
+  status: request.status,
+  requested_at: request.requestedAt?.toISOString(),
+  decided_at: request.decidedAt?.toISOString() ?? null,
+  decided_by: request.decidedById ?? null,
 })
 
 const mapStaffMember = (staff) => ({

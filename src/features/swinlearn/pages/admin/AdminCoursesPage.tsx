@@ -1,41 +1,33 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import {
-  addCourseMember,
-  courseLabel,
   createCourse,
-  createCourseOffering,
   createCurriculumRule,
   deleteCourse,
-  deleteCourseOffering,
   deleteCurriculumRule,
   fetchAdminCourseData,
   getErrorMessage,
-  profileName,
-  removeCourseMember,
-  setTeachingAssistant,
+  saveCoursePrerequisites,
   updateCourse,
-  updateCourseOffering,
 } from '../../lib/workspace/api'
 import type {
   AdminCourseData,
   CourseCatalogInput,
   CourseCatalogRow,
-  CourseMemberRole,
-  CourseOfferingInput,
-  CourseTerm,
-  CourseWithMembers,
+  CoursePrerequisiteGroupInput,
+  CoursePrerequisiteOptionInput,
   CurriculumRuleInput,
   CurriculumRuleRow,
-  ProfileRow,
 } from '../../lib/workspace/types'
-
-const currentYear = new Date().getFullYear()
-
-const termLabels: Record<CourseTerm, string> = {
-  semester_1: 'Semester 1',
-  semester_2: 'Semester 2',
-  summer: 'Summer',
-}
+import {
+  filterCourseRows,
+  getCourseSaveCurriculumRuleError,
+  isCourseSaveCurriculumRuleIncomplete,
+  paginateItems,
+  prepareCurriculumRuleForCourseSave,
+  resolveCourseLoadState,
+  shouldCreateCurriculumRuleOnCourseSave,
+} from './adminCourseSelection'
+import './AdminCoursesPage.css'
 
 const ruleTypeLabels: Record<CurriculumRuleInput['rule_type'], string> = {
   core: 'Core',
@@ -49,16 +41,36 @@ const scopeLabels: Record<CurriculumRuleInput['scope'], string> = {
   child_major: 'Child major',
 }
 
-const memberRoleLabel: Record<CourseMemberRole, string> = {
-  teacher: 'Teacher',
-  teaching_assistant: 'Teaching assistant',
-  student: 'Student',
+const prerequisiteTypeLabels: Record<CoursePrerequisiteGroupInput['requirement_type'], string> = {
+  completed_credit_points: 'Completed credit points',
+  course_alternatives: 'Course alternatives',
+}
+
+const prerequisiteModeLabels: Record<CoursePrerequisiteOptionInput['requirement_mode'], string> = {
+  passed: 'Passed',
+  passed_or_concurrent: 'Passed or concurrent',
+}
+
+type CourseDialogMode = 'course-rule'
+
+type CurriculumCourseListRow = {
+  id: string
+  course: CourseCatalogRow
+  rule: CurriculumRuleRow
+  searchText: string
+}
+
+type CatalogCourseListRow = {
+  id: string
+  course: CourseCatalogRow
+  offeringCount: number
 }
 
 const emptyCourseForm = (): CourseCatalogInput => ({
   code: '',
   title: '',
   description: '',
+  credit_points: 12.5,
 })
 
 const emptyRuleForm = (
@@ -72,12 +84,58 @@ const emptyRuleForm = (
   child_major_id: childMajorId,
 })
 
-const emptyOfferingForm = (courseId = ''): CourseOfferingInput => ({
-  course_id: courseId,
-  term: 'semester_1',
-  academic_year: currentYear,
-  status: 'active',
+const emptyCreditPrerequisite = (): CoursePrerequisiteGroupInput => ({
+  requirement_type: 'completed_credit_points',
+  minimum_credit_points: 12.5,
+  options: [],
 })
+
+const emptyCoursePrerequisite = (requiredCourseId = ''): CoursePrerequisiteGroupInput => ({
+  requirement_type: 'course_alternatives',
+  minimum_credit_points: null,
+  options: [
+    {
+      required_course_id: requiredCourseId,
+      requirement_mode: 'passed',
+    },
+  ],
+})
+
+const buildPrerequisiteForm = (
+  data: AdminCourseData | null,
+  courseId: string,
+): CoursePrerequisiteGroupInput[] => {
+  if (!data || !courseId) {
+    return []
+  }
+
+  return data.prerequisiteGroups
+    .filter((group) => group.course_id === courseId)
+    .sort((first, second) => first.sort_order - second.sort_order)
+    .map((group) => ({
+      requirement_type: group.requirement_type,
+      minimum_credit_points: group.minimum_credit_points,
+      options: data.prerequisiteOptions
+        .filter((option) => option.group_id === group.id)
+        .sort((first, second) => first.sort_order - second.sort_order)
+        .map((option) => ({
+          required_course_id: option.required_course_id,
+          requirement_mode: option.requirement_mode,
+        })),
+    }))
+}
+
+const prerequisiteFormIsComplete = (groups: CoursePrerequisiteGroupInput[]) =>
+  groups.every((group) => {
+    if (group.requirement_type === 'completed_credit_points') {
+      return Number(group.minimum_credit_points) > 0
+    }
+
+    return (
+      group.options.length > 0 &&
+      group.options.every((option) => option.required_course_id && option.requirement_mode)
+    )
+  })
 
 const curriculumRuleAppliesToChildMajor = (
   rule: CurriculumRuleRow,
@@ -118,14 +176,14 @@ function AdminCoursesPage() {
   const [selectedMainId, setSelectedMainId] = useState('')
   const [selectedChildId, setSelectedChildId] = useState('')
   const [selectedCourseId, setSelectedCourseId] = useState('')
-  const [selectedOfferingId, setSelectedOfferingId] = useState('')
+  const [curriculumCourseQuery, setCurriculumCourseQuery] = useState('')
+  const [curriculumCoursePage, setCurriculumCoursePage] = useState(1)
+  const [catalogCourseQuery, setCatalogCourseQuery] = useState('')
+  const [catalogCoursePage, setCatalogCoursePage] = useState(1)
+  const [courseDialogMode, setCourseDialogMode] = useState<CourseDialogMode | null>(null)
   const [courseForm, setCourseForm] = useState<CourseCatalogInput>(emptyCourseForm())
   const [ruleForm, setRuleForm] = useState<CurriculumRuleInput>(emptyRuleForm())
-  const [offeringForm, setOfferingForm] = useState<CourseOfferingInput>(emptyOfferingForm())
-  const [initialTeacherId, setInitialTeacherId] = useState('')
-  const [teacherToAdd, setTeacherToAdd] = useState('')
-  const [assistantToSet, setAssistantToSet] = useState('')
-  const [studentToAdd, setStudentToAdd] = useState('')
+  const [prerequisiteGroups, setPrerequisiteGroups] = useState<CoursePrerequisiteGroupInput[]>([])
   const [saving, setSaving] = useState(false)
 
   const loadData = useCallback(async () => {
@@ -136,40 +194,40 @@ function AdminCoursesPage() {
         selectedChildId ||
         nextData.childMajors.find((childMajor) => childMajor.main_major_id === firstMainId)?.id ||
         ''
-      const firstCourseId = selectedCourseId || nextData.courses[0]?.id || ''
-      const firstCourse = nextData.courses.find((course) => course.id === firstCourseId) ?? null
+      const courseLoadContext = {
+        courseDialogMode,
+        courses: nextData.courses,
+        selectedCourseId,
+        selectedChildId: firstChildId,
+      }
+      const nextCourseSelection = resolveCourseLoadState({
+        ...courseLoadContext,
+        currentCourseForm: emptyCourseForm(),
+        currentRuleForm: emptyRuleForm(),
+      })
 
       setData(nextData)
       setSelectedMainId(firstMainId)
       setSelectedChildId(firstChildId)
-      setSelectedCourseId(firstCourseId)
-      setInitialTeacherId((current) => current || nextData.profiles.find(
-        (profile) => profile.role === 'teacher' && profile.status === 'active',
-      )?.id || '')
+      setSelectedCourseId(nextCourseSelection.selectedCourseId)
 
-      if (!selectedCourseId && firstCourse) {
-        setCourseForm({
-          code: firstCourse.code,
-          title: firstCourse.title,
-          description: firstCourse.description,
-        })
-      }
-
-      setRuleForm((current) => ({
-        ...current,
-        course_id: current.course_id || firstCourseId,
-        child_major_id: current.child_major_id || firstChildId,
-      }))
-      setOfferingForm((current) => ({
-        ...current,
-        course_id: current.course_id || firstCourseId,
-      }))
+      setCourseForm((currentCourseForm) => resolveCourseLoadState({
+        ...courseLoadContext,
+        currentCourseForm,
+        currentRuleForm: emptyRuleForm(),
+      }).courseForm)
+      setRuleForm((currentRuleForm) => resolveCourseLoadState({
+        ...courseLoadContext,
+        currentCourseForm: emptyCourseForm(),
+        currentRuleForm,
+      }).ruleForm)
+      setPrerequisiteGroups(buildPrerequisiteForm(nextData, nextCourseSelection.selectedCourseId))
     } catch (loadError) {
       setError(getErrorMessage(loadError, 'Course data could not be loaded'))
     } finally {
       setLoading(false)
     }
-  }, [selectedChildId, selectedCourseId, selectedMainId])
+  }, [courseDialogMode, selectedChildId, selectedCourseId, selectedMainId])
 
   useEffect(() => {
     const timeoutId = window.setTimeout(() => void loadData(), 0)
@@ -187,15 +245,15 @@ function AdminCoursesPage() {
     return map
   }, [data?.courses])
 
-  const profilesById = useMemo(() => {
-    const map = new Map<string, ProfileRow>()
+  const offeringCountByCourseId = useMemo(() => {
+    const map = new Map<string, number>()
 
-    for (const profile of data?.profiles ?? []) {
-      map.set(profile.id, profile)
+    for (const offering of data?.offerings ?? []) {
+      map.set(offering.catalog_course_id, (map.get(offering.catalog_course_id) ?? 0) + 1)
     }
 
     return map
-  }, [data?.profiles])
+  }, [data?.offerings])
 
   const selectedMainMajors = data?.mainMajors ?? []
   const selectedChildMajors = (data?.childMajors ?? []).filter(
@@ -204,31 +262,148 @@ function AdminCoursesPage() {
   const selectedCurriculumRules = (data?.curriculumRules ?? []).filter((rule) =>
     curriculumRuleAppliesToChildMajor(rule, selectedMainId, selectedChildId),
   )
-  const selectedCourse = selectedCourseId ? coursesById.get(selectedCourseId) ?? null : null
-  const selectedCourseOfferings = (data?.offerings ?? []).filter(
-    (offering) => offering.catalog_course_id === selectedCourseId,
-  )
-  const selectedOffering = selectedOfferingId
-    ? selectedCourseOfferings.find((offering) => offering.id === selectedOfferingId) ?? null
-    : null
+  const curriculumCourseRows: CurriculumCourseListRow[] = selectedCurriculumRules
+    .map((rule) => {
+      const course = coursesById.get(rule.course_id)
 
-  const teachers = (data?.profiles ?? []).filter(
-    (profile) => profile.role === 'teacher' && profile.status === 'active',
-  )
-  const students = (data?.profiles ?? []).filter(
-    (profile) => profile.role === 'student' && profile.status === 'active',
-  )
+      if (!course) {
+        return null
+      }
 
-  const setSelectedCourse = (course: CourseCatalogRow) => {
+      return {
+        id: rule.id,
+        course,
+        rule,
+        searchText: `${ruleTypeLabels[rule.rule_type]} ${scopeLabels[rule.scope]} ${
+          data ? ruleScopeDetail(rule, data) : ''
+        }`,
+      }
+    })
+    .filter((row): row is CurriculumCourseListRow => row !== null)
+  const filteredCurriculumCourseRows = filterCourseRows(curriculumCourseRows, curriculumCourseQuery)
+  const curriculumCoursePageState = paginateItems(
+    filteredCurriculumCourseRows,
+    curriculumCoursePage,
+  )
+  const catalogCourseRows: CatalogCourseListRow[] = (data?.courses ?? []).map((course) => ({
+    id: course.id,
+    course,
+    offeringCount: offeringCountByCourseId.get(course.id) ?? 0,
+  }))
+  const filteredCatalogCourseRows = filterCourseRows(catalogCourseRows, catalogCourseQuery)
+  const catalogCoursePageState = paginateItems(filteredCatalogCourseRows, catalogCoursePage)
+  const selectedCourseRules = (data?.curriculumRules ?? []).filter(
+    (rule) => rule.course_id === selectedCourseId,
+  )
+  const courseSaveNeedsCurriculumRule = shouldCreateCurriculumRuleOnCourseSave({
+    selectedCourseId,
+    existingRulesForCourse: selectedCourseRules,
+  })
+  const courseSaveRuleIncomplete = isCourseSaveCurriculumRuleIncomplete({
+    selectedCourseId,
+    ruleForm,
+    existingRulesForCourse: selectedCourseRules,
+  })
+  const availablePrerequisiteCourses = (data?.courses ?? []).filter(
+    (course) => course.id !== selectedCourseId,
+  )
+  const prerequisiteSaveIncomplete = !prerequisiteFormIsComplete(prerequisiteGroups)
+
+  const updatePrerequisiteGroup = (
+    groupIndex: number,
+    updates: Partial<CoursePrerequisiteGroupInput>,
+  ) => {
+    setPrerequisiteGroups((current) =>
+      current.map((group, index) => (index === groupIndex ? { ...group, ...updates } : group)),
+    )
+  }
+
+  const updatePrerequisiteOption = (
+    groupIndex: number,
+    optionIndex: number,
+    updates: Partial<CoursePrerequisiteOptionInput>,
+  ) => {
+    setPrerequisiteGroups((current) =>
+      current.map((group, index) => {
+        if (index !== groupIndex) {
+          return group
+        }
+
+        return {
+          ...group,
+          options: group.options.map((option, currentOptionIndex) =>
+            currentOptionIndex === optionIndex ? { ...option, ...updates } : option,
+          ),
+        }
+      }),
+    )
+  }
+
+  const addPrerequisiteOption = (groupIndex: number) => {
+    const firstCourseId = availablePrerequisiteCourses[0]?.id ?? ''
+
+    setPrerequisiteGroups((current) =>
+      current.map((group, index) =>
+        index === groupIndex
+          ? {
+              ...group,
+              options: [
+                ...group.options,
+                {
+                  required_course_id: firstCourseId,
+                  requirement_mode: 'passed',
+                },
+              ],
+            }
+          : group,
+      ),
+    )
+  }
+
+  const removePrerequisiteOption = (groupIndex: number, optionIndex: number) => {
+    setPrerequisiteGroups((current) =>
+      current.map((group, index) =>
+        index === groupIndex
+          ? {
+              ...group,
+              options: group.options.filter((_option, currentOptionIndex) => currentOptionIndex !== optionIndex),
+            }
+          : group,
+      ),
+    )
+  }
+
+  const selectCourse = (course: CourseCatalogRow) => {
     setSelectedCourseId(course.id)
-    setSelectedOfferingId('')
     setCourseForm({
       code: course.code,
       title: course.title,
       description: course.description,
+      credit_points: course.credit_points,
     })
-      setRuleForm(emptyRuleForm(course.id, selectedChildId))
-    setOfferingForm(emptyOfferingForm(course.id))
+    setRuleForm(emptyRuleForm(course.id, selectedChildId))
+    setPrerequisiteGroups(buildPrerequisiteForm(data, course.id))
+  }
+
+  const openCourseRuleDialog = (course: CourseCatalogRow) => {
+    selectCourse(course)
+    setCourseDialogMode('course-rule')
+    setNotice('')
+    setError('')
+  }
+
+  const openNewCourseDialog = () => {
+    setSelectedCourseId('')
+    setCourseForm(emptyCourseForm())
+    setRuleForm(emptyRuleForm('', selectedChildId))
+    setPrerequisiteGroups([])
+    setCourseDialogMode('course-rule')
+    setNotice('')
+    setError('')
+  }
+
+  const closeCourseDialog = () => {
+    setCourseDialogMode(null)
   }
 
   const handleMainMajorClick = (mainMajorId: string) => {
@@ -237,6 +412,7 @@ function AdminCoursesPage() {
 
     setSelectedMainId(mainMajorId)
     setSelectedChildId(firstChildId)
+    setCurriculumCoursePage(1)
     setRuleForm((current) => ({
       ...current,
       main_major_id: current.scope === 'main_major' ? mainMajorId : null,
@@ -246,20 +422,11 @@ function AdminCoursesPage() {
 
   const handleChildMajorClick = (childMajorId: string) => {
     setSelectedChildId(childMajorId)
+    setCurriculumCoursePage(1)
     setRuleForm((current) => ({
       ...current,
       child_major_id: current.scope === 'child_major' ? childMajorId : null,
     }))
-  }
-
-  const handleNewCourse = () => {
-    setSelectedCourseId('')
-    setSelectedOfferingId('')
-    setCourseForm(emptyCourseForm())
-    setRuleForm(emptyRuleForm('', selectedChildId))
-    setOfferingForm(emptyOfferingForm(''))
-    setNotice('')
-    setError('')
   }
 
   const handleCourseSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -273,20 +440,54 @@ function AdminCoursesPage() {
         code: courseForm.code.trim().toUpperCase(),
         title: courseForm.title.trim(),
         description: courseForm.description.trim(),
+        credit_points: Number(courseForm.credit_points) || 12.5,
       }
+      const ruleError = getCourseSaveCurriculumRuleError({
+        selectedCourseId,
+        ruleForm,
+        existingRulesForCourse: selectedCourseRules,
+      })
+
+      if (ruleError) {
+        setError(ruleError)
+        return
+      }
+
+      const shouldCreateRule = shouldCreateCurriculumRuleOnCourseSave({
+        selectedCourseId,
+        existingRulesForCourse: selectedCourseRules,
+      })
+      let createdCourseId = ''
 
       if (selectedCourseId) {
         await updateCourse(selectedCourseId, input)
-        setNotice('Catalog course updated.')
+        if (shouldCreateRule) {
+          await createCurriculumRule(prepareCurriculumRuleForCourseSave(ruleForm, selectedCourseId))
+          setNotice('Catalog course updated and curriculum rule added.')
+        } else {
+          setNotice('Catalog course updated.')
+        }
       } else {
-        const nextCourseId = await createCourse(input)
+        const nextCourseId = await createCourse(input, {
+          rule_type: ruleForm.rule_type,
+          scope: ruleForm.scope,
+          main_major_id: ruleForm.main_major_id,
+          child_major_id: ruleForm.child_major_id,
+        })
+        createdCourseId = nextCourseId
         setSelectedCourseId(nextCourseId)
         setRuleForm(emptyRuleForm(nextCourseId, selectedChildId))
-        setOfferingForm(emptyOfferingForm(nextCourseId))
-        setNotice('Catalog course created.')
+        setNotice('Catalog course and curriculum rule created.')
       }
 
       await loadData()
+
+      if (createdCourseId) {
+        setSelectedCourseId(createdCourseId)
+        setCourseForm(input)
+        setRuleForm(emptyRuleForm(createdCourseId, selectedChildId))
+        setPrerequisiteGroups([])
+      }
     } catch (submitError) {
       setError(getErrorMessage(submitError, 'Course could not be saved'))
     } finally {
@@ -306,12 +507,48 @@ function AdminCoursesPage() {
     try {
       await deleteCourse(selectedCourseId)
       setSelectedCourseId('')
-      setSelectedOfferingId('')
       setCourseForm(emptyCourseForm())
+      setPrerequisiteGroups([])
+      setCourseDialogMode(null)
       setNotice('Catalog course deleted.')
       await loadData()
     } catch (deleteError) {
       setError(getErrorMessage(deleteError, 'Course could not be deleted'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleAddCreditPrerequisite = () => {
+    setPrerequisiteGroups((current) => [...current, emptyCreditPrerequisite()])
+  }
+
+  const handleAddCoursePrerequisite = () => {
+    setPrerequisiteGroups((current) => [
+      ...current,
+      emptyCoursePrerequisite(availablePrerequisiteCourses[0]?.id ?? ''),
+    ])
+  }
+
+  const handleRemovePrerequisiteGroup = (groupIndex: number) => {
+    setPrerequisiteGroups((current) => current.filter((_group, index) => index !== groupIndex))
+  }
+
+  const handlePrerequisiteSave = async () => {
+    if (!selectedCourseId || prerequisiteSaveIncomplete) {
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await saveCoursePrerequisites(selectedCourseId, prerequisiteGroups)
+      setNotice('Prerequisite requirements saved.')
+      await loadData()
+    } catch (prerequisiteError) {
+      setError(getErrorMessage(prerequisiteError, 'Prerequisite requirements could not be saved'))
     } finally {
       setSaving(false)
     }
@@ -358,23 +595,6 @@ function AdminCoursesPage() {
     }))
   }
 
-  const handleRuleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setSaving(true)
-    setError('')
-    setNotice('')
-
-    try {
-      await createCurriculumRule(ruleForm)
-      setNotice('Curriculum rule added.')
-      await loadData()
-    } catch (ruleError) {
-      setError(getErrorMessage(ruleError, 'Curriculum rule could not be saved'))
-    } finally {
-      setSaving(false)
-    }
-  }
-
   const handleRuleDelete = async (ruleId: string) => {
     setSaving(true)
     setError('')
@@ -391,149 +611,312 @@ function AdminCoursesPage() {
     }
   }
 
-  const handleOfferingSelect = (offering: CourseWithMembers) => {
-    setSelectedOfferingId(offering.id)
-    setOfferingForm({
-      course_id: offering.catalog_course_id,
-      term: offering.term,
-      academic_year: offering.academic_year,
-      status: offering.status,
-    })
-  }
+  const courseDialogTitle = selectedCourseId ? 'Course setup' : 'New catalog course'
+  const courseDialogDescription = 'Edit the catalog course and attach it to the selected curriculum.'
 
-  const handleNewOffering = () => {
-    setSelectedOfferingId('')
-    setOfferingForm(emptyOfferingForm(selectedCourseId))
-    setInitialTeacherId(teachers[0]?.id ?? '')
-  }
+  const courseEditor = (
+    <section className="workspace-panel admin-course-setup-panel">
+      <div className="workspace-section-heading">
+        <div>
+          <h2>{selectedCourseId ? 'Edit catalog course' : 'Create catalog course'}</h2>
+          <p>Catalog courses are reusable across majors and offerings.</p>
+        </div>
+      </div>
 
-  const handleOfferingSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    setSaving(true)
-    setError('')
-    setNotice('')
+      <form className="workspace-form" onSubmit={(event) => void handleCourseSubmit(event)}>
+        <label>
+          <span>Course code</span>
+          <input
+            value={courseForm.code}
+            onChange={(event) =>
+              setCourseForm((current) => ({ ...current, code: event.target.value }))
+            }
+            placeholder="Enter course code"
+            required
+          />
+        </label>
 
-    try {
-      if (selectedOfferingId) {
-        await updateCourseOffering(selectedOfferingId, offeringForm)
-        setNotice('Course offering updated.')
-      } else {
-        await createCourseOffering(offeringForm, initialTeacherId)
-        setNotice('Course offering created.')
-      }
+        <label>
+          <span>Course title</span>
+          <input
+            value={courseForm.title}
+            onChange={(event) =>
+              setCourseForm((current) => ({ ...current, title: event.target.value }))
+            }
+            placeholder="Enter course title"
+            required
+          />
+        </label>
 
-      await loadData()
-    } catch (offeringError) {
-      setError(getErrorMessage(offeringError, 'Course offering could not be saved'))
-    } finally {
-      setSaving(false)
-    }
-  }
+        <label>
+          <span>Description</span>
+          <textarea
+            value={courseForm.description}
+            onChange={(event) =>
+              setCourseForm((current) => ({ ...current, description: event.target.value }))
+            }
+          />
+        </label>
 
-  const handleDeleteOffering = async () => {
-    if (!selectedOfferingId) {
-      return
-    }
+        <label>
+          <span>Credit points</span>
+          <input
+            type="number"
+            min="0.5"
+            step="0.5"
+            value={courseForm.credit_points}
+            onChange={(event) =>
+              setCourseForm((current) => ({
+                ...current,
+                credit_points: Number(event.target.value),
+              }))
+            }
+            required
+          />
+        </label>
 
-    setSaving(true)
-    setError('')
-    setNotice('')
+        {courseSaveNeedsCurriculumRule && (
+          <fieldset className="admin-course-rule-fieldset">
+            <legend>Curriculum rule</legend>
+            <p>
+              {selectedCourseId
+                ? 'Attach this catalog course to the selected curriculum.'
+                : 'Required for every new catalog course.'}
+            </p>
 
-    try {
-      await deleteCourseOffering(selectedOfferingId)
-      setSelectedOfferingId('')
-      setOfferingForm(emptyOfferingForm(selectedCourseId))
-      setNotice('Course offering deleted.')
-      await loadData()
-    } catch (offeringError) {
-      setError(getErrorMessage(offeringError, 'Course offering could not be deleted'))
-    } finally {
-      setSaving(false)
-    }
-  }
+            <div className="workspace-form-grid">
+              <label>
+                <span>Type</span>
+                <select
+                  value={ruleForm.rule_type}
+                  onChange={(event) =>
+                    handleRuleTypeChange(event.target.value as CurriculumRuleInput['rule_type'])
+                  }
+                >
+                  <option value="core">Core</option>
+                  <option value="elective">Elective</option>
+                  <option value="major">Major</option>
+                </select>
+              </label>
 
-  const handleAddMember = async (role: CourseMemberRole, userId: string) => {
-    if (!selectedOffering || !userId) {
-      return
-    }
+              <label>
+                <span>Scope</span>
+                <select
+                  value={ruleForm.scope}
+                  onChange={(event) =>
+                    handleRuleScopeChange(event.target.value as CurriculumRuleInput['scope'])
+                  }
+                  disabled={ruleForm.rule_type !== 'elective'}
+                >
+                  <option value="global">All main majors</option>
+                  <option value="main_major">Selected main major</option>
+                  <option value="child_major">Selected child major</option>
+                </select>
+              </label>
+            </div>
+          </fieldset>
+        )}
 
-    setSaving(true)
-    setError('')
-    setNotice('')
+        <button type="submit" disabled={saving || courseSaveRuleIncomplete}>
+          {saving
+            ? 'Saving...'
+            : selectedCourseId
+              ? courseSaveNeedsCurriculumRule
+                ? 'Save course and add rule'
+                : 'Save catalog course'
+              : 'Create catalog course'}
+        </button>
 
-    try {
-      await addCourseMember(selectedOffering.id, userId, role)
-      setNotice(`${memberRoleLabel[role]} added.`)
-      await loadData()
-    } catch (memberError) {
-      setError(getErrorMessage(memberError, 'Member could not be added'))
-    } finally {
-      setSaving(false)
-    }
-  }
+        {selectedCourseId && (
+          <button
+            type="button"
+            className="workspace-danger-action workspace-danger-action--wide"
+            onClick={() => void handleDeleteCourse()}
+            disabled={saving}
+          >
+            Delete catalog course
+          </button>
+        )}
+      </form>
 
-  const handleSetAssistant = async () => {
-    if (!selectedOffering) {
-      return
-    }
+      {selectedCourseRules.length > 0 && (
+        <div className="admin-course-rules-list">
+          <h3>Attached curriculum rules</h3>
+          <div className="workspace-table workspace-table--spaced">
+            {selectedCourseRules.map((rule) => (
+              <div className="workspace-row workspace-row--four" key={rule.id}>
+                <span>
+                  <strong>{ruleTypeLabels[rule.rule_type]}</strong>
+                  <small>{data ? ruleScopeDetail(rule, data) : 'Scope'}</small>
+                </span>
+                <span>{scopeLabels[rule.scope]}</span>
+                <span>{coursesById.get(rule.course_id)?.code ?? 'Course'}</span>
+                <button
+                  type="button"
+                  className="workspace-danger-action"
+                  onClick={() => void handleRuleDelete(rule.id)}
+                  disabled={saving}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
-    setSaving(true)
-    setError('')
-    setNotice('')
+      {selectedCourseId && (
+        <div className="admin-course-rules-list">
+          <div className="workspace-section-heading">
+            <div>
+              <h3>Prerequisite requirements</h3>
+              <p>All groups must be satisfied. Course options inside one group are alternatives.</p>
+            </div>
+            <div className="workspace-toolbar">
+              <button type="button" className="workspace-secondary-action" onClick={handleAddCreditPrerequisite}>
+                Add credits
+              </button>
+              <button type="button" className="workspace-secondary-action" onClick={handleAddCoursePrerequisite}>
+                Add courses
+              </button>
+            </div>
+          </div>
 
-    try {
-      await setTeachingAssistant(selectedOffering.id, assistantToSet || null)
-      setNotice(assistantToSet ? 'Teaching assistant updated.' : 'Teaching assistant removed.')
-      await loadData()
-    } catch (assistantError) {
-      setError(getErrorMessage(assistantError, 'Teaching assistant could not be updated'))
-    } finally {
-      setSaving(false)
-    }
-  }
+          <div className="workspace-table workspace-table--spaced">
+            {prerequisiteGroups.map((group, groupIndex) => (
+              <div className="workspace-row workspace-row--four" key={`${group.requirement_type}-${groupIndex}`}>
+                <span>
+                  <strong>{prerequisiteTypeLabels[group.requirement_type]}</strong>
+                  <small>
+                    {group.requirement_type === 'completed_credit_points'
+                      ? 'Minimum completed curriculum credit points'
+                      : 'Pass one listed course, unless concurrent is allowed'}
+                  </small>
+                </span>
 
-  const handleRemoveMember = async (offering: CourseWithMembers, membershipId: string) => {
-    const membership = offering.members.find((item) => item.id === membershipId)
-    const teacherCount = offering.members.filter((item) => item.role === 'teacher').length
+                {group.requirement_type === 'completed_credit_points' ? (
+                  <label className="admin-course-compact-field">
+                    <span>Credit points</span>
+                    <input
+                      type="number"
+                      min="0.5"
+                      step="0.5"
+                      value={group.minimum_credit_points ?? 0}
+                      onChange={(event) =>
+                        updatePrerequisiteGroup(groupIndex, {
+                          minimum_credit_points: Number(event.target.value),
+                        })
+                      }
+                    />
+                  </label>
+                ) : (
+                  <div className="admin-prerequisite-options">
+                    {group.options.map((option, optionIndex) => (
+                      <div className="workspace-form-grid" key={`${groupIndex}-${optionIndex}`}>
+                        <label>
+                          <span>Course</span>
+                          <select
+                            value={option.required_course_id}
+                            onChange={(event) =>
+                              updatePrerequisiteOption(groupIndex, optionIndex, {
+                                required_course_id: event.target.value,
+                              })
+                            }
+                          >
+                            <option value="">Choose course</option>
+                            {availablePrerequisiteCourses.map((course) => (
+                              <option key={course.id} value={course.id}>
+                                {course.code} - {course.title}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <label>
+                          <span>Mode</span>
+                          <select
+                            value={option.requirement_mode}
+                            onChange={(event) =>
+                              updatePrerequisiteOption(groupIndex, optionIndex, {
+                                requirement_mode: event.target.value as CoursePrerequisiteOptionInput['requirement_mode'],
+                              })
+                            }
+                          >
+                            {Object.entries(prerequisiteModeLabels).map(([value, label]) => (
+                              <option key={value} value={value}>
+                                {label}
+                              </option>
+                            ))}
+                          </select>
+                        </label>
+                        <button
+                          type="button"
+                          className="workspace-danger-action"
+                          onClick={() => removePrerequisiteOption(groupIndex, optionIndex)}
+                          disabled={group.options.length <= 1}
+                        >
+                          Remove option
+                        </button>
+                      </div>
+                    ))}
+                    <button
+                      type="button"
+                      className="workspace-secondary-action"
+                      onClick={() => addPrerequisiteOption(groupIndex)}
+                    >
+                      Add alternative
+                    </button>
+                  </div>
+                )}
 
-    if (membership?.role === 'teacher' && teacherCount <= 1 && offering.status === 'active') {
-      setError('Active offerings must keep at least one teacher.')
-      return
-    }
+                <button
+                  type="button"
+                  className="workspace-danger-action"
+                  onClick={() => handleRemovePrerequisiteGroup(groupIndex)}
+                >
+                  Remove
+                </button>
+              </div>
+            ))}
 
-    setSaving(true)
-    setError('')
-    setNotice('')
+            {prerequisiteGroups.length === 0 && (
+              <div className="workspace-empty-state">No prerequisite requirements.</div>
+            )}
+          </div>
 
-    try {
-      await removeCourseMember(membershipId)
-      setNotice('Member removed.')
-      await loadData()
-    } catch (removeError) {
-      setError(getErrorMessage(removeError, 'Member could not be removed'))
-    } finally {
-      setSaving(false)
-    }
-  }
+          <button
+            type="button"
+            className="workspace-primary-action admin-course-prerequisite-save"
+            onClick={() => void handlePrerequisiteSave()}
+            disabled={saving || prerequisiteSaveIncomplete}
+          >
+            Save prerequisites
+          </button>
+        </div>
+      )}
+    </section>
+  )
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page admin-courses-page">
       <header className="workspace-page-header">
         <span className="workspace-eyebrow">Admin workspace</span>
         <h1 className="workspace-page-title">Course management</h1>
         <p className="workspace-page-subtitle">
-          Manage reusable catalog courses, curriculum rules, semester offerings,
-          teaching teams, and student enrollments from one view.
+          Manage reusable catalog courses, curriculum rules, and prerequisite requirements.
         </p>
       </header>
 
-      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-      {notice !== '' && <div className="workspace-alert workspace-alert--success">{notice}</div>}
+      {courseDialogMode === null && error !== '' && (
+        <div className="workspace-alert workspace-alert--error">{error}</div>
+      )}
+      {courseDialogMode === null && notice !== '' && (
+        <div className="workspace-alert workspace-alert--success">{notice}</div>
+      )}
 
       {loading ? (
         <section className="workspace-panel">Loading courses...</section>
       ) : (
-        <div className="workspace-grid workspace-grid--two">
+        <div className="workspace-grid">
           <section className="workspace-grid admin-course-browser" aria-label="Curriculum browser">
             <div className="admin-course-picker-group admin-course-picker-group--main">
               <span className="admin-course-picker-label">Majors</span>
@@ -577,38 +960,49 @@ function AdminCoursesPage() {
               <div className="workspace-section-heading">
                 <div>
                   <h2>Curriculum courses</h2>
-                  <p>{selectedCurriculumRules.length} rules visible for this child major.</p>
+                  <p>
+                    {filteredCurriculumCourseRows.length} rules visible
+                  </p>
                 </div>
                 <button
                   type="button"
                   className="workspace-secondary-action"
-                  onClick={handleNewCourse}
+                  onClick={openNewCourseDialog}
                 >
                   New catalog course
                 </button>
               </div>
 
+              <label className="admin-course-list-search">
+                <span>Search curriculum courses</span>
+                <input
+                  value={curriculumCourseQuery}
+                  onChange={(event) => {
+                    setCurriculumCourseQuery(event.target.value)
+                    setCurriculumCoursePage(1)
+                  }}
+                  placeholder="Search code, title, description, type, or scope"
+                />
+              </label>
+
               <div className="workspace-table" role="table" aria-label="Curriculum courses">
-                {selectedCurriculumRules.map((rule) => {
-                  const course = coursesById.get(rule.course_id)
-
-                  if (!course) {
-                    return null
-                  }
-
+                {curriculumCoursePageState.items.map(({ course, rule }) => {
                   return (
                     <button
                       key={rule.id}
                       type="button"
                       className={`workspace-row workspace-row--button${selectedCourseId === course.id ? ' workspace-row--active' : ''}`}
-                      onClick={() => setSelectedCourse(course)}
+                      onClick={() => openCourseRuleDialog(course)}
                     >
                       <span>
                         <strong>{course.code}</strong>
                         <small>{course.title}</small>
                       </span>
                       <span>{ruleTypeLabels[rule.rule_type]}</span>
-                      <span>{scopeLabels[rule.scope]}</span>
+                      <span>
+                        {scopeLabels[rule.scope]}
+                        <small>{data ? ruleScopeDetail(rule, data) : 'Scope'}</small>
+                      </span>
                     </button>
                   )
                 })}
@@ -618,416 +1012,138 @@ function AdminCoursesPage() {
                     No curriculum rules yet. Add a catalog course and attach a rule.
                   </div>
                 )}
+                {selectedCurriculumRules.length > 0 && filteredCurriculumCourseRows.length === 0 && (
+                  <div className="workspace-empty-state">No curriculum courses match this search.</div>
+                )}
               </div>
+
+              {filteredCurriculumCourseRows.length > 0 && (
+                <div className="admin-course-pagination" aria-label="Curriculum courses pagination">
+                  <button
+                    type="button"
+                    className="workspace-secondary-action"
+                    onClick={() => setCurriculumCoursePage(curriculumCoursePageState.page - 1)}
+                    disabled={curriculumCoursePageState.page <= 1}
+                  >
+                    Previous
+                  </button>
+                  <span>
+                    Page {curriculumCoursePageState.page} of {curriculumCoursePageState.totalPages}
+                  </span>
+                  <button
+                    type="button"
+                    className="workspace-secondary-action"
+                    onClick={() => setCurriculumCoursePage(curriculumCoursePageState.page + 1)}
+                    disabled={curriculumCoursePageState.page >= curriculumCoursePageState.totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              )}
             </section>
 
             <section className="workspace-panel">
               <div className="workspace-section-heading">
                 <div>
                   <h2>Catalog</h2>
-                  <p>{data?.courses.length ?? 0} reusable course records.</p>
+                  <p>{filteredCatalogCourseRows.length} reusable course records.</p>
                 </div>
               </div>
+
+              <label className="admin-course-list-search">
+                <span>Search catalog</span>
+                <input
+                  value={catalogCourseQuery}
+                  onChange={(event) => {
+                    setCatalogCourseQuery(event.target.value)
+                    setCatalogCoursePage(1)
+                  }}
+                  placeholder="Search code, title, or description"
+                />
+              </label>
+
               <div className="workspace-table" role="table" aria-label="Course catalog">
-                {(data?.courses ?? []).map((course) => (
+                {catalogCoursePageState.items.map(({ course, offeringCount }) => (
                   <button
                     key={course.id}
                     type="button"
                     className={`workspace-row workspace-row--button${selectedCourseId === course.id ? ' workspace-row--active' : ''}`}
-                    onClick={() => setSelectedCourse(course)}
+                    onClick={() => openCourseRuleDialog(course)}
                   >
                     <span>
                       <strong>{course.code}</strong>
                       <small>{course.title}</small>
                     </span>
                     <span>Catalog</span>
-                    <span>{(data?.offerings ?? []).filter((item) => item.catalog_course_id === course.id).length} offerings</span>
+                    <span>{offeringCount} offerings</span>
                   </button>
                 ))}
-              </div>
-            </section>
 
-            {selectedCourse && (
-              <section className="workspace-panel">
-                <div className="workspace-section-heading">
-                  <div>
-                    <h2>{selectedCourse.code} offerings</h2>
-                    <p>Semester/year instances used for teaching and enrollment.</p>
-                  </div>
+                {(data?.courses.length ?? 0) === 0 && (
+                  <div className="workspace-empty-state">No catalog courses yet.</div>
+                )}
+                {(data?.courses.length ?? 0) > 0 && filteredCatalogCourseRows.length === 0 && (
+                  <div className="workspace-empty-state">No catalog courses match this search.</div>
+                )}
+              </div>
+
+              {filteredCatalogCourseRows.length > 0 && (
+                <div className="admin-course-pagination" aria-label="Catalog pagination">
                   <button
                     type="button"
                     className="workspace-secondary-action"
-                    onClick={handleNewOffering}
+                    onClick={() => setCatalogCoursePage(catalogCoursePageState.page - 1)}
+                    disabled={catalogCoursePageState.page <= 1}
                   >
-                    New offering
+                    Previous
                   </button>
-                </div>
-
-                <div className="workspace-table" role="table" aria-label="Course offerings">
-                  {selectedCourseOfferings.map((offering) => (
-                    <button
-                      key={offering.id}
-                      type="button"
-                      className={`workspace-row workspace-row--button${selectedOfferingId === offering.id ? ' workspace-row--active' : ''}`}
-                      onClick={() => handleOfferingSelect(offering)}
-                    >
-                      <span>
-                        <strong>{termLabels[offering.term]}</strong>
-                        <small>{offering.academic_year}</small>
-                      </span>
-                      <span>{offering.status}</span>
-                      <span>{offering.members.length} members</span>
-                    </button>
-                  ))}
-
-                  {selectedCourseOfferings.length === 0 && (
-                    <div className="workspace-empty-state">No offerings yet.</div>
-                  )}
-                </div>
-              </section>
-            )}
-
-            {selectedOffering && (
-              <section className="workspace-panel">
-                <div className="workspace-section-heading">
-                  <div>
-                    <h2>{courseLabel(selectedOffering)}</h2>
-                    <p>Teaching team and student enrollment.</p>
-                  </div>
-                </div>
-
-                <div className="workspace-member-list">
-                  {selectedOffering.members.map((membership) => {
-                    const profile = profilesById.get(membership.user_id)
-
-                    return (
-                      <div className="workspace-member" key={membership.id}>
-                        <div>
-                          <strong>{profileName(profile)}</strong>
-                          <span>{memberRoleLabel[membership.role]}</span>
-                        </div>
-                        <button
-                          type="button"
-                          className="workspace-danger-action"
-                          onClick={() => void handleRemoveMember(selectedOffering, membership.id)}
-                          disabled={saving}
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    )
-                  })}
-                </div>
-
-                <div className="workspace-form workspace-form--inline">
-                  <label>
-                    <span>Add teacher</span>
-                    <select value={teacherToAdd} onChange={(event) => setTeacherToAdd(event.target.value)}>
-                      <option value="">Choose teacher</option>
-                      {teachers.map((teacher) => (
-                        <option key={teacher.id} value={teacher.id}>
-                          {profileName(teacher)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                  <span>
+                    Page {catalogCoursePageState.page} of {catalogCoursePageState.totalPages}
+                  </span>
                   <button
                     type="button"
-                    onClick={() => void handleAddMember('teacher', teacherToAdd)}
-                    disabled={saving || !teacherToAdd}
+                    className="workspace-secondary-action"
+                    onClick={() => setCatalogCoursePage(catalogCoursePageState.page + 1)}
+                    disabled={catalogCoursePageState.page >= catalogCoursePageState.totalPages}
                   >
-                    Add
+                    Next
                   </button>
                 </div>
-
-                <div className="workspace-form workspace-form--inline">
-                  <label>
-                    <span>Teaching assistant</span>
-                    <select
-                      value={assistantToSet}
-                      onChange={(event) => setAssistantToSet(event.target.value)}
-                    >
-                      <option value="">No teaching assistant</option>
-                      {teachers.map((teacher) => (
-                        <option key={teacher.id} value={teacher.id}>
-                          {profileName(teacher)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <button type="button" onClick={() => void handleSetAssistant()} disabled={saving}>
-                    Save TA
-                  </button>
-                </div>
-
-                <div className="workspace-form workspace-form--inline">
-                  <label>
-                    <span>Add student</span>
-                    <select value={studentToAdd} onChange={(event) => setStudentToAdd(event.target.value)}>
-                      <option value="">Choose student</option>
-                      {students.map((student) => (
-                        <option key={student.id} value={student.id}>
-                          {profileName(student)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => void handleAddMember('student', studentToAdd)}
-                    disabled={saving || !studentToAdd}
-                  >
-                    Add
-                  </button>
-                </div>
-              </section>
-            )}
+              )}
+            </section>
           </section>
 
-          <aside className="workspace-grid">
-            <section className="workspace-panel">
-              <div className="workspace-section-heading">
-                <div>
-                  <h2>{selectedCourseId ? 'Edit catalog course' : 'Create catalog course'}</h2>
-                  <p>Catalog courses are reusable across majors and offerings.</p>
-                </div>
-              </div>
-
-              <form className="workspace-form" onSubmit={(event) => void handleCourseSubmit(event)}>
-                <label>
-                  <span>Course code</span>
-                  <input
-                    value={courseForm.code}
-                    onChange={(event) =>
-                      setCourseForm((current) => ({ ...current, code: event.target.value }))
-                    }
-                    placeholder="COS10009"
-                    required
-                  />
-                </label>
-
-                <label>
-                  <span>Course title</span>
-                  <input
-                    value={courseForm.title}
-                    onChange={(event) =>
-                      setCourseForm((current) => ({ ...current, title: event.target.value }))
-                    }
-                    placeholder="Introduction to Programming"
-                    required
-                  />
-                </label>
-
-                <label>
-                  <span>Description</span>
-                  <textarea
-                    value={courseForm.description}
-                    onChange={(event) =>
-                      setCourseForm((current) => ({ ...current, description: event.target.value }))
-                    }
-                  />
-                </label>
-
-                <button type="submit" disabled={saving}>
-                  {saving ? 'Saving...' : selectedCourseId ? 'Save catalog course' : 'Create catalog course'}
-                </button>
-
-                {selectedCourseId && (
+          {courseDialogMode !== null && (
+            <div className="workspace-modal-backdrop">
+              <div
+                className="workspace-modal workspace-modal--wide"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="course-dialog-title"
+              >
+                <div className="workspace-modal-header">
+                  <div>
+                    <h2 id="course-dialog-title">{courseDialogTitle}</h2>
+                    <p>{courseDialogDescription}</p>
+                  </div>
                   <button
                     type="button"
-                    className="workspace-danger-action workspace-danger-action--wide"
-                    onClick={() => void handleDeleteCourse()}
-                    disabled={saving}
+                    className="workspace-modal-close"
+                    onClick={closeCourseDialog}
                   >
-                    Delete catalog course
+                    Close
                   </button>
-                )}
-              </form>
-            </section>
-
-            <section className="workspace-panel">
-              <h2>Add curriculum rule</h2>
-              <form className="workspace-form" onSubmit={(event) => void handleRuleSubmit(event)}>
-                <label>
-                  <span>Catalog course</span>
-                  <select
-                    value={ruleForm.course_id}
-                    onChange={(event) =>
-                      setRuleForm((current) => ({ ...current, course_id: event.target.value }))
-                    }
-                    required
-                  >
-                    <option value="">Choose course</option>
-                    {(data?.courses ?? []).map((course) => (
-                      <option key={course.id} value={course.id}>
-                        {course.code} - {course.title}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <label>
-                  <span>Type</span>
-                  <select
-                    value={ruleForm.rule_type}
-                    onChange={(event) =>
-                      handleRuleTypeChange(event.target.value as CurriculumRuleInput['rule_type'])
-                    }
-                  >
-                    <option value="core">Core</option>
-                    <option value="elective">Elective</option>
-                    <option value="major">Major</option>
-                  </select>
-                </label>
-
-                <label>
-                  <span>Scope</span>
-                  <select
-                    value={ruleForm.scope}
-                    onChange={(event) =>
-                      handleRuleScopeChange(event.target.value as CurriculumRuleInput['scope'])
-                    }
-                    disabled={ruleForm.rule_type !== 'elective'}
-                  >
-                    <option value="global">All main majors</option>
-                    <option value="main_major">Selected main major</option>
-                    <option value="child_major">Selected child major</option>
-                  </select>
-                </label>
-
-                <button type="submit" disabled={saving || !ruleForm.course_id}>
-                  Add rule
-                </button>
-              </form>
-
-              <div className="workspace-table workspace-table--spaced">
-                {(data?.curriculumRules ?? [])
-                  .filter((rule) => rule.course_id === selectedCourseId)
-                  .map((rule) => (
-                    <div className="workspace-row workspace-row--four" key={rule.id}>
-                      <span>
-                        <strong>{ruleTypeLabels[rule.rule_type]}</strong>
-                        <small>{data ? ruleScopeDetail(rule, data) : 'Scope'}</small>
-                      </span>
-                      <span>{scopeLabels[rule.scope]}</span>
-                      <span>{coursesById.get(rule.course_id)?.code ?? 'Course'}</span>
-                      <button
-                        type="button"
-                        className="workspace-danger-action"
-                        onClick={() => void handleRuleDelete(rule.id)}
-                        disabled={saving}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  ))}
-              </div>
-            </section>
-
-            <section className="workspace-panel">
-              <h2>{selectedOfferingId ? 'Edit offering' : 'Create offering'}</h2>
-              <form className="workspace-form" onSubmit={(event) => void handleOfferingSubmit(event)}>
-                <label>
-                  <span>Catalog course</span>
-                  <select
-                    value={offeringForm.course_id}
-                    onChange={(event) =>
-                      setOfferingForm((current) => ({ ...current, course_id: event.target.value }))
-                    }
-                    required
-                  >
-                    <option value="">Choose course</option>
-                    {(data?.courses ?? []).map((course) => (
-                      <option key={course.id} value={course.id}>
-                        {course.code} - {course.title}
-                      </option>
-                    ))}
-                  </select>
-                </label>
-
-                <div className="workspace-form-grid">
-                  <label>
-                    <span>Term</span>
-                    <select
-                      value={offeringForm.term}
-                      onChange={(event) =>
-                        setOfferingForm((current) => ({
-                          ...current,
-                          term: event.target.value as CourseTerm,
-                        }))
-                      }
-                    >
-                      <option value="semester_1">Semester 1</option>
-                      <option value="semester_2">Semester 2</option>
-                      <option value="summer">Summer</option>
-                    </select>
-                  </label>
-
-                  <label>
-                    <span>Year</span>
-                    <input
-                      type="number"
-                      value={offeringForm.academic_year}
-                      onChange={(event) =>
-                        setOfferingForm((current) => ({
-                          ...current,
-                          academic_year: Number(event.target.value),
-                        }))
-                      }
-                    />
-                  </label>
                 </div>
 
-                <label>
-                  <span>Status</span>
-                  <select
-                    value={offeringForm.status}
-                    onChange={(event) =>
-                      setOfferingForm((current) => ({
-                        ...current,
-                        status: event.target.value as CourseOfferingInput['status'],
-                      }))
-                    }
-                  >
-                    <option value="active">Active</option>
-                    <option value="archived">Archived</option>
-                  </select>
-                </label>
-
-                {!selectedOfferingId && (
-                  <label>
-                    <span>First teacher</span>
-                    <select
-                      value={initialTeacherId}
-                      onChange={(event) => setInitialTeacherId(event.target.value)}
-                    >
-                      <option value="">Choose teacher</option>
-                      {teachers.map((teacher) => (
-                        <option key={teacher.id} value={teacher.id}>
-                          {profileName(teacher)}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
+                {notice !== '' && (
+                  <div className="workspace-alert workspace-alert--success">{notice}</div>
                 )}
 
-                <button type="submit" disabled={saving || !offeringForm.course_id}>
-                  {saving ? 'Saving...' : selectedOfferingId ? 'Save offering' : 'Create offering'}
-                </button>
-
-                {selectedOfferingId && (
-                  <button
-                    type="button"
-                    className="workspace-danger-action workspace-danger-action--wide"
-                    onClick={() => void handleDeleteOffering()}
-                    disabled={saving}
-                  >
-                    Delete offering
-                  </button>
-                )}
-              </form>
-            </section>
-          </aside>
+                <div className="workspace-modal-body">{courseEditor}</div>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </section>

@@ -27,7 +27,7 @@ services:
         condition: service_healthy
     environment:
       API_PORT: 3001
-      DATABASE_URL: mysql://swinlearn:password@mysql:3306/swinlearn
+      DATABASE_URL: ${DOCKER_API_DATABASE_URL:-mysql://swinlearn:password@mysql:3306/swinlearn}
       SESSION_SECRET: ${SESSION_SECRET:-docker-development-session-secret-change-me}
     ports:
       - "3001:3001"
@@ -35,20 +35,31 @@ services:
       - .:/app
       - node_modules:/app/node_modules
     command: ["node", "server/docker-start.js"]
+    healthcheck:
+      test: ["CMD-SHELL", "node -e \"fetch('http://127.0.0.1:3001/api/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))\""]
+      interval: 5s
+      timeout: 3s
+      retries: 20
 
   web:
     build: .
     restart: unless-stopped
     depends_on:
-      - api
+      api:
+        condition: service_healthy
     environment:
       VITE_API_PROXY_TARGET: http://api:3001
+      VITE_DOCKER_DEV: "true"
+      CHOKIDAR_USEPOLLING: "true"
+      CHOKIDAR_INTERVAL: "250"
+      VITE_HMR_HOST: localhost
+      VITE_HMR_CLIENT_PORT: "5173"
     ports:
       - "5173:5173"
     volumes:
       - .:/app
       - node_modules:/app/node_modules
-    command: ["npm", "run", "dev:web", "--", "--host", "0.0.0.0"]
+    command: ["npm", "run", "dev:native:web", "--", "--host", "0.0.0.0"]
 
 volumes:
   mysql-data:

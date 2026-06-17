@@ -1,3 +1,5 @@
+import { httpError } from '../http.js'
+
 const requiredRuleTypes = new Set(['core', 'major'])
 
 const courseKey = (course) => course.code ?? course.id
@@ -68,31 +70,31 @@ export function validateCurriculumRuleInput(input) {
   const childMajorId = input.child_major_id || null
 
   if (!['core', 'major', 'elective'].includes(ruleType)) {
-    throw new Error('Curriculum rule type must be core, major, or elective.')
+    throw httpError(400, 'Curriculum rule type must be core, major, or elective.')
   }
 
   if (!['global', 'main_major', 'child_major'].includes(scope)) {
-    throw new Error('Curriculum scope must be global, main_major, or child_major.')
+    throw httpError(400, 'Curriculum scope must be global, main_major, or child_major.')
   }
 
   if (ruleType === 'core' && scope !== 'main_major') {
-    throw new Error('Core courses must be scoped to one main major.')
+    throw httpError(400, 'Core courses must be scoped to one main major.')
   }
 
   if (ruleType === 'major' && scope !== 'child_major') {
-    throw new Error('Major courses must be scoped to one child major.')
+    throw httpError(400, 'Major courses must be scoped to one child major.')
   }
 
   if (scope === 'global' && (mainMajorId || childMajorId)) {
-    throw new Error('Global curriculum rules cannot target a major.')
+    throw httpError(400, 'Global curriculum rules cannot target a major.')
   }
 
   if (scope === 'main_major' && (!mainMajorId || childMajorId)) {
-    throw new Error('Main-major curriculum rules must target exactly one main major.')
+    throw httpError(400, 'Main-major curriculum rules must target exactly one main major.')
   }
 
   if (scope === 'child_major' && (mainMajorId || !childMajorId)) {
-    throw new Error('Child-major curriculum rules must target exactly one child major.')
+    throw httpError(400, 'Child-major curriculum rules must target exactly one child major.')
   }
 
   return {

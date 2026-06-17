@@ -184,89 +184,6 @@
   color: #ffffff;
 }
 
-.admin-course-browser {
-  align-content: start;
-  gap: 10px;
-  grid-auto-rows: min-content;
-}
-
-.admin-course-picker-group {
-  border: 1px solid transparent;
-  border-radius: 8px;
-  display: grid;
-  gap: 7px;
-  padding: 10px;
-}
-
-.admin-course-picker-group--main {
-  background: #fff7f7;
-  border-color: #ffd7d7;
-}
-
-.admin-course-picker-group--child {
-  background: #ffffff;
-  border-color: var(--border);
-}
-
-.admin-course-picker-label {
-  color: var(--muted);
-  font-size: 0.72rem;
-  font-weight: 900;
-  letter-spacing: 0.1em;
-  line-height: 1;
-  text-transform: uppercase;
-}
-
-.admin-course-picker-group--main .admin-course-picker-label {
-  color: var(--accent);
-}
-
-.admin-course-picker {
-  align-content: flex-start;
-  align-items: center;
-  gap: 6px;
-}
-
-.admin-course-tab {
-  align-items: center;
-  display: inline-flex;
-  flex: 0 1 auto;
-  justify-content: center;
-  line-height: 1.2;
-  max-width: 220px;
-  min-height: 34px;
-  overflow: hidden;
-  padding: 7px 11px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  width: auto;
-}
-
-.admin-course-picker--main .admin-course-tab {
-  background: #ffffff;
-  border-color: #ffc5c5;
-  box-shadow: 0 6px 12px rgba(168, 0, 0, 0.08);
-  font-size: 0.86rem;
-  min-height: 36px;
-  padding: 8px 12px;
-}
-
-.admin-course-picker--main .admin-course-tab:hover,
-.admin-course-picker--main .admin-course-tab:focus-visible {
-  background: #fff0f0;
-}
-
-.admin-course-picker--main .admin-course-tab.workspace-tab--active {
-  background: var(--accent);
-  border-color: var(--accent);
-  color: #ffffff;
-}
-
-.admin-course-picker--child .admin-course-tab {
-  font-size: 0.82rem;
-  max-width: 240px;
-}
-
 .workspace-danger-action {
   background: #fff0f0;
   border-color: #ffc8c8;
@@ -455,7 +372,8 @@
 
 .workspace-form {
   display: grid;
-  gap: 12px;
+  gap: 6px;
+  min-width: 0;
 }
 
 .workspace-form--inline {
@@ -468,11 +386,13 @@
   display: grid;
   gap: 12px;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  min-width: 0;
 }
 
 .workspace-form label {
   display: grid;
   gap: 8px;
+  min-width: 0;
 }
 
 .workspace-form span {
@@ -489,8 +409,11 @@
   border-radius: 8px;
   color: var(--text);
   font-size: 0.95rem;
+  max-width: 100%;
+  min-width: 0;
   outline: none;
   padding: 12px 14px;
+  width: 100%;
 }
 
 .workspace-form textarea {
@@ -506,6 +429,8 @@
   color: #ffffff;
   cursor: pointer;
   font-weight: 800;
+  max-width: 100%;
+  min-width: 0;
   padding: 12px 14px;
 }
 
@@ -564,6 +489,94 @@
   display: grid;
   gap: 12px;
   padding: 14px;
+}
+
+.workspace-modal-backdrop {
+  align-items: center;
+  background: rgba(15, 23, 42, 0.46);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 24px;
+  position: fixed;
+  z-index: 50;
+}
+
+.workspace-modal {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 22px 60px rgba(15, 23, 42, 0.24);
+  display: grid;
+  gap: 16px;
+  max-height: calc(100vh - 48px);
+  max-width: calc(100vw - 48px);
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 22px;
+  width: min(560px, 100%);
+}
+
+.workspace-modal--wide {
+  width: min(900px, calc(100vw - 48px));
+}
+
+.workspace-modal-header {
+  align-items: start;
+  display: flex;
+  gap: 16px;
+  justify-content: space-between;
+}
+
+.workspace-modal-header h2 {
+  color: var(--text);
+  font-size: 1.15rem;
+}
+
+.workspace-modal-header p {
+  color: var(--muted);
+  line-height: 1.5;
+  margin-top: 4px;
+}
+
+.workspace-modal-actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.workspace-modal-close {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  font-weight: 800;
+  padding: 10px 12px;
+}
+
+.workspace-modal-close:hover,
+.workspace-modal-close:focus-visible {
+  border-color: var(--accent);
+  color: var(--accent);
+  outline: none;
+}
+
+.workspace-modal-body {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+}
+
+.workspace-modal-body--two {
+  align-items: start;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.workspace-modal-body > * {
+  min-width: 0;
 }
 
 .inbox-shell {
@@ -724,14 +737,29 @@
   }
 
   .workspace-section-heading,
+  .workspace-modal-header,
   .workspace-member,
   .workspace-submission {
     align-items: stretch;
     flex-direction: column;
   }
 
-  .admin-course-tab {
-    max-width: 100%;
-    white-space: normal;
+  .workspace-modal-backdrop {
+    align-items: stretch;
+    padding: 12px;
   }
+
+  .workspace-modal {
+    max-height: calc(100vh - 24px);
+    padding: 16px;
+  }
+
+  .workspace-modal-body--two {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace-modal-actions {
+    justify-content: flex-start;
+  }
+
 }

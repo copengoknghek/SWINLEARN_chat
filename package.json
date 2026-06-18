@@ -4,13 +4,28 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "docker compose up --build",
+    "dev:down": "docker compose down",
+    "dev:api": "node server/index.js",
+    "dev:web": "vite",
+    "dev:native:api": "node server/index.js",
+    "dev:native:web": "vite",
+    "docker:dev": "npm run dev",
+    "docker:down": "npm run dev:down",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:migrate:deploy": "prisma migrate deploy",
+    "prisma:seed": "prisma db seed",
+    "prisma:clear-demo": "node prisma/clear-demo-data.js"
   },
   "dependencies": {
-    "@supabase/supabase-js": "^2.106.2",
+    "@prisma/client": "6.19.0",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "multer": "^2.0.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "react-router-dom": "^7.15.1"
@@ -27,6 +42,10 @@
     "globals": "^17.6.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
+    "prisma": "6.19.0",
     "vite": "^8.0.12"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
   }
 }

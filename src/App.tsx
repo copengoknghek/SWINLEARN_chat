@@ -1,20 +1,22 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import './App.css'
-import HomePage from './pages/HomePage/HomePage'
-import LoginPage from './pages/LoginPage/LoginPage'
-import ChangePasswordPage from './pages/ChangePasswordPage/ChangePasswordPage'
-import CoursesPage from './pages/CoursesPage/CoursesPage'
-import NewsPage from './pages/NewsPage/NewsPage'
-import EventsPage from './pages/EventsPage/EventsPage'
-import WorkspaceLayout from './layouts/WorkspaceLayout/WorkspaceLayout'
-import MyCoursesPage from './pages/workspace/MyCoursesPage'
-import WorkspaceCalendarPage from './pages/workspace/WorkspaceCalendarPage'
-import InboxPage from './pages/workspace/InboxPage'
-import HelpPage from './pages/workspace/HelpPage'
-import AccountPage from './pages/workspace/AccountPage'
-import SwinlearnPage from './pages/SwinlearnPage/SwinlearnPage'
-import AdminCoursesPage from './pages/workspace/AdminCoursesPage'
-import AdminUsersPage from './pages/workspace/AdminUsersPage'
+import HomePage from './features/swinburne/pages/HomePage/HomePage'
+import CoursesPage from './features/swinburne/pages/CoursesPage/CoursesPage'
+import NewsPage from './features/swinburne/pages/NewsPage/NewsPage'
+import EventsPage from './features/swinburne/pages/EventsPage/EventsPage'
+import LoginPage from './features/swinlearn/pages/LoginPage/LoginPage'
+import ChangePasswordPage from './features/swinlearn/pages/ChangePasswordPage/ChangePasswordPage'
+import WorkspaceLayout from './features/swinlearn/layouts/WorkspaceLayout/WorkspaceLayout'
+import AdminCourseOfferPage from './features/swinlearn/pages/admin/AdminCourseOfferPage'
+import AdminCoursesPage from './features/swinlearn/pages/admin/AdminCoursesPage'
+import AdminUsersPage from './features/swinlearn/pages/admin/AdminUsersPage'
+import AccountPage from './features/swinlearn/pages/shared/AccountPage'
+import HelpPage from './features/swinlearn/pages/shared/HelpPage'
+import InboxPage from './features/swinlearn/pages/shared/InboxPage'
+import MyCoursesPage from './features/swinlearn/pages/shared/MyCoursesPage'
+import WorkspaceCalendarPage from './features/swinlearn/pages/shared/WorkspaceCalendarPage'
+import RegisterCoursesPage from './features/swinlearn/pages/student/RegisterCoursesPage'
+import SwinlearnPage from './features/swinlearn/pages/student/SwinlearnPage/SwinlearnPage'
 
 function App() {
   return (
@@ -32,6 +34,7 @@ function App() {
           <Route path="dashboard" element={<Navigate to="/admin/courses" replace />} />
           <Route path="my-courses" element={<Navigate to="/admin/courses" replace />} />
           <Route path="courses" element={<AdminCoursesPage />} />
+          <Route path="course-offer" element={<AdminCourseOfferPage />} />
           <Route path="users" element={<AdminUsersPage />} />
           <Route path="inbox" element={<InboxPage />} />
           <Route path="account" element={<AccountPage />} />
@@ -53,6 +56,7 @@ function App() {
           <Route index element={<Navigate to="my-courses" replace />} />
           <Route path="dashboard" element={<Navigate to="/student/my-courses" replace />} />
           <Route path="my-courses" element={<MyCoursesPage />} />
+          <Route path="register" element={<RegisterCoursesPage />} />
           <Route path="calendar" element={<WorkspaceCalendarPage />} />
           <Route path="inbox" element={<InboxPage />} />
           <Route path="help" element={<HelpPage />} />

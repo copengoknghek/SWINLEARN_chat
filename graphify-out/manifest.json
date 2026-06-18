@@ -1,0 +1,482 @@
+{
+  ".codex/hooks.json": {
+    "mtime": 1781165961.0348363,
+    "ast_hash": "b5b96d683c12d6137821a079ebb0e93d",
+    "semantic_hash": ""
+  },
+  "eslint.config.js": {
+    "mtime": 1779260364.7797332,
+    "ast_hash": "0355276bc79439afe3c53e3a2470ca1e",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1781254269.1530335,
+    "ast_hash": "cc27ce8bf9925cd7f1f5171925b01404",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260610020624_init_mysql_schema/migration.sql": {
+    "mtime": 1781057184.2691374,
+    "ast_hash": "3812a8856a9ade836b714976d04f5a11",
+    "semantic_hash": ""
+  },
+  "prisma/seed.js": {
+    "mtime": 1781664946.4331503,
+    "ast_hash": "c7f3562ebb2467d7db68eb3b5a09bcfc",
+    "semantic_hash": ""
+  },
+  "server/auth-middleware.js": {
+    "mtime": 1780906332.0539927,
+    "ast_hash": "07c05bb66cdfd3311b4a40616050e8d0",
+    "semantic_hash": ""
+  },
+  "server/db.js": {
+    "mtime": 1780906331.5406637,
+    "ast_hash": "a195dc9850f2efb634aa7d7f8ac6cd6d",
+    "semantic_hash": ""
+  },
+  "server/docker-start.js": {
+    "mtime": 1781234148.3846374,
+    "ast_hash": "f682a8afb204e66ad1c6e6b11db72d9a",
+    "semantic_hash": ""
+  },
+  "server/http.js": {
+    "mtime": 1781168168.2050912,
+    "ast_hash": "e2f6c873457f6a532f63ead00c7c4710",
+    "semantic_hash": ""
+  },
+  "server/index.js": {
+    "mtime": 1781168168.4064155,
+    "ast_hash": "315b60c8f6f63a9f322691f7e1c15652",
+    "semantic_hash": ""
+  },
+  "server/mappers.js": {
+    "mtime": 1781599401.2745645,
+    "ast_hash": "05400d3686185cd1ce32dcd629a6b9e6",
+    "semantic_hash": ""
+  },
+  "server/routes/admin.js": {
+    "mtime": 1781599534.4967394,
+    "ast_hash": "f493e968039ed2ef9cbdb4f0f7782ccd",
+    "semantic_hash": ""
+  },
+  "server/routes/auth.js": {
+    "mtime": 1780906332.489361,
+    "ast_hash": "d57451be642b1f2a29a778be880808b1",
+    "semantic_hash": ""
+  },
+  "server/routes/workspace.js": {
+    "mtime": 1781670856.9449246,
+    "ast_hash": "a8120e6f46f9de7b954a1213ed99d5a3",
+    "semantic_hash": ""
+  },
+  "server/services/curriculum.js": {
+    "mtime": 1781168553.8255847,
+    "ast_hash": "522dfe660f6cc26a52f9497d6516f761",
+    "semantic_hash": ""
+  },
+  "server/services/session.js": {
+    "mtime": 1780906331.7567465,
+    "ast_hash": "fd7f8b60be3c67baf05bad887b41ba2e",
+    "semantic_hash": ""
+  },
+  "skills-lock.json": {
+    "mtime": 1780902766.4065332,
+    "ast_hash": "a5ce57e17f3444aa846187d8761e81f5",
+    "semantic_hash": ""
+  },
+  "src/App.tsx": {
+    "mtime": 1781592988.0521362,
+    "ast_hash": "96d17fcb96af85fa36a92007a8e26539",
+    "semantic_hash": ""
+  },
+  "src/context/AuthContext.tsx": {
+    "mtime": 1779865025.5819457,
+    "ast_hash": "e5d86a7014eebc02c70d1d97423b26ae",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/AboutSection/AboutSection.tsx": {
+    "mtime": 1779433484.4161434,
+    "ast_hash": "d2a52769b07a0e426b6ad53da8f17fab",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/ContactSection/ContactSection.tsx": {
+    "mtime": 1779871017.5767524,
+    "ast_hash": "8a9142c193556f88ba2a7bb432b1417b",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/EventsSection/EventsSection.tsx": {
+    "mtime": 1779870994.587639,
+    "ast_hash": "d9348b9332942f9df3e68f6ab887800e",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/FeatureGrid/FeatureGrid.tsx": {
+    "mtime": 1779871056.7774477,
+    "ast_hash": "416fd0532d80b5c1ee7243167401fc8e",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/Footer/Footer.tsx": {
+    "mtime": 1779356149.4201207,
+    "ast_hash": "635397e7ff77887601db4a750b51b6cb",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/Hero/Hero.tsx": {
+    "mtime": 1779871027.5318155,
+    "ast_hash": "5114bf16aae36e714fb53fe2aee7f209",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/Navbar/Navbar.tsx": {
+    "mtime": 1779438066.5236123,
+    "ast_hash": "87d668f608596cc7489d26ebbfb94484",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/NewsSection/NewsSection.tsx": {
+    "mtime": 1779870975.3089125,
+    "ast_hash": "ac20c7951adf90ec546bfd7a30651bd2",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/components/PageLinks/PageLinks.tsx": {
+    "mtime": 1779871366.303145,
+    "ast_hash": "273462328331dd875d35a594cd56f49e",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/data/fanpageContent.ts": {
+    "mtime": 1780369565.647231,
+    "ast_hash": "94c8ad4d41bbac61fdffdbe51a9b0a71",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/pages/CalendarPage/CalendarPage.tsx": {
+    "mtime": 1779675985.0775356,
+    "ast_hash": "068becd7cdaa6ded82781c2994d7694c",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/pages/CoursesPage/CoursesPage.tsx": {
+    "mtime": 1781247724.5717826,
+    "ast_hash": "3e206a4ad9c07564f8533449a4f82243",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/pages/EventsPage/EventsPage.tsx": {
+    "mtime": 1780371119.3549895,
+    "ast_hash": "c1cfaba6d33e52ddaa67417ed62b5c63",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/pages/HomePage/HomePage.tsx": {
+    "mtime": 1779413572.7284462,
+    "ast_hash": "7c696b8f697d008e4de4f6f47d51fbd7",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/pages/NewsPage/NewsPage.tsx": {
+    "mtime": 1779871066.617998,
+    "ast_hash": "1a45597fb0fccf78a757473ee65a1859",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/layouts/WorkspaceLayout/WorkspaceLayout.tsx": {
+    "mtime": 1780476995.463259,
+    "ast_hash": "554e104a5ae35af9b9ad53e263dc356a",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/lib/workspace/api.ts": {
+    "mtime": 1781599544.87154,
+    "ast_hash": "18600bd755a83e600810f8551521f322",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/lib/workspace/navigation.ts": {
+    "mtime": 1781592995.163663,
+    "ast_hash": "a87602be07987b9045c94a350c05bf0b",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/lib/workspace/types.ts": {
+    "mtime": 1781599411.1225376,
+    "ast_hash": "8636e2127317988c71fc737ecaab7adf",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/ChangePasswordPage/ChangePasswordPage.tsx": {
+    "mtime": 1780906474.2908013,
+    "ast_hash": "8ac9654265b56ca2c3c123f4d5cec5b7",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/LoginPage/LoginPage.tsx": {
+    "mtime": 1780476995.5834537,
+    "ast_hash": "1d8c9d844e9e1801d24917d9d4a59a0e",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/admin/AdminCoursesPage.tsx": {
+    "mtime": 1781598181.6877887,
+    "ast_hash": "68b3698663e6e8f43683d18aaaab846e",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/admin/AdminUsersPage.tsx": {
+    "mtime": 1781595214.8489535,
+    "ast_hash": "f9096245c8f0e1e54dbb33dfd4798c67",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/AccountPage.tsx": {
+    "mtime": 1780476995.8886678,
+    "ast_hash": "3334e2ed7d47b8b9f5e140ae179b3dba",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/HelpPage.tsx": {
+    "mtime": 1779871242.4928708,
+    "ast_hash": "4ca9ef8ea3cf61e3d21b76b7405b4bff",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/InboxPage.tsx": {
+    "mtime": 1780906474.4414666,
+    "ast_hash": "ac2c67101c2cf7e3310ef4bd3456ab88",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/MyCoursesPage.tsx": {
+    "mtime": 1780906512.3582656,
+    "ast_hash": "2a850aecacb02af2cf8425cfb12f765c",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/WorkspaceCalendarPage.tsx": {
+    "mtime": 1780476996.2186174,
+    "ast_hash": "8ae169b6174274526dfb4558e22ec50c",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/student/SwinlearnPage/SwinlearnPage.tsx": {
+    "mtime": 1781234214.775989,
+    "ast_hash": "68a1d4dfc807d4e459a0874c7ba1a13d",
+    "semantic_hash": ""
+  },
+  "src/hooks/useAuth.ts": {
+    "mtime": 1780907158.8606226,
+    "ast_hash": "2e96b80ac6473d136917042f7604301c",
+    "semantic_hash": ""
+  },
+  "src/lib/api/client.ts": {
+    "mtime": 1781514485.783908,
+    "ast_hash": "c2c834f5f22f86e622ba9562fadb04ee",
+    "semantic_hash": ""
+  },
+  "src/main.tsx": {
+    "mtime": 1779865025.2212467,
+    "ast_hash": "facd04e0d4f3bb8fee5783a1ea545436",
+    "semantic_hash": ""
+  },
+  "tsconfig.app.json": {
+    "mtime": 1779260364.8161366,
+    "ast_hash": "136630b5accce1ca50663df229534a26",
+    "semantic_hash": ""
+  },
+  "tsconfig.json": {
+    "mtime": 1779260364.8221414,
+    "ast_hash": "a3d39fa780ebff65444de257f291ce6c",
+    "semantic_hash": ""
+  },
+  "tsconfig.node.json": {
+    "mtime": 1779260364.8267026,
+    "ast_hash": "70bdd0a673bcfc0e828080b306e7c680",
+    "semantic_hash": ""
+  },
+  "vite.config.ts": {
+    "mtime": 1781510032.7877102,
+    "ast_hash": "0a730dc1646c130a71e68188a1ee02a9",
+    "semantic_hash": ""
+  },
+  ".agents/skills/design-taste-frontend/SKILL.md": {
+    "mtime": 1780902766.156327,
+    "ast_hash": "648c8bf98f84fbe7f14bf2da035c57fe",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/SKILL.md": {
+    "mtime": 1781165961.0107608,
+    "ast_hash": "387caca7fe66d3151e67c512bc93dd25",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/add-watch.md": {
+    "mtime": 1781165812.6148143,
+    "ast_hash": "0df0589623217ca38a12bdcabfb42f4c",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/exports.md": {
+    "mtime": 1781165812.615341,
+    "ast_hash": "7fb1a81aca17a462db70684a324fcfb0",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/extraction-spec.md": {
+    "mtime": 1781165812.615341,
+    "ast_hash": "a86a7321597b23cc2b22e011b3dc6e1d",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/github-and-merge.md": {
+    "mtime": 1781165812.615341,
+    "ast_hash": "cde13df085e4c492aeb7ba298a996d0d",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/hooks.md": {
+    "mtime": 1781165812.615341,
+    "ast_hash": "3f545db6ce646650bb9de588f5512a27",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/query.md": {
+    "mtime": 1781165812.615341,
+    "ast_hash": "c2a8e798674a81b02aa9975f43023819",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/transcribe.md": {
+    "mtime": 1781165812.6208296,
+    "ast_hash": "70f6aa30d6211f3a2c7e9fc45479f50c",
+    "semantic_hash": ""
+  },
+  ".codex/skills/graphify/references/update.md": {
+    "mtime": 1781165812.6219,
+    "ast_hash": "0dad167a95bdb389f02fecffb60b1bc8",
+    "semantic_hash": ""
+  },
+  "AGENTS.md": {
+    "mtime": 1781166133.3914301,
+    "ast_hash": "18bde4e9dff53f4e4ccf34ccc69ab494",
+    "semantic_hash": ""
+  },
+  "README.docker.md": {
+    "mtime": 1781510041.4750288,
+    "ast_hash": "10005f19921526ab82634695fc159738",
+    "semantic_hash": ""
+  },
+  "docker-compose.yml": {
+    "mtime": 1781510019.9416928,
+    "ast_hash": "d62a550e6fd24ed45673bd602003131d",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1779348553.7889903,
+    "ast_hash": "ea8a84e09457f715b0362b76e27a7da4",
+    "semantic_hash": ""
+  },
+  "public/events/ai-tutor-lab.png": {
+    "mtime": 1780368864.0339265,
+    "ast_hash": "a85700beb61eea438f5b4c4952710194",
+    "semantic_hash": ""
+  },
+  "public/events/orientation-week-kickoff.png": {
+    "mtime": 1780368775.2910974,
+    "ast_hash": "059f4f393d44bbb0bd8d2a950ff220e0",
+    "semantic_hash": ""
+  },
+  "public/events/resume-clinic.png": {
+    "mtime": 1780368922.1895843,
+    "ast_hash": "f4ca58c2ae62467942b2c963edeaee68",
+    "semantic_hash": ""
+  },
+  "public/swinburneLogo.png": {
+    "mtime": 1779420910.9825115,
+    "ast_hash": "7d8080485e8c6c03aab83cf17526ff8d",
+    "semantic_hash": ""
+  },
+  "server/app.js": {
+    "mtime": 1781168168.309605,
+    "ast_hash": "2875fac2ce129031c9bac34d05a6ccdd",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20260611_082248_how_should_future_codex_sessions_use_graphify_and.md": {
+    "mtime": 1781166168.7243626,
+    "ast_hash": "1ac1fb57b26578b175ea9347aa9c2068",
+    "semantic_hash": ""
+  },
+  "prisma/clear-demo-data.js": {
+    "mtime": 1781664957.9928873,
+    "ast_hash": "6620cc9d244a2e453c68a30c25fa20e7",
+    "semantic_hash": ""
+  },
+  "src/features/swinburne/data/majorDatabase.ts": {
+    "mtime": 1781246671.7360191,
+    "ast_hash": "6f1df8e8e2af14f8f48747cf075b998f",
+    "semantic_hash": ""
+  },
+  "server/services/courseDeletion.js": {
+    "mtime": 1781513355.3868995,
+    "ast_hash": "93466addd8216408b3ee7c0bfd669bc7",
+    "semantic_hash": ""
+  },
+  "server/services/courseDeletion.test.mjs": {
+    "mtime": 1781513324.6770904,
+    "ast_hash": "f5c10eb2be05c47bd1b619a55269c1c7",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/admin/adminCourseSelection.ts": {
+    "mtime": 1781597345.6736999,
+    "ast_hash": "66a80ba2ab2455cc1bd523dbbc47a41a",
+    "semantic_hash": ""
+  },
+  "server/services/courseCreation.js": {
+    "mtime": 1781513347.354418,
+    "ast_hash": "c1702afa2c1f67d3b2163bb1dcbc446e",
+    "semantic_hash": ""
+  },
+  "server/services/courseCreation.test.mjs": {
+    "mtime": 1781513312.2958505,
+    "ast_hash": "5a0da4949abfcfdd5f54b6dc332eb540",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260615090000_course_prerequisites/migration.sql": {
+    "mtime": 1781513274.5987246,
+    "ast_hash": "4e3ea4d89aab3c3edcfa3d4110e7840a",
+    "semantic_hash": ""
+  },
+  "server/services/prerequisites.js": {
+    "mtime": 1781599499.9392605,
+    "ast_hash": "16fc0e0af8a94d65c7263b8f2ccea67b",
+    "semantic_hash": ""
+  },
+  "server/services/prerequisites.test.mjs": {
+    "mtime": 1781664829.1003509,
+    "ast_hash": "6465d30a630e216f7c08ff873b7a7b03",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/student/RegisterCoursesPage.tsx": {
+    "mtime": 1781670838.9115627,
+    "ast_hash": "3c4de19e63b8a359a6aa69c5fe7b2d89",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx": {
+    "mtime": 1781599866.995906,
+    "ast_hash": "059eca2afe21601de848f8de76c17565",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/admin/adminCourseOfferSelection.ts": {
+    "mtime": 1781599448.2178993,
+    "ast_hash": "39e2592658b5516dafe9a81e8e9f7514",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260616090000_teacher_main_major/migration.sql": {
+    "mtime": 1781594923.523809,
+    "ast_hash": "65751b6bf30bfa9d21f55fa1f4cbeaaa",
+    "semantic_hash": ""
+  },
+  "server/services/adminUsers.js": {
+    "mtime": 1781594923.1851566,
+    "ast_hash": "3d7ec7c579c4acdf7bae8d5dd7c5142e",
+    "semantic_hash": ""
+  },
+  "server/services/adminUsers.test.mjs": {
+    "mtime": 1781594793.3395464,
+    "ast_hash": "649d297ffd07f30f1868b496e102a09c",
+    "semantic_hash": ""
+  },
+  "server/services/teacherEligibility.js": {
+    "mtime": 1781594923.2960095,
+    "ast_hash": "273fe1eb87efdd7747d7caf7f9505bfc",
+    "semantic_hash": ""
+  },
+  "server/services/teacherEligibility.test.mjs": {
+    "mtime": 1781594793.1554878,
+    "ast_hash": "3a73bcf404d9c23902fa3a75d5b6d9f1",
+    "semantic_hash": ""
+  },
+  "prisma/migrations/20260616103000_course_registration_requests/migration.sql": {
+    "mtime": 1781599393.0211906,
+    "ast_hash": "82d42affdd4a7ae2e989ef9e2e2df6ea",
+    "semantic_hash": ""
+  },
+  "server/services/registrationRequests.js": {
+    "mtime": 1781670810.7605047,
+    "ast_hash": "bbb9995e9d33ccce3e6de81a19539624",
+    "semantic_hash": ""
+  },
+  "server/services/registrationRequests.test.mjs": {
+    "mtime": 1781670748.2638974,
+    "ast_hash": "62d029bb036edccc0281f3fb76bb9185",
+    "semantic_hash": ""
+  }
+}

@@ -1,8 +1,12 @@
-import { useEffect, useState } from 'react'
-import type { User } from '@supabase/supabase-js'
-import { supabase } from '../lib/supabase/client'
+import { useCallback, useEffect, useState } from 'react'
+import { getCurrentAuth, login, logout } from '../features/swinlearn/lib/workspace/api'
 
 export type Role = 'admin' | 'teacher' | 'student'
+
+export type AuthUser = {
+  id: string
+  email: string
+}
 
 type AuthProfile = {
   userId: string
@@ -11,7 +15,7 @@ type AuthProfile = {
 }
 
 type UseAuthReturn = {
-  user: User | null
+  user: AuthUser | null
   role: Role | null
   mustChangePassword: boolean
   loading: boolean
@@ -20,150 +24,93 @@ type UseAuthReturn = {
   refreshProfile: () => Promise<void>
 }
 
-const isRole = (value: unknown): value is Role =>
-  value === 'admin' || value === 'teacher' || value === 'student'
-
 export function useAuth(): UseAuthReturn {
-  const [user, setUser] = useState<User | null>(null)
+  const [user, setUser] = useState<AuthUser | null>(null)
   const [authProfile, setAuthProfile] = useState<AuthProfile | null>(null)
-  const [sessionLoading, setSessionLoading] = useState(true)
+  const [loading, setLoading] = useState(true)
 
-  const userId = user?.id ?? null
-  const role = userId !== null && authProfile?.userId === userId ? authProfile.role : null
-  const mustChangePassword =
-    userId !== null && authProfile?.userId === userId ? authProfile.mustChangePassword : false
-  const loading = sessionLoading || (userId !== null && authProfile?.userId !== userId)
+  const applyAuthPayload = useCallback(
+    (payload: Awaited<ReturnType<typeof getCurrentAuth>>) => {
+      if (!payload.user) {
+        setUser(null)
+        setAuthProfile(null)
+        return
+      }
+
+      setUser(payload.user)
+      setAuthProfile({
+        userId: payload.user.id,
+        role: payload.role ?? null,
+        mustChangePassword: payload.mustChangePassword === true,
+      })
+    },
+    [],
+  )
+
+  const refreshProfile = useCallback(async () => {
+    const payload = await getCurrentAuth()
+    applyAuthPayload(payload)
+  }, [applyAuthPayload])
 
   useEffect(() => {
     let isMounted = true
 
-    const getCurrentSession = async () => {
+    const loadSession = async () => {
       try {
-        const { data, error } = await supabase.auth.getSession()
+        const payload = await getCurrentAuth()
 
-        if (!isMounted) {
-          return
+        if (isMounted) {
+          applyAuthPayload(payload)
         }
-
-        setUser(error ? null : data.session?.user ?? null)
       } catch {
-        if (!isMounted) {
-          return
+        if (isMounted) {
+          setUser(null)
+          setAuthProfile(null)
         }
-
-        setUser(null)
       } finally {
         if (isMounted) {
-          setSessionLoading(false)
+          setLoading(false)
         }
       }
     }
 
-    getCurrentSession()
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!isMounted) {
-        return
-      }
-
-      setUser(session?.user ?? null)
-      setSessionLoading(false)
-    })
+    void loadSession()
 
     return () => {
       isMounted = false
-      subscription.unsubscribe()
     }
-  }, [])
-
-  const getAuthProfile = async (nextUserId: string): Promise<AuthProfile> => {
-    let nextRole: Role | null
-    let nextMustChangePassword = false
-
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('role,must_change_password,status')
-        .eq('id', nextUserId)
-        .maybeSingle()
-
-      nextRole = !error && data?.status !== 'inactive' && isRole(data?.role) ? data.role : null
-      nextMustChangePassword = !error && data?.must_change_password === true
-    } catch {
-      nextRole = null
-    }
-
-    return {
-      userId: nextUserId,
-      role: nextRole,
-      mustChangePassword: nextMustChangePassword,
-    }
-  }
-
-  useEffect(() => {
-    let isCurrent = true
-
-    if (userId === null) {
-      return () => {
-        isCurrent = false
-      }
-    }
-
-    const loadProfile = async () => {
-      const nextProfile = await getAuthProfile(userId)
-
-      if (!isCurrent) {
-        return
-      }
-
-      setAuthProfile(nextProfile)
-    }
-
-    void loadProfile()
-
-    return () => {
-      isCurrent = false
-    }
-  }, [userId])
+  }, [applyAuthPayload])
 
   const signIn = async (email: string, password: string) => {
     try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-
-      if (error) {
-        return { error: 'Invalid email or password' }
-      }
+      const payload = await login(email, password)
+      applyAuthPayload(payload)
 
       return { error: null }
     } catch {
+      setUser(null)
+      setAuthProfile(null)
+
       return { error: 'Invalid email or password' }
     }
   }
 
   const signOut = async () => {
     try {
-      await supabase.auth.signOut()
+      await logout()
     } finally {
       setUser(null)
       setAuthProfile(null)
-      setSessionLoading(false)
+      setLoading(false)
     }
   }
 
-  const refreshProfile = async () => {
-    if (userId === null) {
-      return
-    }
-
-    setAuthProfile(await getAuthProfile(userId))
-  }
+  const currentAuthProfile = authProfile?.userId === user?.id ? authProfile : null
 
   return {
     user,
-    role,
-    mustChangePassword,
+    role: currentAuthProfile?.role ?? null,
+    mustChangePassword: currentAuthProfile?.mustChangePassword ?? false,
     loading,
     signIn,
     signOut,

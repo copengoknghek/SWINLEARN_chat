@@ -1,16 +1,16 @@
-# Graph Report - swinlearn  (2026-06-17)
+# Graph Report - swinlearn  (2026-06-18)
 
 ## Corpus Check
-- 88 files · ~262,533 words
+- 88 files · ~263,312 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 783 nodes · 1413 edges · 58 communities (50 shown, 8 thin omitted)
+- 788 nodes · 1418 edges · 57 communities (49 shown, 8 thin omitted)
 - Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c0b17f63`
+- Built from commit: `1275f48e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -64,7 +64,6 @@
 - [[_COMMUNITY_Community 47|Community 47]]
 - [[_COMMUNITY_Community 48|Community 48]]
 - [[_COMMUNITY_Community 49|Community 49]]
-- [[_COMMUNITY_Community 50|Community 50]]
 - [[_COMMUNITY_Community 51|Community 51]]
 - [[_COMMUNITY_Community 52|Community 52]]
 - [[_COMMUNITY_Community 53|Community 53]]
@@ -94,13 +93,13 @@
   src/features/swinlearn/pages/student/RegisterCoursesPage.tsx → src/context/AuthContext.tsx
 - `createApp()` --calls--> `asyncHandler()`  [EXTRACTED]
   server/app.js → server/http.js
-- `attachUser()` --calls--> `getSessionUser()`  [EXTRACTED]
-  server/auth-middleware.js → server/services/session.js
+- `requireStudentRegistrationContext()` --calls--> `requireRole()`  [EXTRACTED]
+  server/routes/workspace.js → server/auth-middleware.js
 
 ## Import Cycles
 - 3-file cycle: `src/features/swinlearn/lib/workspace/api.ts -> src/features/swinlearn/lib/workspace/types.ts -> src/hooks/useAuth.ts -> src/features/swinlearn/lib/workspace/api.ts`
 
-## Communities (58 total, 8 thin omitted)
+## Communities (57 total, 8 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.13
@@ -111,8 +110,8 @@ Cohesion: 0.04
 Nodes (45): dependencies, dotenv, express, multer, @prisma/client, react, react-dom, react-router-dom (+37 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.11
-Nodes (18): ChangePasswordPage(), AuthContext, AuthContextValue, AuthProvider(), AuthProviderProps, useAuthContext(), useAuth(), LoginPage() (+10 more)
+Cohesion: 0.09
+Nodes (21): ChangePasswordPage(), AuthContext, AuthContextValue, AuthProvider(), AuthProviderProps, useAuthContext(), useAuth(), LoginPage() (+13 more)
 
 ### Community 3 - "Community 3"
 Cohesion: 0.06
@@ -123,8 +122,8 @@ Cohesion: 0.09
 Nodes (41): apiRequest(), ApiRequestOptions, addCourseMember(), addStudentCourseCompletion(), ApiAuthPayload, approveCourseRegistrationRequest(), byTitle(), changePassword() (+33 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.12
-Nodes (19): offeringsInclude, upload, visibleOfferingIds(), visibleOfferingWhere(), mapAssignment(), mapCourse(), mapCourseContentAsset(), mapCourseContentItem() (+11 more)
+Cohesion: 0.09
+Nodes (29): authPayload(), activeRegistrationOfferings(), evaluateRegistrationSelection(), offeringsInclude, requireStudentRegistrationContext(), upload, visibleOfferingIds(), visibleOfferingWhere() (+21 more)
 
 ### Community 6 - "Community 6"
 Cohesion: 0.09
@@ -143,8 +142,8 @@ Cohesion: 0.09
 Nodes (21): APPENDICES - Real Source-Backed Reference Material, Appendix A - Install Commands per Design System, Appendix B - Canonical Sources (read these before reinventing), Appendix C - Apple Liquid Glass: Honest Web Approximation, Apple Liquid Glass (Apple platforms only), Atlassian, Bootstrap, Carbon (+13 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.22
-Nodes (5): CalendarItem, fetchWorkspaceCourses(), AssignmentRow, CourseSessionRow, CourseWithMembers
+Cohesion: 0.43
+Nodes (6): byCourseCode(), courseKey(), findChildMajor(), getCurriculumForChildMajor(), requiredRuleTypes, ruleAppliesToChildMajor()
 
 ### Community 11 - "Community 11"
 Cohesion: 0.07
@@ -175,8 +174,8 @@ Cohesion: 0.20
 Nodes (10): 10. REFERENCE VOCABULARY (Pattern Names the Agent Should Know), Animation Library Choice, Cards & Containers, Galleries & Media, Hero Paradigms, Layout & Grids, Micro-Interactions & Effects, Navigation & Menus (+2 more)
 
 ### Community 18 - "Community 18"
-Cohesion: 0.20
-Nodes (10): 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 2.A When to reach for a real design system (use official packages), 2.B When the brief is an aesthetic, not a system, 2. BRIEF → DESIGN SYSTEM MAP, 7. DIAL DEFINITIONS (Technical Reference), DESIGN_VARIANCE (Level 1-10), MOTION_INTENSITY (Level 1-10) (+2 more)
+Cohesion: 0.18
+Nodes (11): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline, 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 2.A When to reach for a real design system (use official packages) (+3 more)
 
 ### Community 19 - "Community 19"
 Cohesion: 0.25
@@ -219,8 +218,8 @@ Cohesion: 0.40
 Nodes (5): 8.A Token Strategy (pick one, stick to it), 8.B Do Not Prescribe Specific Colors Here, 8.C Default Mode, 8.D Test in Both Modes Before Finishing, 8. DARK MODE PROTOCOL
 
 ### Community 29 - "Community 29"
-Cohesion: 0.23
-Nodes (10): activeRegistrationOfferings(), evaluateRegistrationSelection(), requireStudentRegistrationContext(), evaluateRegistrationBasket(), loadPrerequisiteContext(), prerequisiteFailureMessage(), approveRegistrationRequest(), rejectRegistrationRequest() (+2 more)
+Cohesion: 0.14
+Nodes (11): AuthProfile, AuthUser, Role, UseAuthReturn, InboxPage(), createInboxThread(), logout(), roleAllowedRecipient() (+3 more)
 
 ### Community 30 - "Community 30"
 Cohesion: 0.33
@@ -243,24 +242,24 @@ Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
 ### Community 42 - "Community 42"
-Cohesion: 0.14
-Nodes (11): AuthProfile, AuthUser, Role, UseAuthReturn, InboxPage(), createInboxThread(), logout(), roleAllowedRecipient() (+3 more)
+Cohesion: 0.22
+Nodes (5): CalendarItem, fetchWorkspaceCourses(), AssignmentRow, CourseSessionRow, CourseWithMembers
 
 ### Community 43 - "Community 43"
-Cohesion: 0.20
-Nodes (16): courseContentUpload, createUserRecord(), offeringsInclude, readCreditPoints(), validatePrerequisiteGroups(), httpError(), requireBodyString(), readAdminUserCreateInput() (+8 more)
+Cohesion: 0.16
+Nodes (21): assertStaffCanTeachCourse(), assertTeacherCanTeachCourse(), courseContentUpload, createUserRecord(), loadTeachingEligibilityContext(), offeringsInclude, readCreditPoints(), validatePrerequisiteGroups() (+13 more)
 
 ### Community 44 - "Community 44"
-Cohesion: 0.11
-Nodes (19): mapChildMajor(), mapCoursePrerequisiteGroup(), mapCoursePrerequisiteOption(), mapCourseRegistrationRequest(), mapCurriculumRule(), byCourseCode(), courseKey(), findChildMajor() (+11 more)
+Cohesion: 0.16
+Nodes (14): courseRequirementMessage(), creditRequirementMessage(), evaluateCourseEligibility(), evaluateRegistrationBasket(), getCompletedCourseIds(), getCourseIdFromOffering(), getCurriculumCourseIds(), getEnrolledConcurrentCourseIds() (+6 more)
 
 ### Community 45 - "Community 45"
-Cohesion: 0.22
-Nodes (12): demoCourseCodes, demoUserIds, authPayload(), prisma, mapUserProfile(), clearSessionCookie(), createSession(), deleteSessionForRequest() (+4 more)
+Cohesion: 0.50
+Nodes (4): 7. DIAL DEFINITIONS (Technical Reference), DESIGN_VARIANCE (Level 1-10), MOTION_INTENSITY (Level 1-10), VISUAL_DENSITY (Level 1-10)
 
 ### Community 46 - "Community 46"
-Cohesion: 0.26
-Nodes (14): assertStaffCanTeachCourse(), assertTeacherCanTeachCourse(), loadTeachingEligibilityContext(), childMajorIdFromRule(), courseIdFromRule(), field(), getCourseTeachingMainMajorIds(), getIneligibleStaffForCourse() (+6 more)
+Cohesion: 0.40
+Nodes (10): childMajorIdFromRule(), courseIdFromRule(), field(), getCourseTeachingMainMajorIds(), getTeacherCourseEligibilityError(), itemId(), mainMajorIdFromChild(), mainMajorIdFromRule() (+2 more)
 
 ### Community 47 - "Community 47"
 Cohesion: 0.14
@@ -274,13 +273,9 @@ Nodes (28): AdminCourseOfferPage(), currentYear, emptyOfferingForm(), memberRole
 Cohesion: 0.80
 Nodes (4): `course_prerequisite_groups`, `course_prerequisite_options`, `courses`, `student_course_completions`
 
-### Community 50 - "Community 50"
-Cohesion: 0.40
-Nodes (5): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline
-
 ### Community 51 - "Community 51"
-Cohesion: 0.28
-Nodes (12): adminRouter, authRouter, workspaceRouter, app, createApp(), attachUser(), requireAuth(), requireRole() (+4 more)
+Cohesion: 0.16
+Nodes (22): demoCourseCodes, demoUserIds, adminRouter, authRouter, workspaceRouter, app, createApp(), attachUser() (+14 more)
 
 ### Community 52 - "Community 52"
 Cohesion: 0.20
@@ -299,24 +294,24 @@ Cohesion: 0.50
 Nodes (4): 1.A Dial Inference (design read → dial values), 1.B Use-Case Presets, 1.C How the Dials Drive Output, 1. THE THREE DIALS (Core Configuration)
 
 ## Knowledge Gaps
-- **297 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+292 more)
+- **300 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+295 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **8 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `tasteskill: Anti-Slop Frontend Skill` connect `Community 18` to `Community 9`, `Community 16`, `Community 17`, `Community 50`, `Community 19`, `Community 22`, `Community 23`, `Community 56`, `Community 24`, `Community 26`, `Community 27`, `Community 28`?**
-  _High betweenness centrality (0.017) - this node is a cross-community bridge._
+- **Why does `tasteskill: Anti-Slop Frontend Skill` connect `Community 18` to `Community 9`, `Community 45`, `Community 16`, `Community 17`, `Community 19`, `Community 22`, `Community 23`, `Community 56`, `Community 24`, `Community 26`, `Community 27`, `Community 28`?**
+  _High betweenness centrality (0.016) - this node is a cross-community bridge._
 - **Why does `main()` connect `Community 21` to `Community 51`?**
   _High betweenness centrality (0.007) - this node is a cross-community bridge._
 - **What connects `name`, `private`, `version` to the rest of the system?**
-  _297 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _300 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.1310344827586207 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
   _Cohesion score 0.043478260869565216 - nodes in this community are weakly interconnected._
 - **Should `Community 2` be split into smaller, more focused modules?**
-  _Cohesion score 0.11397849462365592 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.09206349206349207 - nodes in this community are weakly interconnected._
 - **Should `Community 3` be split into smaller, more focused modules?**
   _Cohesion score 0.06090808416389812 - nodes in this community are weakly interconnected._

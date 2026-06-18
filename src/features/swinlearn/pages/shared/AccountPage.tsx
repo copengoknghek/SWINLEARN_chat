@@ -13,6 +13,7 @@ function AccountPage() {
   const { workspaceRole } = useOutletContext<{ workspaceRole: Role }>()
   const { user, signOut } = useAuthContext()
   const email = user?.email ?? 'Not signed in'
+  const displayName = user?.email?.split('@')[0] ?? 'Workspace user'
   const initials = email.slice(0, 2).toUpperCase()
 
   const handleSignOut = async () => {
@@ -34,7 +35,9 @@ function AccountPage() {
         <section className="workspace-panel account-summary">
           <span className="account-avatar">{initials}</span>
           <div>
-            <h2>{email}</h2>
+            <span className="account-summary-label">Signed in as</span>
+            <h2>{displayName}</h2>
+            <p>{email}</p>
             <p>{roleName[workspaceRole]} access</p>
             <div className="workspace-meta-row">
               <span className="workspace-chip">Swinburne account</span>

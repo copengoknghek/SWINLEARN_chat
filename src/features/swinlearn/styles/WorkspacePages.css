@@ -826,6 +826,15 @@
   gap: 16px;
 }
 
+.account-summary-label {
+  color: var(--muted);
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 800;
+  margin-bottom: 4px;
+  text-transform: uppercase;
+}
+
 .account-avatar {
   align-items: center;
   background: var(--accent);

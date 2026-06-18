@@ -166,6 +166,12 @@ export type AssignmentRow = {
   due_at: string
   status: AssignmentStatus
   created_by: string | null
+  source_export_id: string | null
+  content_html: string
+  submission_types: string | null
+  points_possible: number | null
+  lock_at: string | null
+  unlock_at: string | null
   created_at?: string
   updated_at?: string
 }
@@ -190,6 +196,87 @@ export type CourseSessionRow = {
   location: string
   created_by: string | null
   created_at?: string
+}
+
+export type CourseContentItemType =
+  | 'wiki_page'
+  | 'assignment'
+  | 'quiz'
+  | 'attachment'
+  | 'sub_header'
+  | 'unknown'
+
+export type CourseContentAssetRow = {
+  id: string
+  package_id: string
+  source_path: string
+  title: string
+  mime_type: string | null
+  size: number | null
+  stored_path: string
+  public_url: string
+  file_type: string
+}
+
+export type CourseContentItemRow = {
+  id: string
+  package_id: string
+  module_id: string | null
+  assignment_id: string | null
+  asset_id: string | null
+  source_id: string | null
+  source_export_id: string | null
+  title: string
+  item_type: CourseContentItemType
+  content_html: string
+  indent: number
+  position: number
+  locked: boolean
+  completed: boolean
+  asset: CourseContentAssetRow | null
+}
+
+export type CourseContentModuleRow = {
+  id: string
+  package_id: string
+  source_id: string | null
+  source_export_id: string | null
+  title: string
+  status: string | null
+  position: number
+  unlock_at: string | null
+  sequential: boolean
+  items: CourseContentItemRow[]
+}
+
+export type CourseContentPackageSummaryRow = {
+  id: string
+  course_id: string | null
+  offering_id: string | null
+  scope: string
+  import_id: string
+  source_title: string
+  source_last_download: string | null
+  original_file_name: string | null
+  language: string | null
+  imported_by: string | null
+  imported_at: string
+  module_count: number
+  item_count: number
+  asset_count: number
+}
+
+export type CourseContentPackageRow = CourseContentPackageSummaryRow & {
+  modules: CourseContentModuleRow[]
+  assets: CourseContentAssetRow[]
+}
+
+export type CourseDetailData = {
+  course: CourseWithMembers
+  contentPackage: CourseContentPackageRow | null
+  assignments: AssignmentRow[]
+  submissions: AssignmentSubmissionRow[]
+  profiles: ProfileRow[]
 }
 
 export type InboxThreadRow = {
@@ -258,6 +345,7 @@ export type AdminCourseData = CatalogData & {
   prerequisiteOptions: CoursePrerequisiteOptionRow[]
   studentCompletions: StudentCourseCompletionRow[]
   offerings: CourseWithMembers[]
+  contentPackages: CourseContentPackageSummaryRow[]
   registrationRequests: CourseRegistrationRequestRow[]
   profiles: ProfileRow[]
 }

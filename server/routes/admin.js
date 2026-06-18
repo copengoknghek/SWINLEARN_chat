@@ -1,4 +1,6 @@
 import express from 'express'
+import { rm } from 'node:fs/promises'
+import multer from 'multer'
 
 import { requireRole } from '../auth-middleware.js'
 import { prisma } from '../db.js'
@@ -6,6 +8,7 @@ import { asyncHandler, httpError, requireBodyString, sendError } from '../http.j
 import {
   mapChildMajor,
   mapCourse,
+  mapCourseContentPackageSummary,
   mapCourseRegistrationRequest,
   mapCoursePrerequisiteGroup,
   mapCoursePrerequisiteOption,
@@ -18,6 +21,7 @@ import {
 } from '../mappers.js'
 import { generateTemporaryPassword, hashPassword } from '../services/passwords.js'
 import { readAdminUserCreateInput } from '../services/adminUsers.js'
+import { importCanvasCourseContent } from '../services/courseContentImport.js'
 import { validateCurriculumRuleInput } from '../services/curriculum.js'
 import { createCatalogCourseWithRule } from '../services/courseCreation.js'
 import { deleteCatalogCourse } from '../services/courseDeletion.js'
@@ -31,6 +35,8 @@ import {
 } from '../services/teacherEligibility.js'
 
 export const adminRouter = express.Router()
+
+const courseContentUpload = multer({ dest: 'uploads/imports' })
 
 adminRouter.use((request, response, next) => {
   const user = requireRole(request, response, ['admin'])
@@ -240,6 +246,7 @@ adminRouter.get(
       prerequisiteOptions,
       studentCompletions,
       offerings,
+      contentPackages,
       registrationRequests,
       profiles,
     ] = await Promise.all([
@@ -253,6 +260,19 @@ adminRouter.get(
         include: offeringsInclude,
         orderBy: [{ academicYear: 'desc' }, { term: 'asc' }],
       }),
+      prisma.courseContentPackage.findMany({
+        where: { scope: 'offering' },
+        include: {
+          _count: {
+            select: {
+              assets: true,
+              items: true,
+              modules: true,
+            },
+          },
+        },
+        orderBy: { importedAt: 'desc' },
+      }),
       prisma.courseRegistrationRequest.findMany({ orderBy: [{ requestedAt: 'desc' }] }),
       prisma.user.findMany({ orderBy: [{ displayName: 'asc' }, { email: 'asc' }] }),
     ])
@@ -265,6 +285,7 @@ adminRouter.get(
       prerequisiteOptions: prerequisiteOptions.map(mapCoursePrerequisiteOption),
       studentCompletions: studentCompletions.map(mapStudentCourseCompletion),
       offerings: offerings.map(mapOffering),
+      contentPackages: contentPackages.map(mapCourseContentPackageSummary),
       registrationRequests: registrationRequests.map(mapCourseRegistrationRequest),
       profiles: profiles.map(mapUserProfile),
     })
@@ -455,6 +476,39 @@ adminRouter.delete(
   asyncHandler(async (request, response) => {
     await prisma.courseOffering.delete({ where: { id: request.params.id } })
     response.json({ success: true })
+  }),
+)
+
+adminRouter.post(
+  '/course-offerings/:id/content-import',
+  courseContentUpload.single('file'),
+  asyncHandler(async (request, response) => {
+    if (!request.file) {
+      sendError(response, 400, 'A course content ZIP file is required.')
+      return
+    }
+
+    try {
+      const offering = await prisma.courseOffering.findUnique({
+        where: { id: request.params.id },
+      })
+
+      if (!offering) {
+        sendError(response, 404, 'Course offering was not found.')
+        return
+      }
+
+      const result = await importCanvasCourseContent(prisma, {
+        adminId: request.currentUser.id,
+        offering,
+        originalFileName: request.file.originalname,
+        zipPath: request.file.path,
+      })
+
+      response.status(201).json(result)
+    } finally {
+      await rm(request.file.path, { force: true }).catch(() => undefined)
+    }
   }),
 )
 

@@ -178,6 +178,7 @@ model Course {
   requiredByOptions CoursePrerequisiteOption[] @relation("PrerequisiteRequiredCourse")
   completions      StudentCourseCompletion[]
   offerings       CourseOffering[]
+  contentPackages CourseContentPackage[]
 
   @@map("courses")
 }
@@ -262,6 +263,7 @@ model CourseOffering {
   registrationRequests CourseRegistrationRequest[]
   assignments  Assignment[]
   sessions     CourseSession[]
+  contentPackages CourseContentPackage[]
 
   @@unique([courseId, term, academicYear])
   @@index([courseId])
@@ -321,13 +323,22 @@ model Assignment {
   dueAt       DateTime               @map("due_at")
   status      AssignmentStatus       @default(published)
   createdById String?                @map("created_by")
+  sourceExportId String?             @map("source_export_id")
+  contentHtml String?                @db.LongText @map("content_html")
+  submissionTypes String?            @db.Text @map("submission_types")
+  pointsPossible Float?              @map("points_possible")
+  lockAt      DateTime?              @map("lock_at")
+  unlockAt    DateTime?              @map("unlock_at")
   createdAt   DateTime               @default(now()) @map("created_at")
   updatedAt   DateTime               @updatedAt @map("updated_at")
   offering    CourseOffering         @relation(fields: [offeringId], references: [id], onDelete: Cascade)
   createdBy   User?                  @relation("AssignmentCreator", fields: [createdById], references: [id], onDelete: SetNull)
   submissions AssignmentSubmission[]
+  contentItems CourseContentItem[]
 
   @@index([offeringId])
+  @@index([sourceExportId])
+  @@index([offeringId, sourceExportId])
   @@map("assignments")
 }
 
@@ -361,6 +372,92 @@ model CourseSession {
 
   @@index([offeringId])
   @@map("course_sessions")
+}
+
+model CourseContentPackage {
+  id                 String               @id @default(cuid())
+  courseId           String?              @map("course_id")
+  offeringId         String?              @map("offering_id")
+  scope              String
+  importId           String               @map("import_id")
+  sourceTitle        String               @map("source_title")
+  sourceLastDownload DateTime?            @map("source_last_download")
+  originalFileName   String?              @map("original_file_name")
+  language           String?
+  importedById       String?              @map("imported_by")
+  importedAt         DateTime             @default(now()) @map("imported_at")
+  course             Course?              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  offering           CourseOffering?      @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  modules            CourseContentModule[]
+  items              CourseContentItem[]
+  assets             CourseContentAsset[]
+
+  @@index([courseId, scope])
+  @@index([offeringId, scope])
+  @@map("course_content_packages")
+}
+
+model CourseContentModule {
+  id             String               @id @default(cuid())
+  packageId      String               @map("package_id")
+  sourceId       String?              @map("source_id")
+  sourceExportId String?              @map("source_export_id")
+  title          String
+  status         String?
+  position       Int                  @default(0)
+  unlockAt       DateTime?            @map("unlock_at")
+  sequential     Boolean              @default(false)
+  package        CourseContentPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  items          CourseContentItem[]
+
+  @@index([packageId, position])
+  @@index([sourceExportId])
+  @@map("course_content_modules")
+}
+
+model CourseContentItem {
+  id             String               @id @default(cuid())
+  packageId      String               @map("package_id")
+  moduleId       String?              @map("module_id")
+  assignmentId   String?              @map("assignment_id")
+  assetId        String?              @map("asset_id")
+  sourceId       String?              @map("source_id")
+  sourceExportId String?              @map("source_export_id")
+  title          String
+  itemType       String               @map("item_type")
+  contentHtml    String?              @db.LongText @map("content_html")
+  indent         Int                  @default(0)
+  position       Int                  @default(0)
+  locked         Boolean              @default(false)
+  completed      Boolean              @default(false)
+  package        CourseContentPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  module         CourseContentModule? @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  assignment     Assignment?          @relation(fields: [assignmentId], references: [id], onDelete: SetNull)
+  asset          CourseContentAsset?  @relation(fields: [assetId], references: [id], onDelete: SetNull)
+
+  @@index([packageId, position])
+  @@index([moduleId, position])
+  @@index([assignmentId])
+  @@index([assetId])
+  @@index([sourceExportId])
+  @@map("course_content_items")
+}
+
+model CourseContentAsset {
+  id         String               @id @default(cuid())
+  packageId  String               @map("package_id")
+  sourcePath String               @db.Text @map("source_path")
+  title      String
+  mimeType   String?              @map("mime_type")
+  size       Int?
+  storedPath String               @db.Text @map("stored_path")
+  publicUrl  String               @db.Text @map("public_url")
+  fileType   String               @map("file_type")
+  package    CourseContentPackage @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  items      CourseContentItem[]
+
+  @@index([packageId])
+  @@map("course_content_assets")
 }
 
 model InboxThread {

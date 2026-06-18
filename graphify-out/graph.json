@@ -4,106 +4,6 @@
   "graph": {},
   "nodes": [
     {
-      "label": "admin-course-offer-selection.test.mjs",
-      "file_type": "code",
-      "source_file": "admin-course-offer-selection.test.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "admin_course_offer_selection_test",
-      "community": 53,
-      "norm_label": "admin-course-offer-selection.test.mjs"
-    },
-    {
-      "label": "importTypeScriptModule()",
-      "file_type": "code",
-      "source_file": "admin-course-offer-selection.test.mjs",
-      "source_location": "L9",
-      "_origin": "ast",
-      "id": "admin_course_offer_selection_test_importtypescriptmodule",
-      "community": 53,
-      "norm_label": "importtypescriptmodule()"
-    },
-    {
-      "label": "offerings",
-      "file_type": "code",
-      "source_file": "admin-course-offer-selection.test.mjs",
-      "source_location": "L33",
-      "_origin": "ast",
-      "id": "admin_course_offer_selection_test_offerings",
-      "community": 53,
-      "norm_label": "offerings"
-    },
-    {
-      "label": "admin-course-selection.test.mjs",
-      "file_type": "code",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "admin_course_selection_test",
-      "community": 42,
-      "norm_label": "admin-course-selection.test.mjs"
-    },
-    {
-      "label": "importTypeScriptModule()",
-      "file_type": "code",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L9",
-      "_origin": "ast",
-      "id": "admin_course_selection_test_importtypescriptmodule",
-      "community": 42,
-      "norm_label": "importtypescriptmodule()"
-    },
-    {
-      "label": "existingCourse",
-      "file_type": "code",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L39",
-      "_origin": "ast",
-      "id": "admin_course_selection_test_existingcourse",
-      "community": 42,
-      "norm_label": "existingcourse"
-    },
-    {
-      "label": "emptyCourseForm",
-      "file_type": "code",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L47",
-      "_origin": "ast",
-      "id": "admin_course_selection_test_emptycourseform",
-      "community": 42,
-      "norm_label": "emptycourseform"
-    },
-    {
-      "label": "childMajorRuleForm",
-      "file_type": "code",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L54",
-      "_origin": "ast",
-      "id": "admin_course_selection_test_childmajorruleform",
-      "community": 42,
-      "norm_label": "childmajorruleform"
-    },
-    {
-      "label": "api-client.test.mjs",
-      "file_type": "code",
-      "source_file": "api-client.test.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "api_client_test",
-      "community": 52,
-      "norm_label": "api-client.test.mjs"
-    },
-    {
-      "label": "importTypeScriptModule()",
-      "file_type": "code",
-      "source_file": "api-client.test.mjs",
-      "source_location": "L9",
-      "_origin": "ast",
-      "id": "api_client_test_importtypescriptmodule",
-      "community": 52,
-      "norm_label": "importtypescriptmodule()"
-    },
-    {
       "label": "eslint.config.js",
       "file_type": "code",
       "source_file": "eslint.config.js",
@@ -874,13 +774,73 @@
       "norm_label": "`course_registration_requests`"
     },
     {
+      "label": "migration.sql",
+      "file_type": "code",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": null,
+      "_origin": "ast",
+      "id": "20260617120000_course_content_import_migration",
+      "community": 54,
+      "norm_label": "migration.sql"
+    },
+    {
+      "label": "`assignments`",
+      "file_type": "code",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L2",
+      "_origin": "ast",
+      "id": "20260617120000_course_content_import_migration_assignments",
+      "community": 54,
+      "norm_label": "`assignments`"
+    },
+    {
+      "label": "`course_content_packages`",
+      "file_type": "code",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "20260617120000_course_content_import_migration_course_content_packages",
+      "community": 54,
+      "norm_label": "`course_content_packages`"
+    },
+    {
+      "label": "`course_content_modules`",
+      "file_type": "code",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "20260617120000_course_content_import_migration_course_content_modules",
+      "community": 54,
+      "norm_label": "`course_content_modules`"
+    },
+    {
+      "label": "`course_content_items`",
+      "file_type": "code",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "20260617120000_course_content_import_migration_course_content_items",
+      "community": 54,
+      "norm_label": "`course_content_items`"
+    },
+    {
+      "label": "`course_content_assets`",
+      "file_type": "code",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L63",
+      "_origin": "ast",
+      "id": "20260617120000_course_content_import_migration_course_content_assets",
+      "community": 54,
+      "norm_label": "`course_content_assets`"
+    },
+    {
       "label": "seed.js",
       "file_type": "code",
       "source_file": "prisma/seed.js",
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_seed",
-      "community": 45,
+      "community": 53,
       "norm_label": "seed.js"
     },
     {
@@ -890,7 +850,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "prisma_seed_passwordhash",
-      "community": 45,
+      "community": 53,
       "norm_label": "passwordhash"
     },
     {
@@ -900,7 +860,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "prisma_seed_aicurriculumcourses",
-      "community": 45,
+      "community": 53,
       "norm_label": "aicurriculumcourses"
     },
     {
@@ -910,7 +870,7 @@
       "source_location": "L147",
       "_origin": "ast",
       "id": "prisma_seed_aiprerequisitesbycoursecode",
-      "community": 45,
+      "community": 53,
       "norm_label": "aiprerequisitesbycoursecode"
     },
     {
@@ -920,7 +880,7 @@
       "source_location": "L202",
       "_origin": "ast",
       "id": "prisma_seed_seededcourseid",
-      "community": 45,
+      "community": 53,
       "norm_label": "seededcourseid()"
     },
     {
@@ -930,7 +890,7 @@
       "source_location": "L204",
       "_origin": "ast",
       "id": "prisma_seed_curriculumruleforcourse",
-      "community": 45,
+      "community": 53,
       "norm_label": "curriculumruleforcourse()"
     },
     {
@@ -940,7 +900,7 @@
       "source_location": "L233",
       "_origin": "ast",
       "id": "prisma_seed_seedaiprerequisites",
-      "community": 45,
+      "community": 53,
       "norm_label": "seedaiprerequisites()"
     },
     {
@@ -950,7 +910,7 @@
       "source_location": "L276",
       "_origin": "ast",
       "id": "prisma_seed_main",
-      "community": 45,
+      "community": 53,
       "norm_label": "main()"
     },
     {
@@ -960,7 +920,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "server_app",
-      "community": 45,
+      "community": 51,
       "norm_label": "app.js"
     },
     {
@@ -970,17 +930,17 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "server_app_createapp",
-      "community": 45,
+      "community": 51,
       "norm_label": "createapp()"
     },
     {
       "label": "app",
       "file_type": "code",
       "source_file": "server/app.js",
-      "source_location": "L37",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "server_app_app",
-      "community": 45,
+      "community": 51,
       "norm_label": "app"
     },
     {
@@ -990,7 +950,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "server_auth_middleware",
-      "community": 45,
+      "community": 51,
       "norm_label": "auth-middleware.js"
     },
     {
@@ -1000,7 +960,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "server_auth_middleware_attachuser",
-      "community": 45,
+      "community": 51,
       "norm_label": "attachuser()"
     },
     {
@@ -1010,7 +970,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "server_auth_middleware_requireauth",
-      "community": 45,
+      "community": 51,
       "norm_label": "requireauth()"
     },
     {
@@ -1020,7 +980,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "server_auth_middleware_requirerole",
-      "community": 45,
+      "community": 51,
       "norm_label": "requirerole()"
     },
     {
@@ -1190,7 +1150,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "server_http",
-      "community": 45,
+      "community": 51,
       "norm_label": "http.js"
     },
     {
@@ -1200,7 +1160,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "server_http_asynchandler",
-      "community": 45,
+      "community": 51,
       "norm_label": "asynchandler()"
     },
     {
@@ -1220,7 +1180,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "server_http_resolvehttperror",
-      "community": 45,
+      "community": 51,
       "norm_label": "resolvehttperror()"
     },
     {
@@ -1230,7 +1190,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "server_http_senderror",
-      "community": 45,
+      "community": 51,
       "norm_label": "senderror()"
     },
     {
@@ -1250,7 +1210,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "server_index",
-      "community": 45,
+      "community": 51,
       "norm_label": "index.js"
     },
     {
@@ -1260,7 +1220,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "server_index_port",
-      "community": 45,
+      "community": 51,
       "norm_label": "port"
     },
     {
@@ -1280,7 +1240,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "server_mappers_mapuserprofile",
-      "community": 5,
+      "community": 45,
       "norm_label": "mapuserprofile()"
     },
     {
@@ -1310,7 +1270,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "server_mappers_mapchildmajor",
-      "community": 5,
+      "community": 44,
       "norm_label": "mapchildmajor()"
     },
     {
@@ -1330,7 +1290,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "server_mappers_mapcourseprerequisitegroup",
-      "community": 5,
+      "community": 44,
       "norm_label": "mapcourseprerequisitegroup()"
     },
     {
@@ -1340,7 +1300,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "server_mappers_mapcourseprerequisiteoption",
-      "community": 0,
+      "community": 44,
       "norm_label": "mapcourseprerequisiteoption()"
     },
     {
@@ -1350,7 +1310,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "server_mappers_mapstudentcoursecompletion",
-      "community": 44,
+      "community": 5,
       "norm_label": "mapstudentcoursecompletion()"
     },
     {
@@ -1370,7 +1330,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "server_mappers_mapcourseregistrationrequest",
-      "community": 5,
+      "community": 44,
       "norm_label": "mapcourseregistrationrequest()"
     },
     {
@@ -1417,7 +1377,7 @@
       "label": "mapSubmission()",
       "file_type": "code",
       "source_file": "server/mappers.js",
-      "source_location": "L140",
+      "source_location": "L146",
       "_origin": "ast",
       "id": "server_mappers_mapsubmission",
       "community": 5,
@@ -1427,17 +1387,67 @@
       "label": "mapSession()",
       "file_type": "code",
       "source_file": "server/mappers.js",
-      "source_location": "L150",
+      "source_location": "L156",
       "_origin": "ast",
       "id": "server_mappers_mapsession",
       "community": 5,
       "norm_label": "mapsession()"
     },
     {
+      "label": "mapCourseContentAsset()",
+      "file_type": "code",
+      "source_file": "server/mappers.js",
+      "source_location": "L168",
+      "_origin": "ast",
+      "id": "server_mappers_mapcoursecontentasset",
+      "community": 5,
+      "norm_label": "mapcoursecontentasset()"
+    },
+    {
+      "label": "mapCourseContentItem()",
+      "file_type": "code",
+      "source_file": "server/mappers.js",
+      "source_location": "L180",
+      "_origin": "ast",
+      "id": "server_mappers_mapcoursecontentitem",
+      "community": 5,
+      "norm_label": "mapcoursecontentitem()"
+    },
+    {
+      "label": "mapCourseContentModule()",
+      "file_type": "code",
+      "source_file": "server/mappers.js",
+      "source_location": "L198",
+      "_origin": "ast",
+      "id": "server_mappers_mapcoursecontentmodule",
+      "community": 5,
+      "norm_label": "mapcoursecontentmodule()"
+    },
+    {
+      "label": "mapCourseContentPackageSummary()",
+      "file_type": "code",
+      "source_file": "server/mappers.js",
+      "source_location": "L211",
+      "_origin": "ast",
+      "id": "server_mappers_mapcoursecontentpackagesummary",
+      "community": 5,
+      "norm_label": "mapcoursecontentpackagesummary()"
+    },
+    {
+      "label": "mapCourseContentPackage()",
+      "file_type": "code",
+      "source_file": "server/mappers.js",
+      "source_location": "L228",
+      "_origin": "ast",
+      "id": "server_mappers_mapcoursecontentpackage",
+      "community": 5,
+      "norm_label": "mapcoursecontentpackage()"
+    },
+    {
       "label": "mapThread()",
       "file_type": "code",
       "source_file": "server/mappers.js",
-      "source_location": "L162",
+      "source_location": "L234",
       "_origin": "ast",
       "id": "server_mappers_mapthread",
       "community": 5,
@@ -1447,7 +1457,7 @@
       "label": "mapParticipant()",
       "file_type": "code",
       "source_file": "server/mappers.js",
-      "source_location": "L171",
+      "source_location": "L243",
       "_origin": "ast",
       "id": "server_mappers_mapparticipant",
       "community": 5,
@@ -1457,7 +1467,7 @@
       "label": "mapMessage()",
       "file_type": "code",
       "source_file": "server/mappers.js",
-      "source_location": "L179",
+      "source_location": "L251",
       "_origin": "ast",
       "id": "server_mappers_mapmessage",
       "community": 5,
@@ -1470,84 +1480,94 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_admin",
-      "community": 0,
+      "community": 43,
       "norm_label": "admin.js"
     },
     {
       "label": "adminRouter",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L33",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "routes_admin_adminrouter",
-      "community": 45,
+      "community": 51,
       "norm_label": "adminrouter"
+    },
+    {
+      "label": "courseContentUpload",
+      "file_type": "code",
+      "source_file": "server/routes/admin.js",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "routes_admin_coursecontentupload",
+      "community": 43,
+      "norm_label": "coursecontentupload"
     },
     {
       "label": "orderedCatalog()",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L45",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "routes_admin_orderedcatalog",
-      "community": 0,
+      "community": 43,
       "norm_label": "orderedcatalog()"
     },
     {
       "label": "offeringsInclude",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L57",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "routes_admin_offeringsinclude",
-      "community": 0,
+      "community": 43,
       "norm_label": "offeringsinclude"
     },
     {
       "label": "loadTeachingEligibilityContext()",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L63",
+      "source_location": "L69",
       "_origin": "ast",
       "id": "routes_admin_loadteachingeligibilitycontext",
-      "community": 0,
+      "community": 46,
       "norm_label": "loadteachingeligibilitycontext()"
     },
     {
       "label": "assertTeacherCanTeachCourse()",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L78",
+      "source_location": "L84",
       "_origin": "ast",
       "id": "routes_admin_assertteachercanteachcourse",
-      "community": 0,
+      "community": 46,
       "norm_label": "assertteachercanteachcourse()"
     },
     {
       "label": "assertStaffCanTeachCourse()",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L93",
+      "source_location": "L99",
       "_origin": "ast",
       "id": "routes_admin_assertstaffcanteachcourse",
-      "community": 0,
+      "community": 46,
       "norm_label": "assertstaffcanteachcourse()"
     },
     {
       "label": "readCreditPoints()",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L105",
+      "source_location": "L111",
       "_origin": "ast",
       "id": "routes_admin_readcreditpoints",
-      "community": 0,
+      "community": 43,
       "norm_label": "readcreditpoints()"
     },
     {
       "label": "validatePrerequisiteGroups()",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L119",
+      "source_location": "L125",
       "_origin": "ast",
       "id": "routes_admin_validateprerequisitegroups",
       "community": 43,
@@ -1557,17 +1577,17 @@
       "label": "savePrerequisiteGroups()",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L169",
+      "source_location": "L175",
       "_origin": "ast",
       "id": "routes_admin_saveprerequisitegroups",
-      "community": 0,
+      "community": 43,
       "norm_label": "saveprerequisitegroups()"
     },
     {
       "label": "createUserRecord()",
       "file_type": "code",
       "source_file": "server/routes/admin.js",
-      "source_location": "L192",
+      "source_location": "L198",
       "_origin": "ast",
       "id": "routes_admin_createuserrecord",
       "community": 43,
@@ -1590,7 +1610,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "routes_auth_authrouter",
-      "community": 45,
+      "community": 51,
       "norm_label": "authrouter"
     },
     {
@@ -1600,7 +1620,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "routes_auth_authpayload",
-      "community": 5,
+      "community": 45,
       "norm_label": "authpayload()"
     },
     {
@@ -1617,17 +1637,17 @@
       "label": "workspaceRouter",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L29",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "routes_workspace_workspacerouter",
-      "community": 45,
+      "community": 51,
       "norm_label": "workspacerouter"
     },
     {
       "label": "upload",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L31",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "routes_workspace_upload",
       "community": 5,
@@ -1637,7 +1657,7 @@
       "label": "offeringsInclude",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L33",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "routes_workspace_offeringsinclude",
       "community": 5,
@@ -1647,7 +1667,7 @@
       "label": "visibleOfferingWhere()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L84",
+      "source_location": "L85",
       "_origin": "ast",
       "id": "routes_workspace_visibleofferingwhere",
       "community": 5,
@@ -1657,7 +1677,7 @@
       "label": "visibleOfferingIds()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L108",
+      "source_location": "L109",
       "_origin": "ast",
       "id": "routes_workspace_visibleofferingids",
       "community": 5,
@@ -1667,17 +1687,17 @@
       "label": "requireStudentRegistrationContext()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L132",
+      "source_location": "L225",
       "_origin": "ast",
       "id": "routes_workspace_requirestudentregistrationcontext",
-      "community": 5,
+      "community": 29,
       "norm_label": "requirestudentregistrationcontext()"
     },
     {
       "label": "readOfferingIds()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L142",
+      "source_location": "L235",
       "_origin": "ast",
       "id": "routes_workspace_readofferingids",
       "community": 5,
@@ -1687,20 +1707,20 @@
       "label": "activeRegistrationOfferings()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L147",
+      "source_location": "L240",
       "_origin": "ast",
       "id": "routes_workspace_activeregistrationofferings",
-      "community": 5,
+      "community": 29,
       "norm_label": "activeregistrationofferings()"
     },
     {
       "label": "evaluateRegistrationSelection()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L150",
+      "source_location": "L243",
       "_origin": "ast",
       "id": "routes_workspace_evaluateregistrationselection",
-      "community": 5,
+      "community": 29,
       "norm_label": "evaluateregistrationselection()"
     },
     {
@@ -1754,14 +1774,304 @@
       "norm_label": "readadminusercreateinput()"
     },
     {
-      "label": "adminUsers.test.mjs",
+      "label": "courseContentImport.js",
       "file_type": "code",
-      "source_file": "server/services/adminUsers.test.mjs",
+      "source_file": "server/services/courseContentImport.js",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "services_adminusers_test",
-      "community": 43,
-      "norm_label": "adminusers.test.mjs"
+      "id": "services_coursecontentimport",
+      "community": 0,
+      "norm_label": "coursecontentimport.js"
+    },
+    {
+      "label": "blockedHtmlTags",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_blockedhtmltags",
+      "community": 0,
+      "norm_label": "blockedhtmltags"
+    },
+    {
+      "label": "safeDecodeUri()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_safedecodeuri",
+      "community": 0,
+      "norm_label": "safedecodeuri()"
+    },
+    {
+      "label": "safeZipEntryName()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_safezipentryname",
+      "community": 0,
+      "norm_label": "safezipentryname()"
+    },
+    {
+      "label": "findEndOfCentralDirectory()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L43",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_findendofcentraldirectory",
+      "community": 0,
+      "norm_label": "findendofcentraldirectory()"
+    },
+    {
+      "label": "readZipDirectory()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L56",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_readzipdirectory",
+      "community": 0,
+      "norm_label": "readzipdirectory()"
+    },
+    {
+      "label": "readZipEntryData()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L97",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_readzipentrydata",
+      "community": 0,
+      "norm_label": "readzipentrydata()"
+    },
+    {
+      "label": "readZipArchive()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L124",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_readziparchive",
+      "community": 0,
+      "norm_label": "readziparchive()"
+    },
+    {
+      "label": "parseCanvasCourseDataScript()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L131",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_parsecanvascoursedatascript",
+      "community": 0,
+      "norm_label": "parsecanvascoursedatascript()"
+    },
+    {
+      "label": "readCanvasCourseDataFromZip()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L137",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_readcanvascoursedatafromzip",
+      "community": 0,
+      "norm_label": "readcanvascoursedatafromzip()"
+    },
+    {
+      "label": "toSafeAssetRelativePath()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L153",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_tosafeassetrelativepath",
+      "community": 0,
+      "norm_label": "tosafeassetrelativepath()"
+    },
+    {
+      "label": "encodePublicPath()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L174",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_encodepublicpath",
+      "community": 0,
+      "norm_label": "encodepublicpath()"
+    },
+    {
+      "label": "normalizeViewerFileUrl()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L181",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_normalizeviewerfileurl",
+      "community": 0,
+      "norm_label": "normalizeviewerfileurl()"
+    },
+    {
+      "label": "rewriteCourseContentHtml()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L195",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_rewritecoursecontenthtml",
+      "community": 0,
+      "norm_label": "rewritecoursecontenthtml()"
+    },
+    {
+      "label": "sanitizeUrlAttributes()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L219",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_sanitizeurlattributes",
+      "community": 0,
+      "norm_label": "sanitizeurlattributes()"
+    },
+    {
+      "label": "sanitizeRichHtml()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L241",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_sanitizerichhtml",
+      "community": 0,
+      "norm_label": "sanitizerichhtml()"
+    },
+    {
+      "label": "htmlToPlainText()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L259",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_htmltoplaintext",
+      "community": 0,
+      "norm_label": "htmltoplaintext()"
+    },
+    {
+      "label": "toDateOrNull()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L274",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_todateornull",
+      "community": 0,
+      "norm_label": "todateornull()"
+    },
+    {
+      "label": "moduleItemType()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L284",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_moduleitemtype",
+      "community": 0,
+      "norm_label": "moduleitemtype()"
+    },
+    {
+      "label": "collectAssignmentSources()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L308",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_collectassignmentsources",
+      "community": 0,
+      "norm_label": "collectassignmentsources()"
+    },
+    {
+      "label": "normalizedAssignmentSource()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L328",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_normalizedassignmentsource",
+      "community": 0,
+      "norm_label": "normalizedassignmentsource()"
+    },
+    {
+      "label": "buildAssetLookup()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L334",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_buildassetlookup",
+      "community": 0,
+      "norm_label": "buildassetlookup()"
+    },
+    {
+      "label": "normalizeContentHtml()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L344",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_normalizecontenthtml",
+      "community": 0,
+      "norm_label": "normalizecontenthtml()"
+    },
+    {
+      "label": "copyAssetEntries()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L348",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_copyassetentries",
+      "community": 0,
+      "norm_label": "copyassetentries()"
+    },
+    {
+      "label": "normalizeCanvasCourseData()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L387",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_normalizecanvascoursedata",
+      "community": 0,
+      "norm_label": "normalizecanvascoursedata()"
+    },
+    {
+      "label": "prepareCanvasCourseImport()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L445",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_preparecanvascourseimport",
+      "community": 0,
+      "norm_label": "preparecanvascourseimport()"
+    },
+    {
+      "label": "createPackageRecords()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L478",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_createpackagerecords",
+      "community": 0,
+      "norm_label": "createpackagerecords()"
+    },
+    {
+      "label": "upsertImportedAssignments()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L545",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_upsertimportedassignments",
+      "community": 0,
+      "norm_label": "upsertimportedassignments()"
+    },
+    {
+      "label": "importCanvasCourseContent()",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L591",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_importcanvascoursecontent",
+      "community": 0,
+      "norm_label": "importcanvascoursecontent()"
+    },
+    {
+      "label": "courseContentImport.test.mjs",
+      "file_type": "code",
+      "source_file": "server/services/courseContentImport.test.mjs",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "services_coursecontentimport_test",
+      "community": 0,
+      "norm_label": "coursecontentimport.test.mjs"
     },
     {
       "label": "courseCreation.js",
@@ -1804,33 +2114,13 @@
       "norm_label": "createcatalogcoursewithrule()"
     },
     {
-      "label": "courseCreation.test.mjs",
-      "file_type": "code",
-      "source_file": "server/services/courseCreation.test.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "services_coursecreation_test",
-      "community": 43,
-      "norm_label": "coursecreation.test.mjs"
-    },
-    {
-      "label": "createPrismaRecorder()",
-      "file_type": "code",
-      "source_file": "server/services/courseCreation.test.mjs",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "services_coursecreation_test_createprismarecorder",
-      "community": 43,
-      "norm_label": "createprismarecorder()"
-    },
-    {
       "label": "courseDeletion.js",
       "file_type": "code",
       "source_file": "server/services/courseDeletion.js",
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_coursedeletion",
-      "community": 0,
+      "community": 43,
       "norm_label": "coursedeletion.js"
     },
     {
@@ -1840,28 +2130,8 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_coursedeletion_deletecatalogcourse",
-      "community": 0,
+      "community": 43,
       "norm_label": "deletecatalogcourse()"
-    },
-    {
-      "label": "courseDeletion.test.mjs",
-      "file_type": "code",
-      "source_file": "server/services/courseDeletion.test.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "services_coursedeletion_test",
-      "community": 0,
-      "norm_label": "coursedeletion.test.mjs"
-    },
-    {
-      "label": "createPrismaRecorder()",
-      "file_type": "code",
-      "source_file": "server/services/courseDeletion.test.mjs",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "services_coursedeletion_test_createprismarecorder",
-      "community": 0,
-      "norm_label": "createprismarecorder()"
     },
     {
       "label": "curriculum.js",
@@ -1870,7 +2140,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_curriculum",
-      "community": 47,
+      "community": 44,
       "norm_label": "curriculum.js"
     },
     {
@@ -1880,7 +2150,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "services_curriculum_requiredruletypes",
-      "community": 47,
+      "community": 44,
       "norm_label": "requiredruletypes"
     },
     {
@@ -1890,7 +2160,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "services_curriculum_coursekey",
-      "community": 47,
+      "community": 44,
       "norm_label": "coursekey()"
     },
     {
@@ -1900,7 +2170,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "services_curriculum_bycoursecode",
-      "community": 47,
+      "community": 44,
       "norm_label": "bycoursecode()"
     },
     {
@@ -1910,7 +2180,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "services_curriculum_findchildmajor",
-      "community": 47,
+      "community": 44,
       "norm_label": "findchildmajor()"
     },
     {
@@ -1920,7 +2190,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "services_curriculum_ruleappliestochildmajor",
-      "community": 47,
+      "community": 44,
       "norm_label": "ruleappliestochildmajor()"
     },
     {
@@ -1930,7 +2200,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "services_curriculum_getcurriculumforchildmajor",
-      "community": 47,
+      "community": 44,
       "norm_label": "getcurriculumforchildmajor()"
     },
     {
@@ -2010,7 +2280,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "services_prerequisites_getcurriculumcourseids",
-      "community": 47,
+      "community": 44,
       "norm_label": "getcurriculumcourseids()"
     },
     {
@@ -2110,78 +2380,8 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "services_prerequisites_loadprerequisitecontext",
-      "community": 5,
+      "community": 29,
       "norm_label": "loadprerequisitecontext()"
-    },
-    {
-      "label": "prerequisites.test.mjs",
-      "file_type": "code",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "services_prerequisites_test",
-      "community": 51,
-      "norm_label": "prerequisites.test.mjs"
-    },
-    {
-      "label": "student",
-      "file_type": "code",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L9",
-      "_origin": "ast",
-      "id": "services_prerequisites_test_student",
-      "community": 51,
-      "norm_label": "student"
-    },
-    {
-      "label": "childMajors",
-      "file_type": "code",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "services_prerequisites_test_childmajors",
-      "community": 51,
-      "norm_label": "childmajors"
-    },
-    {
-      "label": "courses",
-      "file_type": "code",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L24",
-      "_origin": "ast",
-      "id": "services_prerequisites_test_courses",
-      "community": 51,
-      "norm_label": "courses"
-    },
-    {
-      "label": "curriculumRules",
-      "file_type": "code",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L62",
-      "_origin": "ast",
-      "id": "services_prerequisites_test_curriculumrules",
-      "community": 51,
-      "norm_label": "curriculumrules"
-    },
-    {
-      "label": "offerings",
-      "file_type": "code",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L101",
-      "_origin": "ast",
-      "id": "services_prerequisites_test_offerings",
-      "community": 51,
-      "norm_label": "offerings"
-    },
-    {
-      "label": "baseContext",
-      "file_type": "code",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L122",
-      "_origin": "ast",
-      "id": "services_prerequisites_test_basecontext",
-      "community": 51,
-      "norm_label": "basecontext"
     },
     {
       "label": "registrationRequests.js",
@@ -2242,56 +2442,6 @@
       "id": "services_registrationrequests_rejectregistrationrequest",
       "community": 29,
       "norm_label": "rejectregistrationrequest()"
-    },
-    {
-      "label": "registrationRequests.test.mjs",
-      "file_type": "code",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "services_registrationrequests_test",
-      "community": 29,
-      "norm_label": "registrationrequests.test.mjs"
-    },
-    {
-      "label": "student",
-      "file_type": "code",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L10",
-      "_origin": "ast",
-      "id": "services_registrationrequests_test_student",
-      "community": 29,
-      "norm_label": "student"
-    },
-    {
-      "label": "baseOffering",
-      "file_type": "code",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "services_registrationrequests_test_baseoffering",
-      "community": 29,
-      "norm_label": "baseoffering"
-    },
-    {
-      "label": "baseContext",
-      "file_type": "code",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L23",
-      "_origin": "ast",
-      "id": "services_registrationrequests_test_basecontext",
-      "community": 29,
-      "norm_label": "basecontext"
-    },
-    {
-      "label": "transactionRecorder()",
-      "file_type": "code",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L61",
-      "_origin": "ast",
-      "id": "services_registrationrequests_test_transactionrecorder",
-      "community": 29,
-      "norm_label": "transactionrecorder()"
     },
     {
       "label": "session.js",
@@ -2490,58 +2640,8 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "services_teachereligibility_getineligiblestaffforcourse",
-      "community": 0,
+      "community": 46,
       "norm_label": "getineligiblestaffforcourse()"
-    },
-    {
-      "label": "teacherEligibility.test.mjs",
-      "file_type": "code",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "services_teachereligibility_test",
-      "community": 46,
-      "norm_label": "teachereligibility.test.mjs"
-    },
-    {
-      "label": "mainMajors",
-      "file_type": "code",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L10",
-      "_origin": "ast",
-      "id": "services_teachereligibility_test_mainmajors",
-      "community": 46,
-      "norm_label": "mainmajors"
-    },
-    {
-      "label": "childMajors",
-      "file_type": "code",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "services_teachereligibility_test_childmajors",
-      "community": 46,
-      "norm_label": "childmajors"
-    },
-    {
-      "label": "curriculumRules",
-      "file_type": "code",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L21",
-      "_origin": "ast",
-      "id": "services_teachereligibility_test_curriculumrules",
-      "community": 46,
-      "norm_label": "curriculumrules"
-    },
-    {
-      "label": "eligibleTeacher",
-      "file_type": "code",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L54",
-      "_origin": "ast",
-      "id": "services_teachereligibility_test_eligibleteacher",
-      "community": 46,
-      "norm_label": "eligibleteacher"
     },
     {
       "label": "App.tsx",
@@ -2557,7 +2657,7 @@
       "label": "App()",
       "file_type": "code",
       "source_file": "src/App.tsx",
-      "source_location": "L21",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "src_app_app",
       "community": 2,
@@ -3167,7 +3267,7 @@
       "label": "ApiAuthPayload",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L29",
+      "source_location": "L31",
       "_origin": "ast",
       "id": "workspace_api_apiauthpayload",
       "community": 4,
@@ -3177,17 +3277,17 @@
       "label": "getErrorMessage()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L38",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "workspace_api_geterrormessage",
-      "community": 10,
+      "community": 52,
       "norm_label": "geterrormessage()"
     },
     {
       "label": "fetchAdminUserData()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L50",
+      "source_location": "L52",
       "_origin": "ast",
       "id": "workspace_api_fetchadminuserdata",
       "community": 4,
@@ -3197,7 +3297,7 @@
       "label": "getCurrentAuth()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L54",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "workspace_api_getcurrentauth",
       "community": 4,
@@ -3207,7 +3307,7 @@
       "label": "login()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L58",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "workspace_api_login",
       "community": 4,
@@ -3217,17 +3317,17 @@
       "label": "logout()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L65",
+      "source_location": "L67",
       "_origin": "ast",
       "id": "workspace_api_logout",
-      "community": 2,
+      "community": 42,
       "norm_label": "logout()"
     },
     {
       "label": "changePassword()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L69",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "workspace_api_changepassword",
       "community": 4,
@@ -3237,7 +3337,7 @@
       "label": "fetchCatalog()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L76",
+      "source_location": "L78",
       "_origin": "ast",
       "id": "workspace_api_fetchcatalog",
       "community": 4,
@@ -3247,17 +3347,17 @@
       "label": "fetchProfiles()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L80",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "workspace_api_fetchprofiles",
-      "community": 10,
+      "community": 4,
       "norm_label": "fetchprofiles()"
     },
     {
       "label": "fetchManagedUserCredentials()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L84",
+      "source_location": "L86",
       "_origin": "ast",
       "id": "workspace_api_fetchmanagedusercredentials",
       "community": 4,
@@ -3267,7 +3367,7 @@
       "label": "fetchAdminCourseData()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L90",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "workspace_api_fetchadmincoursedata",
       "community": 4,
@@ -3277,17 +3377,27 @@
       "label": "fetchWorkspaceCourses()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L94",
+      "source_location": "L96",
       "_origin": "ast",
       "id": "workspace_api_fetchworkspacecourses",
       "community": 10,
       "norm_label": "fetchworkspacecourses()"
     },
     {
+      "label": "fetchCourseDetail()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L100",
+      "_origin": "ast",
+      "id": "workspace_api_fetchcoursedetail",
+      "community": 4,
+      "norm_label": "fetchcoursedetail()"
+    },
+    {
       "label": "CourseCreateCurriculumRuleInput",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L98",
+      "source_location": "L104",
       "_origin": "ast",
       "id": "workspace_api_coursecreatecurriculumruleinput",
       "community": 4,
@@ -3297,7 +3407,7 @@
       "label": "createCourse()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L100",
+      "source_location": "L106",
       "_origin": "ast",
       "id": "workspace_api_createcourse",
       "community": 11,
@@ -3307,7 +3417,7 @@
       "label": "updateCourse()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L115",
+      "source_location": "L121",
       "_origin": "ast",
       "id": "workspace_api_updatecourse",
       "community": 4,
@@ -3317,7 +3427,7 @@
       "label": "deleteCourse()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L122",
+      "source_location": "L128",
       "_origin": "ast",
       "id": "workspace_api_deletecourse",
       "community": 4,
@@ -3327,7 +3437,7 @@
       "label": "saveCoursePrerequisites()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L126",
+      "source_location": "L132",
       "_origin": "ast",
       "id": "workspace_api_savecourseprerequisites",
       "community": 4,
@@ -3337,7 +3447,7 @@
       "label": "createCurriculumRule()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L136",
+      "source_location": "L142",
       "_origin": "ast",
       "id": "workspace_api_createcurriculumrule",
       "community": 11,
@@ -3347,7 +3457,7 @@
       "label": "updateCurriculumRule()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L145",
+      "source_location": "L151",
       "_origin": "ast",
       "id": "workspace_api_updatecurriculumrule",
       "community": 4,
@@ -3357,7 +3467,7 @@
       "label": "deleteCurriculumRule()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L152",
+      "source_location": "L158",
       "_origin": "ast",
       "id": "workspace_api_deletecurriculumrule",
       "community": 4,
@@ -3367,7 +3477,7 @@
       "label": "createCourseOffering()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L156",
+      "source_location": "L162",
       "_origin": "ast",
       "id": "workspace_api_createcourseoffering",
       "community": 48,
@@ -3377,7 +3487,7 @@
       "label": "updateCourseOffering()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L171",
+      "source_location": "L177",
       "_origin": "ast",
       "id": "workspace_api_updatecourseoffering",
       "community": 4,
@@ -3387,17 +3497,27 @@
       "label": "deleteCourseOffering()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L181",
+      "source_location": "L187",
       "_origin": "ast",
       "id": "workspace_api_deletecourseoffering",
       "community": 4,
       "norm_label": "deletecourseoffering()"
     },
     {
+      "label": "importCourseOfferingContent()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L191",
+      "_origin": "ast",
+      "id": "workspace_api_importcourseofferingcontent",
+      "community": 4,
+      "norm_label": "importcourseofferingcontent()"
+    },
+    {
       "label": "addCourseMember()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L185",
+      "source_location": "L205",
       "_origin": "ast",
       "id": "workspace_api_addcoursemember",
       "community": 4,
@@ -3407,7 +3527,7 @@
       "label": "removeCourseMember()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L195",
+      "source_location": "L215",
       "_origin": "ast",
       "id": "workspace_api_removecoursemember",
       "community": 4,
@@ -3417,7 +3537,7 @@
       "label": "approveCourseRegistrationRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L201",
+      "source_location": "L221",
       "_origin": "ast",
       "id": "workspace_api_approvecourseregistrationrequest",
       "community": 4,
@@ -3427,7 +3547,7 @@
       "label": "rejectCourseRegistrationRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L207",
+      "source_location": "L227",
       "_origin": "ast",
       "id": "workspace_api_rejectcourseregistrationrequest",
       "community": 4,
@@ -3437,7 +3557,7 @@
       "label": "addStudentCourseCompletion()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L213",
+      "source_location": "L233",
       "_origin": "ast",
       "id": "workspace_api_addstudentcoursecompletion",
       "community": 4,
@@ -3447,7 +3567,7 @@
       "label": "removeStudentCourseCompletion()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L222",
+      "source_location": "L242",
       "_origin": "ast",
       "id": "workspace_api_removestudentcoursecompletion",
       "community": 4,
@@ -3457,7 +3577,7 @@
       "label": "setTeachingAssistant()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L228",
+      "source_location": "L248",
       "_origin": "ast",
       "id": "workspace_api_setteachingassistant",
       "community": 4,
@@ -3467,7 +3587,7 @@
       "label": "updateProfile()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L237",
+      "source_location": "L257",
       "_origin": "ast",
       "id": "workspace_api_updateprofile",
       "community": 4,
@@ -3477,7 +3597,7 @@
       "label": "invokeAdminUserAction()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L256",
+      "source_location": "L276",
       "_origin": "ast",
       "id": "workspace_api_invokeadminuseraction",
       "community": 8,
@@ -3487,7 +3607,7 @@
       "label": "createAdminUser()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L288",
+      "source_location": "L308",
       "_origin": "ast",
       "id": "workspace_api_createadminuser",
       "community": 8,
@@ -3497,7 +3617,7 @@
       "label": "importAdminUsers()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L295",
+      "source_location": "L315",
       "_origin": "ast",
       "id": "workspace_api_importadminusers",
       "community": 8,
@@ -3507,7 +3627,7 @@
       "label": "resetAdminUserPassword()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L304",
+      "source_location": "L324",
       "_origin": "ast",
       "id": "workspace_api_resetadminuserpassword",
       "community": 8,
@@ -3517,17 +3637,17 @@
       "label": "fetchAssignments()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L311",
+      "source_location": "L331",
       "_origin": "ast",
       "id": "workspace_api_fetchassignments",
-      "community": 10,
+      "community": 4,
       "norm_label": "fetchassignments()"
     },
     {
       "label": "fetchRegistrationData()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L315",
+      "source_location": "L335",
       "_origin": "ast",
       "id": "workspace_api_fetchregistrationdata",
       "community": 4,
@@ -3537,7 +3657,7 @@
       "label": "checkRegistrationBasket()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L319",
+      "source_location": "L339",
       "_origin": "ast",
       "id": "workspace_api_checkregistrationbasket",
       "community": 4,
@@ -3547,7 +3667,7 @@
       "label": "registerForOfferings()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L330",
+      "source_location": "L350",
       "_origin": "ast",
       "id": "workspace_api_registerforofferings",
       "community": 4,
@@ -3557,17 +3677,17 @@
       "label": "createAssignment()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L339",
+      "source_location": "L359",
       "_origin": "ast",
       "id": "workspace_api_createassignment",
-      "community": 4,
+      "community": 47,
       "norm_label": "createassignment()"
     },
     {
       "label": "updateAssignment()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L348",
+      "source_location": "L368",
       "_origin": "ast",
       "id": "workspace_api_updateassignment",
       "community": 4,
@@ -3577,7 +3697,7 @@
       "label": "fetchSubmissions()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L358",
+      "source_location": "L378",
       "_origin": "ast",
       "id": "workspace_api_fetchsubmissions",
       "community": 4,
@@ -3587,17 +3707,17 @@
       "label": "submitAssignment()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L362",
+      "source_location": "L382",
       "_origin": "ast",
       "id": "workspace_api_submitassignment",
-      "community": 4,
+      "community": 47,
       "norm_label": "submitassignment()"
     },
     {
       "label": "fetchCalendarSessions()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L384",
+      "source_location": "L404",
       "_origin": "ast",
       "id": "workspace_api_fetchcalendarsessions",
       "community": 4,
@@ -3607,7 +3727,7 @@
       "label": "fetchInboxData()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L388",
+      "source_location": "L408",
       "_origin": "ast",
       "id": "workspace_api_fetchinboxdata",
       "community": 4,
@@ -3617,17 +3737,17 @@
       "label": "createInboxThread()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L394",
+      "source_location": "L414",
       "_origin": "ast",
       "id": "workspace_api_createinboxthread",
-      "community": 6,
+      "community": 42,
       "norm_label": "createinboxthread()"
     },
     {
       "label": "sendInboxMessage()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L414",
+      "source_location": "L434",
       "_origin": "ast",
       "id": "workspace_api_sendinboxmessage",
       "community": 4,
@@ -3637,7 +3757,7 @@
       "label": "markThreadRead()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L423",
+      "source_location": "L443",
       "_origin": "ast",
       "id": "workspace_api_markthreadread",
       "community": 4,
@@ -3647,37 +3767,37 @@
       "label": "profileName()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L431",
+      "source_location": "L451",
       "_origin": "ast",
       "id": "workspace_api_profilename",
-      "community": 48,
+      "community": 47,
       "norm_label": "profilename()"
     },
     {
       "label": "roleAllowedRecipient()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L439",
+      "source_location": "L459",
       "_origin": "ast",
       "id": "workspace_api_roleallowedrecipient",
-      "community": 6,
+      "community": 42,
       "norm_label": "roleallowedrecipient()"
     },
     {
       "label": "courseLabel()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L455",
+      "source_location": "L475",
       "_origin": "ast",
       "id": "workspace_api_courselabel",
-      "community": 10,
+      "community": 52,
       "norm_label": "courselabel()"
     },
     {
       "label": "byTitle()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L459",
+      "source_location": "L479",
       "_origin": "ast",
       "id": "workspace_api_bytitle",
       "community": 4,
@@ -3687,7 +3807,7 @@
       "label": "orderedProfiles()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L462",
+      "source_location": "L482",
       "_origin": "ast",
       "id": "workspace_api_orderedprofiles",
       "community": 4,
@@ -3790,7 +3910,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "workspace_types_courseterm",
-      "community": 10,
+      "community": 52,
       "norm_label": "courseterm"
     },
     {
@@ -3890,7 +4010,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "workspace_types_profilerow",
-      "community": 6,
+      "community": 47,
       "norm_label": "profilerow"
     },
     {
@@ -4057,37 +4177,107 @@
       "label": "AssignmentSubmissionRow",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L173",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "workspace_types_assignmentsubmissionrow",
-      "community": 10,
+      "community": 47,
       "norm_label": "assignmentsubmissionrow"
     },
     {
       "label": "CourseSessionRow",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L183",
+      "source_location": "L189",
       "_origin": "ast",
       "id": "workspace_types_coursesessionrow",
       "community": 10,
       "norm_label": "coursesessionrow"
     },
     {
+      "label": "CourseContentItemType",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L201",
+      "_origin": "ast",
+      "id": "workspace_types_coursecontentitemtype",
+      "community": 6,
+      "norm_label": "coursecontentitemtype"
+    },
+    {
+      "label": "CourseContentAssetRow",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L209",
+      "_origin": "ast",
+      "id": "workspace_types_coursecontentassetrow",
+      "community": 6,
+      "norm_label": "coursecontentassetrow"
+    },
+    {
+      "label": "CourseContentItemRow",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L221",
+      "_origin": "ast",
+      "id": "workspace_types_coursecontentitemrow",
+      "community": 47,
+      "norm_label": "coursecontentitemrow"
+    },
+    {
+      "label": "CourseContentModuleRow",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L239",
+      "_origin": "ast",
+      "id": "workspace_types_coursecontentmodulerow",
+      "community": 6,
+      "norm_label": "coursecontentmodulerow"
+    },
+    {
+      "label": "CourseContentPackageSummaryRow",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L252",
+      "_origin": "ast",
+      "id": "workspace_types_coursecontentpackagesummaryrow",
+      "community": 6,
+      "norm_label": "coursecontentpackagesummaryrow"
+    },
+    {
+      "label": "CourseContentPackageRow",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L269",
+      "_origin": "ast",
+      "id": "workspace_types_coursecontentpackagerow",
+      "community": 6,
+      "norm_label": "coursecontentpackagerow"
+    },
+    {
+      "label": "CourseDetailData",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L274",
+      "_origin": "ast",
+      "id": "workspace_types_coursedetaildata",
+      "community": 47,
+      "norm_label": "coursedetaildata"
+    },
+    {
       "label": "InboxThreadRow",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L195",
+      "source_location": "L282",
       "_origin": "ast",
       "id": "workspace_types_inboxthreadrow",
-      "community": 6,
+      "community": 42,
       "norm_label": "inboxthreadrow"
     },
     {
       "label": "InboxParticipantRow",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L204",
+      "source_location": "L291",
       "_origin": "ast",
       "id": "workspace_types_inboxparticipantrow",
       "community": 6,
@@ -4097,17 +4287,17 @@
       "label": "InboxMessageRow",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L212",
+      "source_location": "L299",
       "_origin": "ast",
       "id": "workspace_types_inboxmessagerow",
-      "community": 6,
+      "community": 42,
       "norm_label": "inboxmessagerow"
     },
     {
       "label": "CatalogData",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L220",
+      "source_location": "L307",
       "_origin": "ast",
       "id": "workspace_types_catalogdata",
       "community": 6,
@@ -4117,7 +4307,7 @@
       "label": "CourseWithMembers",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L225",
+      "source_location": "L312",
       "_origin": "ast",
       "id": "workspace_types_coursewithmembers",
       "community": 10,
@@ -4127,7 +4317,7 @@
       "label": "RegistrationRequirementFailure",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L229",
+      "source_location": "L316",
       "_origin": "ast",
       "id": "workspace_types_registrationrequirementfailure",
       "community": 6,
@@ -4137,37 +4327,37 @@
       "label": "RegistrationEligibilityRow",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L235",
+      "source_location": "L322",
       "_origin": "ast",
       "id": "workspace_types_registrationeligibilityrow",
-      "community": 10,
+      "community": 52,
       "norm_label": "registrationeligibilityrow"
     },
     {
       "label": "RegistrationData",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L243",
+      "source_location": "L330",
       "_origin": "ast",
       "id": "workspace_types_registrationdata",
-      "community": 10,
+      "community": 52,
       "norm_label": "registrationdata"
     },
     {
       "label": "RegistrationBasketResult",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L249",
+      "source_location": "L336",
       "_origin": "ast",
       "id": "workspace_types_registrationbasketresult",
-      "community": 10,
+      "community": 52,
       "norm_label": "registrationbasketresult"
     },
     {
       "label": "AdminCourseData",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L254",
+      "source_location": "L341",
       "_origin": "ast",
       "id": "workspace_types_admincoursedata",
       "community": 48,
@@ -4177,7 +4367,7 @@
       "label": "AdminUserData",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L265",
+      "source_location": "L353",
       "_origin": "ast",
       "id": "workspace_types_adminuserdata",
       "community": 6,
@@ -4187,7 +4377,7 @@
       "label": "CourseCatalogInput",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L272",
+      "source_location": "L360",
       "_origin": "ast",
       "id": "workspace_types_coursecataloginput",
       "community": 11,
@@ -4197,7 +4387,7 @@
       "label": "CurriculumRuleInput",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L279",
+      "source_location": "L367",
       "_origin": "ast",
       "id": "workspace_types_curriculumruleinput",
       "community": 11,
@@ -4207,7 +4397,7 @@
       "label": "CoursePrerequisiteOptionInput",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L287",
+      "source_location": "L375",
       "_origin": "ast",
       "id": "workspace_types_courseprerequisiteoptioninput",
       "community": 11,
@@ -4217,7 +4407,7 @@
       "label": "CoursePrerequisiteGroupInput",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L292",
+      "source_location": "L380",
       "_origin": "ast",
       "id": "workspace_types_courseprerequisitegroupinput",
       "community": 11,
@@ -4227,30 +4417,30 @@
       "label": "CourseOfferingInput",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L298",
+      "source_location": "L386",
       "_origin": "ast",
       "id": "workspace_types_courseofferinginput",
-      "community": 11,
+      "community": 48,
       "norm_label": "courseofferinginput"
     },
     {
       "label": "AssignmentMutationInput",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L305",
+      "source_location": "L393",
       "_origin": "ast",
       "id": "workspace_types_assignmentmutationinput",
-      "community": 10,
+      "community": 47,
       "norm_label": "assignmentmutationinput"
     },
     {
       "label": "InboxData",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/types.ts",
-      "source_location": "L313",
+      "source_location": "L401",
       "_origin": "ast",
       "id": "workspace_types_inboxdata",
-      "community": 6,
+      "community": 42,
       "norm_label": "inboxdata"
     },
     {
@@ -4307,7 +4497,7 @@
       "label": "currentYear",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
-      "source_location": "L35",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "admin_admincourseofferpage_currentyear",
       "community": 48,
@@ -4317,7 +4507,7 @@
       "label": "termLabels",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
-      "source_location": "L37",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "admin_admincourseofferpage_termlabels",
       "community": 48,
@@ -4327,7 +4517,7 @@
       "label": "memberRoleLabel",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
-      "source_location": "L43",
+      "source_location": "L44",
       "_origin": "ast",
       "id": "admin_admincourseofferpage_memberrolelabel",
       "community": 48,
@@ -4337,7 +4527,7 @@
       "label": "emptyOfferingForm()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
-      "source_location": "L49",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "admin_admincourseofferpage_emptyofferingform",
       "community": 48,
@@ -4347,7 +4537,7 @@
       "label": "emptyFilters()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
-      "source_location": "L56",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "admin_admincourseofferpage_emptyfilters",
       "community": 48,
@@ -4357,7 +4547,7 @@
       "label": "offeringToForm()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
-      "source_location": "L63",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "admin_admincourseofferpage_offeringtoform",
       "community": 48,
@@ -4367,17 +4557,27 @@
       "label": "memberProfileName()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
-      "source_location": "L70",
+      "source_location": "L71",
       "_origin": "ast",
       "id": "admin_admincourseofferpage_memberprofilename",
-      "community": 48,
+      "community": 47,
       "norm_label": "memberprofilename()"
+    },
+    {
+      "label": "toReadableDate()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
+      "source_location": "L74",
+      "_origin": "ast",
+      "id": "admin_admincourseofferpage_toreadabledate",
+      "community": 48,
+      "norm_label": "toreadabledate()"
     },
     {
       "label": "AdminCourseOfferPage()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
-      "source_location": "L73",
+      "source_location": "L81",
       "_origin": "ast",
       "id": "admin_admincourseofferpage_admincourseofferpage",
       "community": 48,
@@ -5054,6 +5254,86 @@
       "norm_label": "accountpage()"
     },
     {
+      "label": "CourseDetailPage.tsx",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "shared_coursedetailpage",
+      "community": 47,
+      "norm_label": "coursedetailpage.tsx"
+    },
+    {
+      "label": "toDateTimeLocalValue()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "shared_coursedetailpage_todatetimelocalvalue",
+      "community": 47,
+      "norm_label": "todatetimelocalvalue()"
+    },
+    {
+      "label": "toReadableDate()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "shared_coursedetailpage_toreadabledate",
+      "community": 47,
+      "norm_label": "toreadabledate()"
+    },
+    {
+      "label": "defaultAssignmentForm()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L42",
+      "_origin": "ast",
+      "id": "shared_coursedetailpage_defaultassignmentform",
+      "community": 47,
+      "norm_label": "defaultassignmentform()"
+    },
+    {
+      "label": "itemTypeLabel",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L50",
+      "_origin": "ast",
+      "id": "shared_coursedetailpage_itemtypelabel",
+      "community": 47,
+      "norm_label": "itemtypelabel"
+    },
+    {
+      "label": "buildSubmissionsByAssignment()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L59",
+      "_origin": "ast",
+      "id": "shared_coursedetailpage_buildsubmissionsbyassignment",
+      "community": 47,
+      "norm_label": "buildsubmissionsbyassignment()"
+    },
+    {
+      "label": "buildProfilesById()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L71",
+      "_origin": "ast",
+      "id": "shared_coursedetailpage_buildprofilesbyid",
+      "community": 47,
+      "norm_label": "buildprofilesbyid()"
+    },
+    {
+      "label": "CourseDetailPage()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L81",
+      "_origin": "ast",
+      "id": "shared_coursedetailpage_coursedetailpage",
+      "community": 47,
+      "norm_label": "coursedetailpage()"
+    },
+    {
       "label": "HelpPage.tsx",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/shared/HelpPage.tsx",
@@ -5090,7 +5370,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "shared_inboxpage",
-      "community": 6,
+      "community": 42,
       "norm_label": "inboxpage.tsx"
     },
     {
@@ -5100,7 +5380,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "shared_inboxpage_formatmessagetime",
-      "community": 6,
+      "community": 42,
       "norm_label": "formatmessagetime()"
     },
     {
@@ -5110,7 +5390,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "shared_inboxpage_latestmessageforthread",
-      "community": 6,
+      "community": 42,
       "norm_label": "latestmessageforthread()"
     },
     {
@@ -5120,7 +5400,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "shared_inboxpage_inboxpage",
-      "community": 6,
+      "community": 42,
       "norm_label": "inboxpage()"
     },
     {
@@ -5130,47 +5410,37 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "shared_mycoursespage",
-      "community": 10,
+      "community": 47,
       "norm_label": "mycoursespage.tsx"
     },
     {
-      "label": "toDateTimeLocalValue()",
+      "label": "termLabels",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
-      "source_location": "L26",
+      "source_location": "L16",
       "_origin": "ast",
-      "id": "shared_mycoursespage_todatetimelocalvalue",
-      "community": 10,
-      "norm_label": "todatetimelocalvalue()"
+      "id": "shared_mycoursespage_termlabels",
+      "community": 47,
+      "norm_label": "termlabels"
     },
     {
       "label": "toReadableDate()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
-      "source_location": "L37",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "shared_mycoursespage_toreadabledate",
-      "community": 10,
+      "community": 47,
       "norm_label": "toreadabledate()"
-    },
-    {
-      "label": "defaultAssignmentForm()",
-      "file_type": "code",
-      "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
-      "source_location": "L45",
-      "_origin": "ast",
-      "id": "shared_mycoursespage_defaultassignmentform",
-      "community": 10,
-      "norm_label": "defaultassignmentform()"
     },
     {
       "label": "MyCoursesPage()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
-      "source_location": "L53",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "shared_mycoursespage_mycoursespage",
-      "community": 10,
+      "community": 52,
       "norm_label": "mycoursespage()"
     },
     {
@@ -5230,7 +5500,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "student_registercoursespage",
-      "community": 10,
+      "community": 52,
       "norm_label": "registercoursespage.tsx"
     },
     {
@@ -5240,7 +5510,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "student_registercoursespage_termlabels",
-      "community": 10,
+      "community": 52,
       "norm_label": "termlabels"
     },
     {
@@ -5250,7 +5520,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "student_registercoursespage_getregistrationblockedmessage",
-      "community": 10,
+      "community": 52,
       "norm_label": "getregistrationblockedmessage()"
     },
     {
@@ -5260,7 +5530,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "student_registercoursespage_registercoursespage",
-      "community": 10,
+      "community": 52,
       "norm_label": "registercoursespage()"
     },
     {
@@ -5290,7 +5560,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "hooks_useauth",
-      "community": 2,
+      "community": 42,
       "norm_label": "useauth.ts"
     },
     {
@@ -5300,7 +5570,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "hooks_useauth_role",
-      "community": 2,
+      "community": 42,
       "norm_label": "role"
     },
     {
@@ -5310,7 +5580,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "hooks_useauth_authuser",
-      "community": 2,
+      "community": 42,
       "norm_label": "authuser"
     },
     {
@@ -5320,7 +5590,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "hooks_useauth_authprofile",
-      "community": 2,
+      "community": 42,
       "norm_label": "authprofile"
     },
     {
@@ -5330,7 +5600,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "hooks_useauth_useauthreturn",
-      "community": 2,
+      "community": 42,
       "norm_label": "useauthreturn"
     },
     {
@@ -5890,7 +6160,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "design_taste_frontend_skill_1_the_three_dials_core_configuration",
-      "community": 18,
+      "community": 56,
       "norm_label": "1. the three dials (core configuration)"
     },
     {
@@ -5900,7 +6170,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "design_taste_frontend_skill_1_a_dial_inference_design_read_dial_values",
-      "community": 18,
+      "community": 56,
       "norm_label": "1.a dial inference (design read \u2192 dial values)"
     },
     {
@@ -5910,7 +6180,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "design_taste_frontend_skill_1_b_use_case_presets",
-      "community": 18,
+      "community": 56,
       "norm_label": "1.b use-case presets"
     },
     {
@@ -5920,7 +6190,7 @@
       "source_location": "L77",
       "_origin": "ast",
       "id": "design_taste_frontend_skill_1_c_how_the_dials_drive_output",
-      "community": 18,
+      "community": 56,
       "norm_label": "1.c how the dials drive output"
     },
     {
@@ -6270,7 +6540,7 @@
       "source_location": "L552",
       "_origin": "ast",
       "id": "design_taste_frontend_skill_7_dial_definitions_technical_reference",
-      "community": 57,
+      "community": 18,
       "norm_label": "7. dial definitions (technical reference)"
     },
     {
@@ -6280,7 +6550,7 @@
       "source_location": "L554",
       "_origin": "ast",
       "id": "design_taste_frontend_skill_design_variance_level_1_10",
-      "community": 57,
+      "community": 18,
       "norm_label": "design_variance (level 1-10)"
     },
     {
@@ -6290,7 +6560,7 @@
       "source_location": "L560",
       "_origin": "ast",
       "id": "design_taste_frontend_skill_motion_intensity_level_1_10",
-      "community": 57,
+      "community": 18,
       "norm_label": "motion_intensity (level 1-10)"
     },
     {
@@ -6300,7 +6570,7 @@
       "source_location": "L565",
       "_origin": "ast",
       "id": "design_taste_frontend_skill_visual_density_level_1_10",
-      "community": 57,
+      "community": 18,
       "norm_label": "visual_density (level 1-10)"
     },
     {
@@ -7568,76 +7838,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "admin-course-offer-selection.test.mjs",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "admin_course_offer_selection_test",
-      "target": "admin_course_offer_selection_test_importtypescriptmodule"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "admin-course-offer-selection.test.mjs",
-      "source_location": "L31",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "admin_course_offer_selection_test",
-      "target": "admin_course_offer_selection_test_offerings"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L47",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "admin_course_selection_test",
-      "target": "admin_course_selection_test_childmajorruleform"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L37",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "admin_course_selection_test",
-      "target": "admin_course_selection_test_emptycourseform"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "admin_course_selection_test",
-      "target": "admin_course_selection_test_existingcourse"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "admin-course-selection.test.mjs",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "admin_course_selection_test",
-      "target": "admin_course_selection_test_importtypescriptmodule"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "api-client.test.mjs",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "api_client_test",
-      "target": "api_client_test_importtypescriptmodule"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "package.json",
       "source_location": "L20",
       "weight": 1.0,
@@ -8636,6 +8836,116 @@
       "confidence_score": 1.0,
       "source": "20260616103000_course_registration_requests_migration",
       "target": "20260616103000_course_registration_requests_migration_course_registration_requests"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration",
+      "target": "20260617120000_course_content_import_migration_assignments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration",
+      "target": "20260617120000_course_content_import_migration_course_content_assets",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration",
+      "target": "20260617120000_course_content_import_migration_course_content_items",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L28",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration",
+      "target": "20260617120000_course_content_import_migration_course_content_modules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration",
+      "target": "20260617120000_course_content_import_migration_course_content_packages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L129",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration_course_content_items",
+      "target": "20260617120000_course_content_import_migration_assignments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L135",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration_course_content_assets",
+      "target": "20260617120000_course_content_import_migration_course_content_packages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L123",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration_course_content_items",
+      "target": "20260617120000_course_content_import_migration_course_content_packages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L120",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration_course_content_modules",
+      "target": "20260617120000_course_content_import_migration_course_content_packages",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration_course_content_items",
+      "target": "20260617120000_course_content_import_migration_course_content_modules",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "source_file": "prisma/migrations/20260617120000_course_content_import/migration.sql",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "20260617120000_course_content_import_migration_course_content_items",
+      "target": "20260617120000_course_content_import_migration_course_content_assets",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -9732,6 +10042,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "server_http",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "server/services/courseCreation.js",
       "source_location": "L1",
       "weight": 1.0,
@@ -9880,6 +10201,94 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "services_adminusers_readteachermainmajorid",
+      "target": "server_http_httperror"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "server_http_httperror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L366",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_copyassetentries",
+      "target": "server_http_httperror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L53",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_findendofcentraldirectory",
+      "target": "server_http_httperror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L459",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_preparecanvascourseimport",
+      "target": "server_http_httperror"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L147",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readcanvascoursedatafromzip",
+      "target": "server_http_httperror"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L65",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readzipdirectory",
+      "target": "server_http_httperror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readzipentrydata",
+      "target": "server_http_httperror",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_tosafeassetrelativepath",
       "target": "server_http_httperror"
     },
     {
@@ -10251,6 +10660,56 @@
       "confidence_score": 1.0,
       "source": "server_mappers",
       "target": "server_mappers_mapcourse"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/mappers.js",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "server_mappers",
+      "target": "server_mappers_mapcoursecontentasset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/mappers.js",
+      "source_location": "L180",
+      "weight": 1.0,
+      "source": "server_mappers",
+      "target": "server_mappers_mapcoursecontentitem",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/mappers.js",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "server_mappers",
+      "target": "server_mappers_mapcoursecontentmodule",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/mappers.js",
+      "source_location": "L228",
+      "weight": 1.0,
+      "source": "server_mappers",
+      "target": "server_mappers_mapcoursecontentpackage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/mappers.js",
+      "source_location": "L211",
+      "weight": 1.0,
+      "source": "server_mappers",
+      "target": "server_mappers_mapcoursecontentpackagesummary",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10776,6 +11235,50 @@
       "target": "server_mappers_mapsession"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/mappers.js",
+      "source_location": "L195",
+      "weight": 1.0,
+      "source": "server_mappers_mapcoursecontentitem",
+      "target": "server_mappers_mapcoursecontentasset",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/routes/admin.js",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "routes_admin",
+      "target": "server_mappers_mapcoursecontentpackagesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/mappers.js",
+      "source_location": "L229",
+      "weight": 1.0,
+      "source": "server_mappers_mapcoursecontentpackage",
+      "target": "server_mappers_mapcoursecontentpackagesummary",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/routes/workspace.js",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "server_mappers_mapcoursecontentpackage",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -10837,6 +11340,16 @@
       "confidence_score": 1.0,
       "source": "routes_admin",
       "target": "routes_admin_assertteachercanteachcourse"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/routes/admin.js",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "routes_admin",
+      "target": "routes_admin_coursecontentupload",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10929,6 +11442,28 @@
       "confidence_score": 1.0,
       "source": "routes_admin",
       "target": "services_adminusers_readadminusercreateinput"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/routes/admin.js",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "routes_admin",
+      "target": "services_coursecontentimport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/routes/admin.js",
+      "source_location": "L24",
+      "weight": 1.0,
+      "source": "routes_admin",
+      "target": "services_coursecontentimport_importcanvascoursecontent",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -11421,9 +11956,9 @@
       "source_file": "server/routes/workspace.js",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "routes_workspace",
-      "target": "services_registrationrequests_requestapprovaldeniedmessage",
-      "confidence_score": 1.0
+      "target": "services_registrationrequests_requestapprovaldeniedmessage"
     },
     {
       "relation": "imports",
@@ -11521,17 +12056,6 @@
       "target": "services_adminusers_validcampuses"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/adminUsers.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_adminusers_test",
-      "target": "services_adminusers"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -11565,15 +12089,603 @@
       "target": "services_adminusers_readteachermainmajorid"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_blockedhtmltags",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L334",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_buildassetlookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L308",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_collectassignmentsources",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L348",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_copyassetentries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L478",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_createpackagerecords",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L174",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_encodepublicpath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L43",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_findendofcentraldirectory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L259",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_htmltoplaintext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L591",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_importcanvascoursecontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L284",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_moduleitemtype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L387",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_normalizecanvascoursedata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L344",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_normalizecontenthtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L328",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_normalizedassignmentsource",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L181",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_normalizeviewerfileurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_parsecanvascoursedatascript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L445",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_preparecanvascourseimport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L137",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_readcanvascoursedatafromzip",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L124",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_readziparchive",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_readzipdirectory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L97",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_readzipentrydata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L195",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_rewritecoursecontenthtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L29",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_safedecodeuri",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L37",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_safezipentryname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L241",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_sanitizerichhtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L219",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_sanitizeurlattributes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L274",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_todateornull",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L153",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_tosafeassetrelativepath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L545",
+      "weight": 1.0,
+      "source": "services_coursecontentimport",
+      "target": "services_coursecontentimport_upsertimportedassignments",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.test.mjs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_test",
+      "target": "services_coursecontentimport",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L160",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_tosafeassetrelativepath",
+      "target": "services_coursecontentimport_safedecodeuri",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L76",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readzipdirectory",
+      "target": "services_coursecontentimport_safezipentryname",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readzipdirectory",
+      "target": "services_coursecontentimport_findendofcentraldirectory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L126",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readziparchive",
+      "target": "services_coursecontentimport_readzipdirectory",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L370",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_copyassetentries",
+      "target": "services_coursecontentimport_readzipentrydata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L463",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_preparecanvascourseimport",
+      "target": "services_coursecontentimport_readzipentrydata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L150",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readcanvascoursedatafromzip",
+      "target": "services_coursecontentimport_readzipentrydata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L451",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_preparecanvascourseimport",
+      "target": "services_coursecontentimport_readziparchive",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readcanvascoursedatafromzip",
+      "target": "services_coursecontentimport_readziparchive",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L462",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_preparecanvascourseimport",
+      "target": "services_coursecontentimport_parsecanvascoursedatascript",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L150",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_readcanvascoursedatafromzip",
+      "target": "services_coursecontentimport_parsecanvascoursedatascript",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "server/services/adminUsers.test.mjs",
-      "source_location": "L4",
+      "source_file": "server/services/courseContentImport.test.mjs",
+      "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_adminusers_test",
-      "target": "services_adminusers_readadminusercreateinput"
+      "source": "services_coursecontentimport_test",
+      "target": "services_coursecontentimport_readcanvascoursedatafromzip",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L362",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_copyassetentries",
+      "target": "services_coursecontentimport_tosafeassetrelativepath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L190",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_normalizeviewerfileurl",
+      "target": "services_coursecontentimport_tosafeassetrelativepath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.test.mjs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_test",
+      "target": "services_coursecontentimport_tosafeassetrelativepath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L375",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_copyassetentries",
+      "target": "services_coursecontentimport_encodepublicpath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L345",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_normalizecontenthtml",
+      "target": "services_coursecontentimport_rewritecoursecontenthtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.test.mjs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_test",
+      "target": "services_coursecontentimport_rewritecoursecontenthtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L256",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_sanitizerichhtml",
+      "target": "services_coursecontentimport_sanitizeurlattributes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L345",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_normalizecontenthtml",
+      "target": "services_coursecontentimport_sanitizerichhtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.test.mjs",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_test",
+      "target": "services_coursecontentimport_sanitizerichhtml",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L440",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_normalizecanvascoursedata",
+      "target": "services_coursecontentimport_todateornull",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L389",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_normalizecanvascoursedata",
+      "target": "services_coursecontentimport_collectassignmentsources",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L329",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_normalizedassignmentsource",
+      "target": "services_coursecontentimport_collectassignmentsources",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L388",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_normalizecanvascoursedata",
+      "target": "services_coursecontentimport_buildassetlookup",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L465",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_preparecanvascourseimport",
+      "target": "services_coursecontentimport_copyassetentries",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L473",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_preparecanvascourseimport",
+      "target": "services_coursecontentimport_normalizecanvascoursedata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/courseContentImport.js",
+      "source_location": "L598",
+      "weight": 1.0,
+      "source": "services_coursecontentimport_importcanvascoursecontent",
+      "target": "services_coursecontentimport_preparecanvascourseimport",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -11628,17 +12740,6 @@
       "target": "services_curriculum_validatecurriculumruleinput"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/courseCreation.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_coursecreation_test",
-      "target": "services_coursecreation"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -11672,27 +12773,6 @@
       "target": "services_curriculum_validatecurriculumruleinput"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/courseCreation.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_coursecreation_test",
-      "target": "services_coursecreation_createcatalogcoursewithrule"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/courseCreation.test.mjs",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_coursecreation_test",
-      "target": "services_coursecreation_test_createprismarecorder"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "server/services/courseDeletion.js",
@@ -11701,38 +12781,6 @@
       "confidence_score": 1.0,
       "source": "services_coursedeletion",
       "target": "services_coursedeletion_deletecatalogcourse"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/courseDeletion.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_coursedeletion_test",
-      "target": "services_coursedeletion"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/courseDeletion.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_coursedeletion_test",
-      "target": "services_coursedeletion_deletecatalogcourse"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/courseDeletion.test.mjs",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_coursedeletion_test",
-      "target": "services_coursedeletion_test_createprismarecorder"
     },
     {
       "relation": "contains",
@@ -12034,17 +13082,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "server/services/registrationRequests.js",
       "source_location": "L2",
       "weight": 1.0,
@@ -12133,17 +13170,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites_evaluatecourseeligibility"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "server/services/registrationRequests.js",
       "source_location": "L2",
       "weight": 1.0,
@@ -12166,23 +13192,12 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites_evaluateregistrationbasket"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "server/services/registrationRequests.js",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_registrationrequests",
-      "target": "services_prerequisites_evaluateregistrationbasket",
-      "confidence_score": 1.0
+      "target": "services_prerequisites_evaluateregistrationbasket"
     },
     {
       "relation": "calls",
@@ -12242,66 +13257,6 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L122",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites_test_basecontext"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L14",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites_test_childmajors"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L24",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites_test_courses"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L62",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites_test_curriculumrules"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L101",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites_test_offerings"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/prerequisites.test.mjs",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_prerequisites_test",
-      "target": "services_prerequisites_test_student"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "server/services/registrationRequests.js",
       "source_location": "L57",
       "weight": 1.0,
@@ -12335,9 +13290,9 @@
       "source_file": "server/services/registrationRequests.js",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_registrationrequests",
-      "target": "services_registrationrequests_requestapprovaldeniedmessage",
-      "confidence_score": 1.0
+      "target": "services_registrationrequests_requestapprovaldeniedmessage"
     },
     {
       "relation": "contains",
@@ -12348,17 +13303,6 @@
       "confidence_score": 1.0,
       "source": "services_registrationrequests",
       "target": "services_registrationrequests_submitregistrationrequests"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_registrationrequests_test",
-      "target": "services_registrationrequests"
     },
     {
       "relation": "calls",
@@ -12367,82 +13311,9 @@
       "source_file": "server/services/registrationRequests.js",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_registrationrequests_submitregistrationrequests",
-      "target": "services_registrationrequests_requestapprovaldeniedmessage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_registrationrequests_test",
-      "target": "services_registrationrequests_submitregistrationrequests"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_registrationrequests_test",
-      "target": "services_registrationrequests_approveregistrationrequest"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_registrationrequests_test",
-      "target": "services_registrationrequests_rejectregistrationrequest"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L23",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_registrationrequests_test",
-      "target": "services_registrationrequests_test_basecontext"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_registrationrequests_test",
-      "target": "services_registrationrequests_test_baseoffering"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_registrationrequests_test",
-      "target": "services_registrationrequests_test_student"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/registrationRequests.test.mjs",
-      "source_location": "L61",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_registrationrequests_test",
-      "target": "services_registrationrequests_test_transactionrecorder"
+      "target": "services_registrationrequests_requestapprovaldeniedmessage"
     },
     {
       "relation": "contains",
@@ -12680,17 +13551,6 @@
       "target": "services_teachereligibility_useridfromstaff"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_teachereligibility_test",
-      "target": "services_teachereligibility"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -12823,79 +13683,6 @@
       "target": "services_teachereligibility_getcourseteachingmainmajorids"
     },
     {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_teachereligibility_test",
-      "target": "services_teachereligibility_getcourseteachingmainmajorids"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_teachereligibility_test",
-      "target": "services_teachereligibility_getteachercourseeligibilityerror"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_teachereligibility_test",
-      "target": "services_teachereligibility_getineligiblestaffforcourse"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_teachereligibility_test",
-      "target": "services_teachereligibility_test_childmajors"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_teachereligibility_test",
-      "target": "services_teachereligibility_test_curriculumrules"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L54",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_teachereligibility_test",
-      "target": "services_teachereligibility_test_eligibleteacher"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "server/services/teacherEligibility.test.mjs",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "services_teachereligibility_test",
-      "target": "services_teachereligibility_test_mainmajors"
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -13004,6 +13791,17 @@
       "confidence_score": 1.0,
       "source": "src_app",
       "target": "shared_accountpage"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_app",
+      "target": "shared_coursedetailpage",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -13223,6 +14021,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "context_authcontext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/InboxPage.tsx",
       "source_location": "L3",
       "weight": 1.0,
@@ -13382,6 +14191,28 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "shared_accountpage_accountpage",
+      "target": "context_authcontext_useauthcontext"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "context_authcontext_useauthcontext",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage_coursedetailpage",
       "target": "context_authcontext_useauthcontext"
     },
     {
@@ -14320,6 +15151,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_api",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/InboxPage.tsx",
       "source_location": "L5",
       "weight": 1.0,
@@ -14627,6 +15469,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L100",
+      "weight": 1.0,
+      "source": "workspace_api",
+      "target": "workspace_api_fetchcoursedetail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
       "source_location": "L316",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -14712,6 +15564,16 @@
       "confidence_score": 1.0,
       "source": "workspace_api",
       "target": "workspace_api_importadminusers"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L191",
+      "weight": 1.0,
+      "source": "workspace_api",
+      "target": "workspace_api_importcourseofferingcontent",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -15051,6 +15913,28 @@
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "source": "workspace_api",
+      "target": "workspace_types_coursecontentpackagesummaryrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "workspace_api",
+      "target": "workspace_types_coursedetaildata",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L3",
+      "weight": 1.0,
       "confidence_score": 1.0,
       "source": "workspace_api",
       "target": "workspace_types_coursememberrole"
@@ -15230,6 +16114,17 @@
       "confidence_score": 1.0,
       "source": "changepasswordpage_changepasswordpage",
       "target": "workspace_api_geterrormessage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_api_geterrormessage",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -15521,6 +16416,28 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_api_fetchcoursedetail",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L101",
+      "weight": 1.0,
+      "source": "workspace_api_fetchcoursedetail",
+      "target": "api_client_apirequest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/admin/AdminCoursesPage.tsx",
       "source_location": "L2",
       "weight": 1.0,
@@ -15724,6 +16641,28 @@
       "source_location": "L162",
       "weight": 1.0,
       "source": "workspace_api_deletecourseoffering",
+      "target": "api_client_apirequest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "admin_admincourseofferpage",
+      "target": "workspace_api_importcourseofferingcontent",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L196",
+      "weight": 1.0,
+      "source": "workspace_api_importcourseofferingcontent",
       "target": "api_client_apirequest"
     },
     {
@@ -16126,6 +17065,17 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_api_createassignment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
       "source_location": "L5",
       "weight": 1.0,
@@ -16143,6 +17093,17 @@
       "weight": 1.0,
       "source": "workspace_api_createassignment",
       "target": "api_client_apirequest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_api_updateassignment",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -16187,6 +17148,17 @@
       "weight": 1.0,
       "source": "workspace_api_fetchsubmissions",
       "target": "api_client_apirequest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_api_submitassignment",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -16357,6 +17329,17 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_api_profilename",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/InboxPage.tsx",
       "source_location": "L5",
       "weight": 1.0,
@@ -16481,9 +17464,9 @@
       "source_file": "src/features/swinlearn/pages/student/RegisterCoursesPage.tsx",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "student_registercoursespage_getregistrationblockedmessage",
-      "target": "workspace_api_courselabel",
-      "confidence_score": 1.0
+      "target": "workspace_api_courselabel"
     },
     {
       "relation": "calls",
@@ -16693,6 +17676,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/InboxPage.tsx",
       "source_location": "L14",
       "weight": 1.0,
@@ -16884,6 +17878,76 @@
       "confidence_score": 1.0,
       "source": "workspace_types",
       "target": "workspace_types_coursecatalogrow"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L209",
+      "weight": 1.0,
+      "source": "workspace_types",
+      "target": "workspace_types_coursecontentassetrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L221",
+      "weight": 1.0,
+      "source": "workspace_types",
+      "target": "workspace_types_coursecontentitemrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L201",
+      "weight": 1.0,
+      "source": "workspace_types",
+      "target": "workspace_types_coursecontentitemtype",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L239",
+      "weight": 1.0,
+      "source": "workspace_types",
+      "target": "workspace_types_coursecontentmodulerow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L269",
+      "weight": 1.0,
+      "source": "workspace_types",
+      "target": "workspace_types_coursecontentpackagerow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L252",
+      "weight": 1.0,
+      "source": "workspace_types",
+      "target": "workspace_types_coursecontentpackagesummaryrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/types.ts",
+      "source_location": "L274",
+      "weight": 1.0,
+      "source": "workspace_types",
+      "target": "workspace_types_coursedetaildata",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -17414,6 +18478,17 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_types_profilerow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/InboxPage.tsx",
       "source_location": "L14",
       "weight": 1.0,
@@ -17601,6 +18676,17 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_types_assignmentrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
       "source_location": "L17",
       "weight": 1.0,
@@ -17618,6 +18704,17 @@
       "confidence_score": 1.0,
       "source": "shared_workspacecalendarpage",
       "target": "workspace_types_assignmentrow"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_types_assignmentsubmissionrow",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -17640,6 +18737,28 @@
       "confidence_score": 1.0,
       "source": "shared_workspacecalendarpage",
       "target": "workspace_types_coursesessionrow"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_types_coursecontentitemrow",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_types_coursedetaildata",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports",
@@ -17876,6 +18995,17 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "workspace_types_assignmentmutationinput",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
       "source_location": "L17",
       "weight": 1.0,
@@ -17995,6 +19125,16 @@
       "target": "admin_admincourseofferpage_termlabels"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
+      "source_location": "L74",
+      "weight": 1.0,
+      "source": "admin_admincourseofferpage",
+      "target": "admin_admincourseofferpage_toreadabledate",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -18092,6 +19232,17 @@
       "confidence_score": 1.0,
       "source": "admin_admincourseofferpage_admincourseofferpage",
       "target": "admin_admincourseofferpage_emptyofferingform"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx",
+      "source_location": "L582",
+      "weight": 1.0,
+      "source": "admin_admincourseofferpage_admincourseofferpage",
+      "target": "admin_admincourseofferpage_toreadabledate",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -19077,6 +20228,120 @@
       "target": "shared_accountpage_rolename"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "hooks_useauth",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "hooks_useauth_role",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "shared_coursedetailpage_buildprofilesbyid",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "shared_coursedetailpage_buildsubmissionsbyassignment",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "shared_coursedetailpage_coursedetailpage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "shared_coursedetailpage_defaultassignmentform",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "shared_coursedetailpage_itemtypelabel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "shared_coursedetailpage_todatetimelocalvalue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage",
+      "target": "shared_coursedetailpage_toreadabledate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage_defaultassignmentform",
+      "target": "shared_coursedetailpage_todatetimelocalvalue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/CourseDetailPage.tsx",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "shared_coursedetailpage_coursedetailpage",
+      "target": "shared_coursedetailpage_defaultassignmentform",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/HelpPage.tsx",
@@ -19174,16 +20439,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
-      "source_location": "L45",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "shared_mycoursespage",
-      "target": "shared_mycoursespage_defaultassignmentform"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
       "source_location": "L53",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -19194,11 +20449,11 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
-      "source_location": "L26",
+      "source_location": "L16",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "shared_mycoursespage",
-      "target": "shared_mycoursespage_todatetimelocalvalue"
+      "target": "shared_mycoursespage_termlabels",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -19209,28 +20464,6 @@
       "confidence_score": 1.0,
       "source": "shared_mycoursespage",
       "target": "shared_mycoursespage_toreadabledate"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
-      "source_location": "L49",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "shared_mycoursespage_defaultassignmentform",
-      "target": "shared_mycoursespage_todatetimelocalvalue"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/swinlearn/pages/shared/MyCoursesPage.tsx",
-      "source_location": "L63",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "shared_mycoursespage_mycoursespage",
-      "target": "shared_mycoursespage_defaultassignmentform"
     },
     {
       "relation": "imports_from",
@@ -19300,9 +20533,9 @@
       "source_file": "src/features/swinlearn/pages/student/RegisterCoursesPage.tsx",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "student_registercoursespage",
-      "target": "student_registercoursespage_getregistrationblockedmessage",
-      "confidence_score": 1.0
+      "target": "student_registercoursespage_getregistrationblockedmessage"
     },
     {
       "relation": "contains",
@@ -21416,5 +22649,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "10ab78acf712633160a317fc6a352432876d6ccc"
+  "built_at_commit": "c0b17f633a7499a492e47e277fd4b60053c74238"
 }

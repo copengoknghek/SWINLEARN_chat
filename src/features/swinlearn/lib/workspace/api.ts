@@ -11,6 +11,8 @@ import type {
   AssignmentSubmissionRow,
   CatalogData,
   CourseCatalogInput,
+  CourseContentPackageSummaryRow,
+  CourseDetailData,
   CourseMemberRole,
   CourseOfferingInput,
   CoursePrerequisiteGroupInput,
@@ -93,6 +95,10 @@ export async function fetchAdminCourseData(): Promise<AdminCourseData> {
 
 export async function fetchWorkspaceCourses(): Promise<CourseWithMembers[]> {
   return apiRequest<CourseWithMembers[]>('/api/workspace/courses')
+}
+
+export async function fetchCourseDetail(courseId: string): Promise<CourseDetailData> {
+  return apiRequest<CourseDetailData>(`/api/workspace/courses/${encodeURIComponent(courseId)}/detail`)
 }
 
 type CourseCreateCurriculumRuleInput = Omit<CurriculumRuleInput, 'course_id'>
@@ -180,6 +186,20 @@ export async function updateCourseOffering(
 
 export async function deleteCourseOffering(offeringId: string) {
   await apiRequest(`/api/admin/course-offerings/${offeringId}`, { method: 'DELETE' })
+}
+
+export async function importCourseOfferingContent(offeringId: string, file: File) {
+  const formData = new FormData()
+
+  formData.set('file', file)
+
+  return apiRequest<CourseContentPackageSummaryRow>(
+    `/api/admin/course-offerings/${encodeURIComponent(offeringId)}/content-import`,
+    {
+      method: 'POST',
+      body: formData,
+    },
+  )
 }
 
 export async function addCourseMember(courseId: string, userId: string, role: CourseMemberRole) {

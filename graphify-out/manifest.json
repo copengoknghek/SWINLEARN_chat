@@ -50,13 +50,13 @@
     "semantic_hash": ""
   },
   "server/mappers.js": {
-    "mtime": 1781599401.2745645,
-    "ast_hash": "05400d3686185cd1ce32dcd629a6b9e6",
+    "mtime": 1781687068.5217147,
+    "ast_hash": "daa0b25aeadf4900196a8ffee45377ed",
     "semantic_hash": ""
   },
   "server/routes/admin.js": {
-    "mtime": 1781599534.4967394,
-    "ast_hash": "f493e968039ed2ef9cbdb4f0f7782ccd",
+    "mtime": 1781687164.2082322,
+    "ast_hash": "92e6b4e1f19bb2883eb477fbd6283be1",
     "semantic_hash": ""
   },
   "server/routes/auth.js": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "server/routes/workspace.js": {
-    "mtime": 1781670856.9449246,
-    "ast_hash": "a8120e6f46f9de7b954a1213ed99d5a3",
+    "mtime": 1781687191.3679984,
+    "ast_hash": "83eb473cd354b038624b1ed84ad14682",
     "semantic_hash": ""
   },
   "server/services/curriculum.js": {
@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1781592988.0521362,
-    "ast_hash": "96d17fcb96af85fa36a92007a8e26539",
+    "mtime": 1781687418.8008366,
+    "ast_hash": "d4b2f6b211d235ad6064a769cb126ed9",
     "semantic_hash": ""
   },
   "src/context/AuthContext.tsx": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/api.ts": {
-    "mtime": 1781599544.87154,
-    "ast_hash": "18600bd755a83e600810f8551521f322",
+    "mtime": 1781687250.518907,
+    "ast_hash": "5f01738b2103bd1a2ba3d056b5ad86a9",
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/navigation.ts": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/types.ts": {
-    "mtime": 1781599411.1225376,
-    "ast_hash": "8636e2127317988c71fc737ecaab7adf",
+    "mtime": 1781687220.3489804,
+    "ast_hash": "863fc822b26baff9b365f055af0b19ea",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/ChangePasswordPage/ChangePasswordPage.tsx": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/MyCoursesPage.tsx": {
-    "mtime": 1780906512.3582656,
-    "ast_hash": "2a850aecacb02af2cf8425cfb12f765c",
+    "mtime": 1781687463.1880555,
+    "ast_hash": "8879b7be349c9c25bb95b2751f691b13",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/WorkspaceCalendarPage.tsx": {
@@ -365,8 +365,8 @@
     "semantic_hash": ""
   },
   "server/app.js": {
-    "mtime": 1781168168.309605,
-    "ast_hash": "2875fac2ce129031c9bac34d05a6ccdd",
+    "mtime": 1781687074.8226247,
+    "ast_hash": "931a5b5fb8097aa27c462f78b2cd13e2",
     "semantic_hash": ""
   },
   "graphify-out/memory/query_20260611_082248_how_should_future_codex_sessions_use_graphify_and.md": {
@@ -389,11 +389,6 @@
     "ast_hash": "93466addd8216408b3ee7c0bfd669bc7",
     "semantic_hash": ""
   },
-  "server/services/courseDeletion.test.mjs": {
-    "mtime": 1781513324.6770904,
-    "ast_hash": "f5c10eb2be05c47bd1b619a55269c1c7",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/pages/admin/adminCourseSelection.ts": {
     "mtime": 1781597345.6736999,
     "ast_hash": "66a80ba2ab2455cc1bd523dbbc47a41a",
@@ -402,11 +397,6 @@
   "server/services/courseCreation.js": {
     "mtime": 1781513347.354418,
     "ast_hash": "c1702afa2c1f67d3b2163bb1dcbc446e",
-    "semantic_hash": ""
-  },
-  "server/services/courseCreation.test.mjs": {
-    "mtime": 1781513312.2958505,
-    "ast_hash": "5a0da4949abfcfdd5f54b6dc332eb540",
     "semantic_hash": ""
   },
   "prisma/migrations/20260615090000_course_prerequisites/migration.sql": {
@@ -419,19 +409,14 @@
     "ast_hash": "16fc0e0af8a94d65c7263b8f2ccea67b",
     "semantic_hash": ""
   },
-  "server/services/prerequisites.test.mjs": {
-    "mtime": 1781664829.1003509,
-    "ast_hash": "6465d30a630e216f7c08ff873b7a7b03",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/pages/student/RegisterCoursesPage.tsx": {
     "mtime": 1781670838.9115627,
     "ast_hash": "3c4de19e63b8a359a6aa69c5fe7b2d89",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/admin/AdminCourseOfferPage.tsx": {
-    "mtime": 1781599866.995906,
-    "ast_hash": "059eca2afe21601de848f8de76c17565",
+    "mtime": 1781687295.060688,
+    "ast_hash": "e9e9c88642f4e92341f677388f064c20",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/admin/adminCourseOfferSelection.ts": {
@@ -449,19 +434,9 @@
     "ast_hash": "3d7ec7c579c4acdf7bae8d5dd7c5142e",
     "semantic_hash": ""
   },
-  "server/services/adminUsers.test.mjs": {
-    "mtime": 1781594793.3395464,
-    "ast_hash": "649d297ffd07f30f1868b496e102a09c",
-    "semantic_hash": ""
-  },
   "server/services/teacherEligibility.js": {
     "mtime": 1781594923.2960095,
     "ast_hash": "273fe1eb87efdd7747d7caf7f9505bfc",
-    "semantic_hash": ""
-  },
-  "server/services/teacherEligibility.test.mjs": {
-    "mtime": 1781594793.1554878,
-    "ast_hash": "3a73bcf404d9c23902fa3a75d5b6d9f1",
     "semantic_hash": ""
   },
   "prisma/migrations/20260616103000_course_registration_requests/migration.sql": {
@@ -474,9 +449,24 @@
     "ast_hash": "bbb9995e9d33ccce3e6de81a19539624",
     "semantic_hash": ""
   },
-  "server/services/registrationRequests.test.mjs": {
-    "mtime": 1781670748.2638974,
-    "ast_hash": "62d029bb036edccc0281f3fb76bb9185",
+  "prisma/migrations/20260617120000_course_content_import/migration.sql": {
+    "mtime": 1781687038.8181145,
+    "ast_hash": "620f1ff2eda8fc919ca0bfbdd21c2c41",
+    "semantic_hash": ""
+  },
+  "server/services/courseContentImport.js": {
+    "mtime": 1781687527.0261643,
+    "ast_hash": "80f5b4c58984d7800160fb4d14c36f39",
+    "semantic_hash": ""
+  },
+  "server/services/courseContentImport.test.mjs": {
+    "mtime": 1781686711.0045426,
+    "ast_hash": "d573dd9f7ac03bc74aa74a534d5088c5",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/CourseDetailPage.tsx": {
+    "mtime": 1781687506.1116855,
+    "ast_hash": "899e955b01f7b91b7d45f2deece83732",
     "semantic_hash": ""
   }
 }

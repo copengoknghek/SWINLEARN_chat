@@ -133,6 +133,12 @@ export const mapAssignment = (assignment) => ({
   due_at: assignment.dueAt.toISOString(),
   status: assignment.status,
   created_by: assignment.createdById,
+  source_export_id: assignment.sourceExportId ?? null,
+  content_html: assignment.contentHtml ?? '',
+  submission_types: assignment.submissionTypes ?? null,
+  points_possible: assignment.pointsPossible ?? null,
+  lock_at: assignment.lockAt?.toISOString() ?? null,
+  unlock_at: assignment.unlockAt?.toISOString() ?? null,
   created_at: assignment.createdAt?.toISOString(),
   updated_at: assignment.updatedAt?.toISOString(),
 })
@@ -157,6 +163,72 @@ export const mapSession = (session) => ({
   location: session.location,
   created_by: session.createdById,
   created_at: session.createdAt?.toISOString(),
+})
+
+export const mapCourseContentAsset = (asset) => ({
+  id: asset.id,
+  package_id: asset.packageId,
+  source_path: asset.sourcePath,
+  title: asset.title,
+  mime_type: asset.mimeType,
+  size: asset.size,
+  stored_path: asset.storedPath,
+  public_url: asset.publicUrl,
+  file_type: asset.fileType,
+})
+
+export const mapCourseContentItem = (item) => ({
+  id: item.id,
+  package_id: item.packageId,
+  module_id: item.moduleId,
+  assignment_id: item.assignmentId,
+  asset_id: item.assetId,
+  source_id: item.sourceId,
+  source_export_id: item.sourceExportId,
+  title: item.title,
+  item_type: item.itemType,
+  content_html: item.contentHtml ?? '',
+  indent: item.indent,
+  position: item.position,
+  locked: item.locked,
+  completed: item.completed,
+  asset: item.asset ? mapCourseContentAsset(item.asset) : null,
+})
+
+export const mapCourseContentModule = (module) => ({
+  id: module.id,
+  package_id: module.packageId,
+  source_id: module.sourceId,
+  source_export_id: module.sourceExportId,
+  title: module.title,
+  status: module.status,
+  position: module.position,
+  unlock_at: module.unlockAt?.toISOString() ?? null,
+  sequential: module.sequential,
+  items: (module.items ?? []).map(mapCourseContentItem),
+})
+
+export const mapCourseContentPackageSummary = (coursePackage) => ({
+  id: coursePackage.id,
+  course_id: coursePackage.courseId,
+  offering_id: coursePackage.offeringId,
+  scope: coursePackage.scope,
+  import_id: coursePackage.importId,
+  source_title: coursePackage.sourceTitle,
+  source_last_download: coursePackage.sourceLastDownload?.toISOString() ?? null,
+  original_file_name: coursePackage.originalFileName,
+  language: coursePackage.language,
+  imported_by: coursePackage.importedById,
+  imported_at: coursePackage.importedAt.toISOString(),
+  module_count: coursePackage._count?.modules ?? coursePackage.modules?.length ?? 0,
+  item_count: coursePackage._count?.items ?? coursePackage.items?.length ?? 0,
+  asset_count: coursePackage._count?.assets ?? coursePackage.assets?.length ?? 0,
+})
+
+export const mapCourseContentPackage = (coursePackage) => ({
+  ...mapCourseContentPackageSummary(coursePackage),
+  modules: (coursePackage.modules ?? []).map(mapCourseContentModule),
+  assets: (coursePackage.assets ?? []).map(mapCourseContentAsset),
 })
 
 export const mapThread = (thread) => ({

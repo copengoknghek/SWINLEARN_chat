@@ -11,6 +11,7 @@ import AdminCourseOfferPage from './features/swinlearn/pages/admin/AdminCourseOf
 import AdminCoursesPage from './features/swinlearn/pages/admin/AdminCoursesPage'
 import AdminUsersPage from './features/swinlearn/pages/admin/AdminUsersPage'
 import AccountPage from './features/swinlearn/pages/shared/AccountPage'
+import CourseDetailPage from './features/swinlearn/pages/shared/CourseDetailPage'
 import HelpPage from './features/swinlearn/pages/shared/HelpPage'
 import InboxPage from './features/swinlearn/pages/shared/InboxPage'
 import MyCoursesPage from './features/swinlearn/pages/shared/MyCoursesPage'
@@ -45,6 +46,7 @@ function App() {
           <Route index element={<Navigate to="my-courses" replace />} />
           <Route path="dashboard" element={<Navigate to="/teacher/my-courses" replace />} />
           <Route path="my-courses" element={<MyCoursesPage />} />
+          <Route path="my-courses/:courseId" element={<CourseDetailPage />} />
           <Route path="calendar" element={<WorkspaceCalendarPage />} />
           <Route path="inbox" element={<InboxPage />} />
           <Route path="help" element={<HelpPage />} />
@@ -56,6 +58,7 @@ function App() {
           <Route index element={<Navigate to="my-courses" replace />} />
           <Route path="dashboard" element={<Navigate to="/student/my-courses" replace />} />
           <Route path="my-courses" element={<MyCoursesPage />} />
+          <Route path="my-courses/:courseId" element={<CourseDetailPage />} />
           <Route path="register" element={<RegisterCoursesPage />} />
           <Route path="calendar" element={<WorkspaceCalendarPage />} />
           <Route path="inbox" element={<InboxPage />} />

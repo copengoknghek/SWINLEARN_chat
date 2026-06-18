@@ -7,6 +7,7 @@ import { asyncHandler, requireBodyString, sendError } from '../http.js'
 import {
   mapAssignment,
   mapChildMajor,
+  mapCourseContentPackage,
   mapCourse,
   mapCurriculumRule,
   mapMainMajor,
@@ -126,6 +127,98 @@ workspaceRouter.get(
     })
 
     response.json(offerings.map(mapOffering))
+  }),
+)
+
+workspaceRouter.get(
+  '/courses/:id/detail',
+  asyncHandler(async (request, response) => {
+    const offering = await prisma.courseOffering.findFirst({
+      where: {
+        id: request.params.id,
+        ...visibleOfferingWhere(request.currentUser),
+      },
+      include: offeringsInclude,
+    })
+
+    if (!offering) {
+      sendError(response, 404, 'Course offering was not found.')
+      return
+    }
+
+    const submissionWhere =
+      request.currentUser.role === 'student'
+        ? {
+            assignment: {
+              offeringId: offering.id,
+            },
+            studentId: request.currentUser.id,
+          }
+        : {
+            assignment: {
+              offeringId: offering.id,
+            },
+          }
+    const [contentPackage, assignments, submissions] = await Promise.all([
+      prisma.courseContentPackage.findFirst({
+        where: {
+          offeringId: offering.id,
+          scope: 'offering',
+        },
+        include: {
+          _count: {
+            select: {
+              assets: true,
+              items: true,
+              modules: true,
+            },
+          },
+          assets: {
+            orderBy: { title: 'asc' },
+          },
+          modules: {
+            orderBy: { position: 'asc' },
+            include: {
+              items: {
+                orderBy: { position: 'asc' },
+                include: {
+                  asset: true,
+                },
+              },
+            },
+          },
+        },
+      }),
+      prisma.assignment.findMany({
+        where: { offeringId: offering.id },
+        orderBy: { dueAt: 'asc' },
+      }),
+      prisma.assignmentSubmission.findMany({
+        where: submissionWhere,
+        orderBy: { submittedAt: 'desc' },
+      }),
+    ])
+    const profileIds = [
+      ...new Set([
+        ...offering.staff.map((member) => member.userId),
+        ...offering.enrollments.map((member) => member.userId),
+        ...submissions.map((submission) => submission.studentId),
+      ]),
+    ]
+    const profiles = profileIds.length
+      ? await prisma.user.findMany({
+          where: { id: { in: profileIds } },
+          orderBy: [{ displayName: 'asc' }, { email: 'asc' }],
+        })
+      : []
+
+    response.json({
+      assignments: assignments.map(mapAssignment),
+      contentPackage: contentPackage ? mapCourseContentPackage(contentPackage) : null,
+      course: mapOffering(offering),
+      profiles: profiles.map(mapUserProfile),
+      submissions: submissions.map(mapSubmission),
+    })
   }),
 )
 

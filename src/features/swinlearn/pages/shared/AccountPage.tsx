@@ -1,6 +1,7 @@
 import { useNavigate, useOutletContext } from 'react-router-dom'
 import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
+import { accountAvatarInitials } from './accountProfileInitials'
 
 const roleName: Record<Role, string> = {
   admin: 'Admin',
@@ -13,8 +14,12 @@ function AccountPage() {
   const { workspaceRole } = useOutletContext<{ workspaceRole: Role }>()
   const { user, signOut } = useAuthContext()
   const email = user?.email ?? 'Not signed in'
-  const displayName = user?.email?.split('@')[0] ?? 'Workspace user'
-  const initials = email.slice(0, 2).toUpperCase()
+  const profileName = user?.fullName?.trim() || user?.displayName?.trim()
+  const displayName =
+    profileName ||
+    user?.email?.split('@')[0] ||
+    'Workspace user'
+  const initials = accountAvatarInitials(profileName, email)
 
   const handleSignOut = async () => {
     await signOut()

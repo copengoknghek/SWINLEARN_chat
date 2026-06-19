@@ -33,6 +33,7 @@ type ApiAuthPayload = {
     id: string
     email: string
   } | null
+  profile?: Pick<ProfileRow, 'full_name' | 'display_name'> | null
   role?: Role | null
   mustChangePassword?: boolean
 }

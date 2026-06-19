@@ -27,6 +27,34 @@ const toReadableDate = (isoValue: string) =>
     minute: '2-digit',
   }).format(new Date(isoValue))
 
+const courseCardIcons = {
+  announcement: {
+    pathData:
+      'M3 11.5C3 9.57 4.57 8 6.5 8H9l9-4v16l-9-4H6.5C4.57 16 3 14.43 3 12.5v-1zm6 4.5v3.25c0 .41-.34.75-.75.75H7.4a.75.75 0 0 1-.72-.54L5.65 16H9zm12-7.5v7a2.5 2.5 0 0 0 0-7z',
+    viewBox: '0 0 24 24',
+  },
+  edit: {
+    pathData:
+      'M5 4h10.5v2H7v12h12v-8.5h2V20H5V4zm12.08-.32a2.3 2.3 0 0 1 3.25 3.25l-7.66 7.66-4.17.92.92-4.17 7.66-7.66zm1.41 1.41-7.19 7.19-.26 1.18 1.18-.26 7.19-7.19a.3.3 0 0 0-.42-.42z',
+    viewBox: '0 0 24 24',
+  },
+} as const
+
+function CourseCardIcon({ name }: { name: keyof typeof courseCardIcons }) {
+  const icon = courseCardIcons[name]
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="workspace-course-card-action-svg"
+      focusable="false"
+      viewBox={icon.viewBox}
+    >
+      <path d={icon.pathData} />
+    </svg>
+  )
+}
+
 function MyCoursesPage() {
   const { workspaceRole } = useOutletContext<{ workspaceRole: Role }>()
   const [courses, setCourses] = useState<CourseWithMembers[]>([])
@@ -82,12 +110,12 @@ function MyCoursesPage() {
   }
 
   return (
-    <section className="workspace-page">
+    <section className="workspace-page workspace-course-page">
       <header className="workspace-page-header">
         <span className="workspace-eyebrow">Workspace</span>
-        <h1 className="workspace-page-title">
+        <h3 className="workspace-page-title">
           {workspaceRole === 'teacher' ? 'Teaching courses' : 'My courses'}
-        </h1>
+        </h3>
         <p className="workspace-page-subtitle">
           {workspaceRole === 'teacher'
             ? 'Open an assigned course to manage modules, assignments, due dates, and submissions.'
@@ -100,15 +128,17 @@ function MyCoursesPage() {
       {loading ? (
         <section className="workspace-panel">Loading course workspace...</section>
       ) : (
-        <div className="workspace-grid workspace-grid--two">
+        <div className="workspace-grid workspace-grid--two workspace-my-courses-layout">
           <section className="workspace-grid">
             {workspaceRole === 'student' && (
-              <div className="workspace-toolbar" aria-label="Term filter">
+              <div className="workspace-toolbar workspace-course-filter" aria-label="Term filter">
                 {(['semester_1', 'semester_2', 'summer'] as CourseTerm[]).map((term) => (
                   <button
                     key={term}
                     type="button"
-                    className={`workspace-tab${termFilter === term ? ' workspace-tab--active' : ''}`}
+                    className={`workspace-tab workspace-course-filter-tab${
+                      termFilter === term ? ' workspace-tab--active' : ''
+                    }`}
                     onClick={() => setTermFilter(term)}
                   >
                     {termLabels[term]}
@@ -117,39 +147,50 @@ function MyCoursesPage() {
               </div>
             )}
 
-            <div className="workspace-grid workspace-grid--three">
+            <div className="workspace-course-card-grid">
               {visibleCourses.map((course) => {
                 const courseAssignments = assignmentsByCourse.get(course.id) ?? []
-                const nextAssignment = courseAssignments.find(
-                  (assignment) => new Date(assignment.due_at).getTime() >= currentTimestamp,
-                )
+                const termLabel = `${course.academic_year} HE ${termLabels[course.term]}`
 
                 return (
                   <Link
-                    className="workspace-card workspace-card--button workspace-card--link"
+                    aria-label={`Open ${courseLabel(course)}`}
+                    className="workspace-course-card workspace-card--button workspace-card--link"
                     key={course.id}
                     to={`/${workspaceRole}/my-courses/${course.id}`}
                   >
-                    <div className="workspace-section-heading">
-                      <div>
-                        <span className="workspace-chip">{course.code}</span>
-                        <h2>{course.title}</h2>
-                        <p>{course.description || 'No course description provided.'}</p>
+                    <div className="workspace-course-card-visual" aria-hidden="true">
+                      <strong>{course.title}</strong>
+                      <span className="workspace-course-card-circle" />
+                      <span className="workspace-course-card-square" />
+                      <span className="workspace-course-card-menu">
+                        <span />
+                        <span />
+                        <span />
+                      </span>
+                    </div>
+
+                    <div className="workspace-course-card-body">
+                      <div className="workspace-course-card-copy">
+                        <h2>{course.code}</h2>
+                        <p className="workspace-course-card-title">{course.title}</p>
+                        <p className="workspace-course-card-term">{termLabel}</p>
                       </div>
-                    </div>
-                    <div className="workspace-meta-row">
-                      <span className="workspace-chip">
-                        {termLabels[course.term]} {course.academic_year}
+
+                      <span className="workspace-course-card-actions" aria-hidden="true">
+                        <span className="workspace-course-card-action">
+                          <CourseCardIcon name="announcement" />
+                          {courseAssignments.length > 0 && (
+                            <span className="workspace-course-card-badge">
+                              {Math.min(courseAssignments.length, 99)}
+                            </span>
+                          )}
+                        </span>
+                        <span className="workspace-course-card-action">
+                          <CourseCardIcon name="edit" />
+                        </span>
                       </span>
-                      <span className="workspace-chip">
-                        {courseAssignments.length} assignments
-                      </span>
                     </div>
-                    {nextAssignment && (
-                      <p>
-                        Next due: {nextAssignment.title} on {toReadableDate(nextAssignment.due_at)}
-                      </p>
-                    )}
                   </Link>
                 )
               })}
@@ -164,7 +205,7 @@ function MyCoursesPage() {
             )}
           </section>
 
-          <aside className="workspace-panel">
+          <aside className="workspace-panel workspace-assignments-panel">
             <h2>Upcoming assignments</h2>
             <ul className="workspace-list">
               {upcomingAssignments.map((assignment) => {

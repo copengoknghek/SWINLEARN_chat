@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   "prisma/seed.js": {
-    "mtime": 1781664946.4331503,
-    "ast_hash": "c7f3562ebb2467d7db68eb3b5a09bcfc",
+    "mtime": 1781774359.930456,
+    "ast_hash": "f6b039e7aefbfa83d6568ffe76028ecc",
     "semantic_hash": ""
   },
   "server/auth-middleware.js": {
@@ -50,8 +50,8 @@
     "semantic_hash": ""
   },
   "server/mappers.js": {
-    "mtime": 1781687068.5217147,
-    "ast_hash": "daa0b25aeadf4900196a8ffee45377ed",
+    "mtime": 1781774359.9273763,
+    "ast_hash": "908046d51cbf3b3549cfe0b612782bfc",
     "semantic_hash": ""
   },
   "server/routes/admin.js": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "server/routes/workspace.js": {
-    "mtime": 1781687191.3679984,
-    "ast_hash": "83eb473cd354b038624b1ed84ad14682",
+    "mtime": 1781774359.4013758,
+    "ast_hash": "0ea0f5c30bc3f24aaf7e15022fbc4d79",
     "semantic_hash": ""
   },
   "server/services/curriculum.js": {
@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1781687418.8008366,
-    "ast_hash": "d4b2f6b211d235ad6064a769cb126ed9",
+    "mtime": 1781836516.789686,
+    "ast_hash": "f791bc946f4eeacc6d5415363853099e",
     "semantic_hash": ""
   },
   "src/context/AuthContext.tsx": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/api.ts": {
-    "mtime": 1781687250.518907,
-    "ast_hash": "5f01738b2103bd1a2ba3d056b5ad86a9",
+    "mtime": 1781774596.3913357,
+    "ast_hash": "d899388ec25c491bfe872559f8b3c327",
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/navigation.ts": {
@@ -185,8 +185,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/types.ts": {
-    "mtime": 1781687220.3489804,
-    "ast_hash": "863fc822b26baff9b365f055af0b19ea",
+    "mtime": 1781774358.9676974,
+    "ast_hash": "f6b8449b6f1829c642ad532a2d0fb5be",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/ChangePasswordPage/ChangePasswordPage.tsx": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/AccountPage.tsx": {
-    "mtime": 1781753382.268207,
-    "ast_hash": "0c18e633b35059cb963735da2ba9ab03",
+    "mtime": 1781775078.097526,
+    "ast_hash": "59636813da1bce860ba2ee89b2220aad",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/HelpPage.tsx": {
@@ -225,8 +225,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/MyCoursesPage.tsx": {
-    "mtime": 1781687463.1880555,
-    "ast_hash": "8879b7be349c9c25bb95b2751f691b13",
+    "mtime": 1781833185.634206,
+    "ast_hash": "2f382cf7a76410332557e3ab8bce77e2",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/WorkspaceCalendarPage.tsx": {
@@ -240,8 +240,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useAuth.ts": {
-    "mtime": 1780907158.8606226,
-    "ast_hash": "2e96b80ac6473d136917042f7604301c",
+    "mtime": 1781774596.6559412,
+    "ast_hash": "fce9f81f8b34e8e63789911303da0868",
     "semantic_hash": ""
   },
   "src/lib/api/client.ts": {
@@ -465,8 +465,33 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/CourseDetailPage.tsx": {
-    "mtime": 1781687506.1116855,
-    "ast_hash": "899e955b01f7b91b7d45f2deece83732",
+    "mtime": 1781840073.9277215,
+    "ast_hash": "190b592ff5131dc6f17de3e62dfd997b",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/accountProfileInitials.test.mjs": {
+    "mtime": 1781850104.0442274,
+    "ast_hash": "e8aea38a445d0e89ece91b98ded12dff",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/accountProfileInitials.ts": {
+    "mtime": 1781775077.939715,
+    "ast_hash": "a0dbadaa07a9e2cfc260724683e206bd",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/courseDetailSections.test.mjs": {
+    "mtime": 1781850104.1663642,
+    "ast_hash": "93662ae2b8cd33775be715fb4ad26d4f",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/pages/shared/courseDetailSections.ts": {
+    "mtime": 1781838309.992807,
+    "ast_hash": "736f231c17881a2549d5ed75db2cd204",
+    "semantic_hash": ""
+  },
+  "src/features/swinlearn/styles/workspacePagesCss.test.mjs": {
+    "mtime": 1781840438.9448962,
+    "ast_hash": "c90eea628b3f7a60b4d4b4d7cafcf633",
     "semantic_hash": ""
   }
 }

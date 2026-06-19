@@ -6,6 +6,8 @@ export type Role = 'admin' | 'teacher' | 'student'
 export type AuthUser = {
   id: string
   email: string
+  fullName: string | null
+  displayName: string | null
 }
 
 type AuthProfile = {
@@ -37,7 +39,12 @@ export function useAuth(): UseAuthReturn {
         return
       }
 
-      setUser(payload.user)
+      setUser({
+        id: payload.user.id,
+        email: payload.user.email,
+        fullName: payload.profile?.full_name ?? null,
+        displayName: payload.profile?.display_name ?? null,
+      })
       setAuthProfile({
         userId: payload.user.id,
         role: payload.role ?? null,

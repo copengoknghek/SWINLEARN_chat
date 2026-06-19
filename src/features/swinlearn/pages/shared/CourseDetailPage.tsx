@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useOutletContext, useParams } from 'react-router-dom'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { Link, Navigate, useOutletContext, useParams } from 'react-router-dom'
 import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
 import {
@@ -16,8 +16,24 @@ import type {
   AssignmentSubmissionRow,
   CourseContentItemRow,
   CourseDetailData,
+  CourseTerm,
   ProfileRow,
 } from '../../lib/workspace/types'
+import {
+  buildCourseDetailPath,
+  courseDetailSectionLabels,
+  courseDetailSections,
+  isCourseDetailSection,
+  scrollCourseContentIntoView,
+  summarizeCourseDetail,
+  type CourseDetailSection,
+} from './courseDetailSections'
+
+const termLabels: Record<CourseTerm, string> = {
+  semester_1: 'Semester 1',
+  semester_2: 'Semester 2',
+  summer: 'Summer',
+}
 
 const toDateTimeLocalValue = (isoValue: string) => {
   const date = new Date(isoValue)
@@ -78,10 +94,13 @@ const buildProfilesById = (profiles: ProfileRow[]) => {
   return map
 }
 
+const formatTerm = (term: CourseTerm) => termLabels[term] ?? term.replace('_', ' ')
+
 function CourseDetailPage() {
-  const { courseId = '' } = useParams()
+  const { courseId = '', section } = useParams()
   const { workspaceRole } = useOutletContext<{ workspaceRole: Role }>()
   const { user } = useAuthContext()
+  const activeSection: CourseDetailSection = isCourseDetailSection(section) ? section : 'home'
   const [detail, setDetail] = useState<CourseDetailData | null>(null)
   const [activeContentItemId, setActiveContentItemId] = useState('')
   const [activeAssignmentId, setActiveAssignmentId] = useState('')
@@ -90,6 +109,9 @@ function CourseDetailPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
+  const [currentTimestamp] = useState(() => Date.now())
+  const coursePageRef = useRef<HTMLElement | null>(null)
+  const moduleContentRef = useRef<HTMLElement | null>(null)
 
   const loadData = useCallback(async () => {
     if (!courseId) {
@@ -118,10 +140,14 @@ function CourseDetailPage() {
   }, [courseId])
 
   useEffect(() => {
+    if (!isCourseDetailSection(section)) {
+      return undefined
+    }
+
     const timeoutId = window.setTimeout(() => void loadData(), 0)
 
     return () => window.clearTimeout(timeoutId)
-  }, [loadData])
+  }, [loadData, section])
 
   const allContentItems = useMemo(
     () => detail?.contentPackage?.modules.flatMap((module) => module.items) ?? [],
@@ -172,13 +198,38 @@ function CourseDetailPage() {
     ? assignmentById.get(activeAssignmentId) ?? null
     : activeContentItem?.assignment_id
       ? assignmentById.get(activeContentItem.assignment_id) ?? null
-      : null
+      : detail?.assignments[0] ?? null
+  const teacherMembers = useMemo(
+    () =>
+      detail?.course.members.filter(
+        (member) => member.role === 'teacher' || member.role === 'teaching_assistant',
+      ) ?? [],
+    [detail?.course.members],
+  )
+  const courseSummary = useMemo(() => {
+    if (!detail) {
+      return null
+    }
+
+    return summarizeCourseDetail({
+      assignments: detail.assignments,
+      contentPackage: detail.contentPackage,
+      currentTimestamp,
+      memberCount: detail.course.members.length,
+      teacherCount: teacherMembers.length,
+    })
+  }, [currentTimestamp, detail, teacherMembers.length])
 
   const openContentItem = (item: CourseContentItemRow) => {
     setActiveContentItemId(item.id)
     if (item.assignment_id) {
       setActiveAssignmentId(item.assignment_id)
     }
+    scrollCourseContentIntoView(moduleContentRef.current)
+  }
+
+  const scrollModulesToTop = () => {
+    scrollCourseContentIntoView(coursePageRef.current)
   }
 
   const openAssignment = (assignmentId: string) => {
@@ -359,76 +410,127 @@ function CourseDetailPage() {
     )
   }
 
-  if (workspaceRole === 'admin') {
-    return null
-  }
+  const renderCourseHome = () => {
+    if (!detail || !courseSummary) {
+      return null
+    }
 
-  if (loading) {
-    return <section className="workspace-panel">Loading course detail...</section>
-  }
+    const teacherProfiles = teacherMembers
+      .map((member) => profilesById.get(member.user_id))
+      .filter((profile): profile is ProfileRow => profile !== undefined)
 
-  if (!detail) {
     return (
-      <section className="workspace-page">
-        {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-      </section>
+      <div className="workspace-grid workspace-grid--two course-detail-home-layout">
+        <section className="workspace-panel course-detail-overview">
+          <div className="workspace-section-heading">
+            <div>
+              <span className="workspace-chip">{detail.course.code}</span>
+              <h2>Course home</h2>
+            </div>
+          </div>
+          <p>{detail.course.description || 'No course description provided.'}</p>
+
+          <div className="course-detail-stat-grid" aria-label="Course summary">
+            <article className="course-detail-stat">
+              <strong>{courseSummary.moduleCount}</strong>
+              <span>Modules</span>
+            </article>
+            <article className="course-detail-stat">
+              <strong>{courseSummary.assignmentCount}</strong>
+              <span>Assignments</span>
+            </article>
+            <article className="course-detail-stat">
+              <strong>{courseSummary.fileCount}</strong>
+              <span>Files</span>
+            </article>
+            <article className="course-detail-stat">
+              <strong>{courseSummary.memberCount}</strong>
+              <span>Members</span>
+            </article>
+          </div>
+
+          {detail.contentPackage ? (
+            <div className="workspace-subpanel">
+              <h3>{detail.contentPackage.source_title}</h3>
+              <p>
+                Imported from {detail.contentPackage.original_file_name || 'course ZIP'} with{' '}
+                {detail.contentPackage.module_count} modules and {detail.contentPackage.item_count}{' '}
+                learning items.
+              </p>
+            </div>
+          ) : (
+            <div className="workspace-empty-state">
+              No imported course package yet. Modules, files, and imported assignment pages will
+              appear after an admin imports a Canvas ZIP.
+            </div>
+          )}
+        </section>
+
+        <aside className="workspace-grid course-detail-home-side">
+          <section className="workspace-panel">
+            <h2>Teaching team</h2>
+            <ul className="workspace-list">
+              {teacherProfiles.map((profile) => (
+                <li className="workspace-list-item" key={profile.id}>
+                  <strong>{profileName(profile)}</strong>
+                  <span>{profile.email}</span>
+                </li>
+              ))}
+            </ul>
+            {teacherProfiles.length === 0 && (
+              <p>{courseSummary.teacherCount} teaching staff assigned.</p>
+            )}
+          </section>
+
+          <section className="workspace-panel">
+            <h2>Upcoming assignment</h2>
+            {courseSummary.upcomingAssignment ? (
+              <div className="workspace-list-item">
+                <strong>{courseSummary.upcomingAssignment.title}</strong>
+                <span>Due {toReadableDate(courseSummary.upcomingAssignment.due_at)}</span>
+              </div>
+            ) : (
+              <p>No upcoming assignment.</p>
+            )}
+          </section>
+        </aside>
+      </div>
     )
   }
 
-  return (
-    <section className="workspace-page course-detail-page">
-      <header className="workspace-page-header">
-        <Link className="workspace-secondary-action course-detail-back" to={`/${workspaceRole}/my-courses`}>
-          Back to courses
-        </Link>
-        <span className="workspace-eyebrow">{workspaceRole === 'teacher' ? 'Teaching course' : 'Course'}</span>
-        <h1 className="workspace-page-title">{detail.course.title}</h1>
-        <p className="workspace-page-subtitle">
-          {detail.course.code} - {detail.course.description || 'No course description provided.'}
-        </p>
-        <div className="workspace-meta-row">
-          <span className="workspace-chip">{detail.course.term.replace('_', ' ')}</span>
-          <span className="workspace-chip">{detail.course.academic_year}</span>
-          {detail.contentPackage && (
-            <span className="workspace-chip">{detail.contentPackage.module_count} modules</span>
-          )}
-        </div>
-      </header>
+  const renderModulesSection = () => {
+    if (!detail?.contentPackage) {
+      return <div className="workspace-empty-state">No imported modules yet.</div>
+    }
 
-      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-      {notice !== '' && <div className="workspace-alert workspace-alert--success">{notice}</div>}
-
-      <div className="course-detail-layout">
+    return (
+      <div className="course-detail-layout course-detail-layout--modules">
         <aside className="workspace-panel course-detail-nav">
           <h2>Modules</h2>
-          {detail.contentPackage ? (
-            <div className="course-detail-module-list">
-              {detail.contentPackage.modules.map((module) => (
-                <section key={module.id}>
-                  <h3>{module.title}</h3>
-                  <div className="course-detail-item-list">
-                    {module.items.map((item) => (
-                      <button
-                        key={item.id}
-                        type="button"
-                        className={`course-detail-item${activeContentItem?.id === item.id ? ' course-detail-item--active' : ''}`}
-                        style={{ marginLeft: `${item.indent * 14}px` }}
-                        onClick={() => openContentItem(item)}
-                      >
-                        <span>{item.title}</span>
-                        <small>{itemTypeLabel[item.item_type]}</small>
-                      </button>
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
-          ) : (
-            <div className="workspace-empty-state">No imported modules yet.</div>
-          )}
+          <div className="course-detail-module-list">
+            {detail.contentPackage.modules.map((module) => (
+              <section key={module.id}>
+                <h3>{module.title}</h3>
+                <div className="course-detail-item-list">
+                  {module.items.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      className={`course-detail-item${activeContentItem?.id === item.id ? ' course-detail-item--active' : ''}`}
+                      style={{ marginLeft: `${item.indent * 14}px` }}
+                      onClick={() => openContentItem(item)}
+                    >
+                      <span>{item.title}</span>
+                      <small>{itemTypeLabel[item.item_type]}</small>
+                    </button>
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
         </aside>
 
-        <main className="workspace-panel course-detail-main">
+        <main className="workspace-panel course-detail-main" ref={moduleContentRef}>
           {activeContentItem ? (
             <>
               <div className="workspace-section-heading">
@@ -450,104 +552,227 @@ function CourseDetailPage() {
                   Open {activeContentItem.asset.title}
                 </a>
               )}
-              {renderAssignmentPanel(activeAssignment)}
-            </>
-          ) : activeAssignment ? (
-            <>
-              <h2>{activeAssignment.title}</h2>
-              {activeAssignment.content_html ? (
-                <div
-                  className="course-detail-rich-content"
-                  dangerouslySetInnerHTML={{ __html: activeAssignment.content_html }}
-                />
-              ) : (
-                <p>{activeAssignment.description}</p>
-              )}
-              {renderAssignmentPanel(activeAssignment)}
             </>
           ) : (
-            <div className="workspace-empty-state">Select a module item or assignment.</div>
+            <div className="workspace-empty-state">Select a module item.</div>
           )}
         </main>
-
-        <aside className="workspace-panel course-detail-side">
-          <h2>Assignments</h2>
-          <div className="course-detail-assignment-list">
-            {detail.assignments.map((assignment) => {
-              return (
-                <button
-                  key={assignment.id}
-                  type="button"
-                  className={`course-detail-assignment${activeAssignment?.id === assignment.id ? ' course-detail-assignment--active' : ''}`}
-                  onClick={() => openAssignment(assignment.id)}
-                >
-                  <strong>{assignment.title}</strong>
-                  <span>Due {toReadableDate(assignment.due_at)}</span>
-                </button>
-              )
-            })}
-            {detail.assignments.length === 0 && <p>No assignments published yet.</p>}
-          </div>
-
-          {workspaceRole === 'teacher' && (
-            <section className="course-detail-create-assignment">
-              <h2>Create assignment</h2>
-              <form className="workspace-form" onSubmit={(event) => void handleAssignmentCreate(event)}>
-                <label>
-                  <span>Title</span>
-                  <input
-                    value={assignmentForm.title}
-                    onChange={(event) =>
-                      setAssignmentForm((current) => ({ ...current, title: event.target.value }))
-                    }
-                    required
-                  />
-                </label>
-                <label>
-                  <span>Description</span>
-                  <textarea
-                    value={assignmentForm.description}
-                    onChange={(event) =>
-                      setAssignmentForm((current) => ({
-                        ...current,
-                        description: event.target.value,
-                      }))
-                    }
-                  />
-                </label>
-                <label>
-                  <span>Due date</span>
-                  <input
-                    type="datetime-local"
-                    value={assignmentForm.due_at}
-                    onChange={(event) =>
-                      setAssignmentForm((current) => ({ ...current, due_at: event.target.value }))
-                    }
-                    required
-                  />
-                </label>
-                <button type="submit" disabled={saving}>
-                  {saving ? 'Publishing...' : 'Publish assignment'}
-                </button>
-              </form>
-            </section>
-          )}
-
-          {detail.contentPackage && detail.contentPackage.assets.length > 0 && (
-            <section className="course-detail-resources">
-              <h2>Files</h2>
-              <ul className="workspace-list">
-                {detail.contentPackage.assets.slice(0, 8).map((asset) => (
-                  <li className="workspace-list-item" key={asset.id}>
-                    <a href={asset.public_url}>{asset.title}</a>
-                    {asset.size !== null && <span>{Math.round(asset.size / 1024)} KB</span>}
-                  </li>
-                ))}
-              </ul>
-            </section>
-          )}
-        </aside>
+        <button
+          type="button"
+          className="course-detail-scroll-top"
+          aria-label="Scroll course page to top"
+          onClick={scrollModulesToTop}
+        >
+          &uarr;
+        </button>
       </div>
+    )
+  }
+
+  const renderAssignmentsSection = () => (
+    <div className="course-detail-layout course-detail-layout--assignments">
+      <aside className="workspace-panel course-detail-side">
+        <h2>Assignment</h2>
+        <div className="course-detail-assignment-list">
+          {detail?.assignments.map((assignment) => (
+            <button
+              key={assignment.id}
+              type="button"
+              className={`course-detail-assignment${activeAssignment?.id === assignment.id ? ' course-detail-assignment--active' : ''}`}
+              onClick={() => openAssignment(assignment.id)}
+            >
+              <strong>{assignment.title}</strong>
+              <span>Due {toReadableDate(assignment.due_at)}</span>
+            </button>
+          ))}
+          {detail?.assignments.length === 0 && <p>No assignments published yet.</p>}
+        </div>
+
+        {workspaceRole === 'teacher' && detail && (
+          <section className="course-detail-create-assignment">
+            <h2>Create assignment</h2>
+            <form className="workspace-form" onSubmit={(event) => void handleAssignmentCreate(event)}>
+              <label>
+                <span>Title</span>
+                <input
+                  value={assignmentForm.title}
+                  onChange={(event) =>
+                    setAssignmentForm((current) => ({ ...current, title: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <label>
+                <span>Description</span>
+                <textarea
+                  value={assignmentForm.description}
+                  onChange={(event) =>
+                    setAssignmentForm((current) => ({
+                      ...current,
+                      description: event.target.value,
+                    }))
+                  }
+                />
+              </label>
+              <label>
+                <span>Due date</span>
+                <input
+                  type="datetime-local"
+                  value={assignmentForm.due_at}
+                  onChange={(event) =>
+                    setAssignmentForm((current) => ({ ...current, due_at: event.target.value }))
+                  }
+                  required
+                />
+              </label>
+              <button type="submit" disabled={saving}>
+                {saving ? 'Publishing...' : 'Publish assignment'}
+              </button>
+            </form>
+          </section>
+        )}
+      </aside>
+
+      <main className="workspace-panel course-detail-main">
+        {activeAssignment ? (
+          <>
+            <div className="workspace-section-heading">
+              <div>
+                <span className="workspace-chip">Assignment</span>
+                <h2>{activeAssignment.title}</h2>
+              </div>
+            </div>
+            {activeAssignment.content_html ? (
+              <div
+                className="course-detail-rich-content"
+                dangerouslySetInnerHTML={{ __html: activeAssignment.content_html }}
+              />
+            ) : (
+              <p>{activeAssignment.description || 'No assignment content has been provided.'}</p>
+            )}
+            {renderAssignmentPanel(activeAssignment)}
+          </>
+        ) : (
+          <div className="workspace-empty-state">Select an assignment.</div>
+        )}
+      </main>
+    </div>
+  )
+
+  const renderGradesSection = () => (
+    <section className="workspace-panel course-detail-grades-panel">
+      <div className="workspace-section-heading">
+        <div>
+          <span className="workspace-chip">Read only</span>
+          <h2>Grades</h2>
+          <p>Scores are not stored yet, so this page shows submission status and available points.</p>
+        </div>
+      </div>
+
+      <div className="workspace-table workspace-table--spaced course-detail-grade-table">
+        {detail?.assignments.map((assignment) => {
+          const ownSubmission = ownSubmissionByAssignment.get(assignment.id)
+          const assignmentSubmissions = submissionsByAssignment.get(assignment.id) ?? []
+          const status =
+            workspaceRole === 'teacher'
+              ? `${assignmentSubmissions.length} submissions`
+              : ownSubmission
+                ? `Submitted ${toReadableDate(ownSubmission.submitted_at)}`
+                : 'Not submitted'
+
+          return (
+            <div className="workspace-row course-detail-grade-row" key={assignment.id}>
+              <div>
+                <strong>{assignment.title}</strong>
+                <small>{status}</small>
+              </div>
+              <span>{assignment.points_possible ?? '-'} pts</span>
+              <span>Not graded yet</span>
+            </div>
+          )
+        })}
+      </div>
+
+      {detail?.assignments.length === 0 && (
+        <div className="workspace-empty-state">No assignments available for grades.</div>
+      )}
+    </section>
+  )
+
+  const renderActiveSection = () => {
+    if (activeSection === 'home') {
+      return renderCourseHome()
+    }
+
+    if (activeSection === 'modules') {
+      return renderModulesSection()
+    }
+
+    if (activeSection === 'assignments') {
+      return renderAssignmentsSection()
+    }
+
+    return renderGradesSection()
+  }
+
+  if (workspaceRole === 'admin') {
+    return null
+  }
+
+  if (!isCourseDetailSection(section)) {
+    return <Navigate to={buildCourseDetailPath(workspaceRole, courseId, 'home')} replace />
+  }
+
+  if (loading) {
+    return <section className="workspace-panel">Loading course detail...</section>
+  }
+
+  if (!detail) {
+    return (
+      <section className="workspace-page">
+        {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
+      </section>
+    )
+  }
+
+  return (
+    <section className="workspace-page course-detail-page" ref={coursePageRef}>
+      <header className="workspace-page-header course-detail-header">
+        <Link className="workspace-secondary-action course-detail-back" to={`/${workspaceRole}/my-courses`}>
+          &lt; Back to courses
+        </Link>
+        <span className="workspace-eyebrow">{workspaceRole === 'teacher' ? 'Teaching course' : 'Course'}</span>
+        <h1 className="workspace-page-title">{detail.course.title}</h1>
+        <p className="workspace-page-subtitle">
+          {detail.course.code} - {detail.course.description || 'No course description provided.'}
+        </p>
+        <div className="workspace-meta-row">
+          <span className="workspace-chip">{formatTerm(detail.course.term)}</span>
+          <span className="workspace-chip">{detail.course.academic_year}</span>
+          {detail.contentPackage && (
+            <span className="workspace-chip">{detail.contentPackage.module_count} modules</span>
+          )}
+        </div>
+
+        <nav className="course-detail-child-nav" aria-label="Course sections">
+          {courseDetailSections.map((courseSection) => (
+            <Link
+              key={courseSection}
+              className={`course-detail-child-nav-link${
+                activeSection === courseSection ? ' course-detail-child-nav-link--active' : ''
+              }`}
+              to={buildCourseDetailPath(workspaceRole, detail.course.id, courseSection)}
+            >
+              {courseDetailSectionLabels[courseSection]}
+            </Link>
+          ))}
+        </nav>
+      </header>
+
+      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
+      {notice !== '' && <div className="workspace-alert workspace-alert--success">{notice}</div>}
+
+      {renderActiveSection()}
     </section>
   )
 }

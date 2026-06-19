@@ -46,7 +46,7 @@ function App() {
           <Route index element={<Navigate to="my-courses" replace />} />
           <Route path="dashboard" element={<Navigate to="/teacher/my-courses" replace />} />
           <Route path="my-courses" element={<MyCoursesPage />} />
-          <Route path="my-courses/:courseId" element={<CourseDetailPage />} />
+          <Route path="my-courses/:courseId/:section?" element={<CourseDetailPage />} />
           <Route path="calendar" element={<WorkspaceCalendarPage />} />
           <Route path="inbox" element={<InboxPage />} />
           <Route path="help" element={<HelpPage />} />
@@ -58,7 +58,7 @@ function App() {
           <Route index element={<Navigate to="my-courses" replace />} />
           <Route path="dashboard" element={<Navigate to="/student/my-courses" replace />} />
           <Route path="my-courses" element={<MyCoursesPage />} />
-          <Route path="my-courses/:courseId" element={<CourseDetailPage />} />
+          <Route path="my-courses/:courseId/:section?" element={<CourseDetailPage />} />
           <Route path="register" element={<RegisterCoursesPage />} />
           <Route path="calendar" element={<WorkspaceCalendarPage />} />
           <Route path="inbox" element={<InboxPage />} />

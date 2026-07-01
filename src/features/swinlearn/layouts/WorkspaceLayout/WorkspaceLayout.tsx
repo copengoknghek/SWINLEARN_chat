@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { type CSSProperties, useEffect, useRef, useState } from 'react'
 import { Navigate, NavLink, Outlet } from 'react-router-dom'
 import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
@@ -14,9 +14,44 @@ type WorkspaceLayoutProps = {
   workspaceRole?: Role
 }
 
-type WorkspaceIcon = {
+type WorkspaceSvgIcon = {
   pathData: string
   viewBox: string
+}
+
+type WorkspaceImageIcon = {
+  alt: string
+  src: string
+}
+
+type WorkspaceIcon = WorkspaceSvgIcon | WorkspaceImageIcon
+
+type WorkspaceHeartBurst = {
+  id: number
+}
+
+type WorkspaceHeartStyle = CSSProperties & {
+  '--heart-delay': string
+  '--heart-end-x': string
+  '--heart-scale': string
+  '--heart-x': string
+}
+
+const swinlearnHeartPattern = [
+  { delay: 0, endX: -20, scale: 0.85, x: -14 },
+  { delay: 60, endX: 18, scale: 1, x: 8 },
+  { delay: 120, endX: -6, scale: 0.75, x: 0 },
+  { delay: 180, endX: 28, scale: 0.9, x: 15 },
+  { delay: 230, endX: -30, scale: 0.7, x: -8 },
+] as const
+
+function workspaceHeartStyle(heart: (typeof swinlearnHeartPattern)[number]): WorkspaceHeartStyle {
+  return {
+    '--heart-delay': `${heart.delay}ms`,
+    '--heart-end-x': `${heart.endX}px`,
+    '--heart-scale': String(heart.scale),
+    '--heart-x': `${heart.x}px`,
+  }
 }
 
 const workspaceNavIcons: Record<string, WorkspaceIcon> = {
@@ -50,6 +85,11 @@ const workspaceNavIcons: Record<string, WorkspaceIcon> = {
       'M256 512A256 256 0 1 0 256 0a256 256 0 1 0 0 512zm0-384c13.3 0 24 10.7 24 24V264c0 13.3-10.7 24-24 24s-24-10.7-24-24V152c0-13.3 10.7-24 24-24zM224 352a32 32 0 1 1 64 0 32 32 0 1 1-64 0z',
     viewBox: '0 0 512 512',
   },
+  requests: {
+    pathData:
+      'M96 0C43 0 0 43 0 96V416c0 53 43 96 96 96H384h32c17.7 0 32-14.3 32-32s-14.3-32-32-32V384c17.7 0 32-14.3 32-32V32c0-17.7-14.3-32-32-32H384 96zm0 384H352v64H96c-17.7 0-32-14.3-32-32s14.3-32 32-32zm32-240c0-8.8 7.2-16 16-16H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16zm16 48H336c8.8 0 16 7.2 16 16s-7.2 16-16 16H144c-8.8 0-16-7.2-16-16s7.2-16 16-16z',
+    viewBox: '0 0 448 512',
+  },
   register: {
     pathData:
       'M96 0C78.3 0 64 14.3 64 32V96h64V64H448v64h64V32c0-17.7-14.3-32-32-32H96zM0 160V480c0 17.7 14.3 32 32 32H544c17.7 0 32-14.3 32-32V160c0-17.7-14.3-32-32-32H32c-17.7 0-32 14.3-32 32zm382.8 84.8c12.5 12.5 12.5 32.8 0 45.3l-128 128c-12.5 12.5-32.8 12.5-45.3 0l-64-64c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L232 370.7 337.4 265.4c12.5-12.5 32.8-12.5 45.3 0z',
@@ -65,9 +105,13 @@ const workspaceNavIcons: Record<string, WorkspaceIcon> = {
       'M144 0a80 80 0 1 1 0 160A80 80 0 1 1 144 0zM512 0a80 80 0 1 1 0 160A80 80 0 1 1 512 0zM0 298.7C0 239.8 47.8 192 106.7 192h42.7c15.9 0 31 3.5 44.6 9.7c-1.3 7.2-1.9 14.7-1.9 22.3c0 38.2 16.8 72.5 43.3 96c-.2 0-.4 0-.7 0H21.3C9.6 320 0 310.4 0 298.7zM405.3 320c-.2 0-.4 0-.7 0c26.6-23.5 43.3-57.8 43.3-96c0-7.6-.7-15-1.9-22.3c13.6-6.3 28.7-9.7 44.6-9.7h42.7C592.2 192 640 239.8 640 298.7c0 11.8-9.6 21.3-21.3 21.3H405.3zM224 224a96 96 0 1 1 192 0a96 96 0 1 1-192 0zM128 485.3C128 411.7 187.7 352 261.3 352H378.7C452.3 352 512 411.7 512 485.3c0 14.7-11.9 26.7-26.7 26.7H154.7c-14.7 0-26.7-11.9-26.7-26.7z',
     viewBox: '0 0 640 512',
   },
+  swinlearn: {
+    alt: '',
+    src: '/logoSwinlearn.png',
+  },
 }
 
-const workspaceCollapseIcons: Record<'collapse' | 'expand', WorkspaceIcon> = {
+const workspaceCollapseIcons: Record<'collapse' | 'expand', WorkspaceSvgIcon> = {
   collapse: {
     pathData:
       'M512 256A256 256 0 1 0 0 256a256 256 0 1 0 512 0zM215 127c9.4-9.4 24.6-9.4 33.9 0s9.4 24.6 0 33.9l-71 71H376c13.3 0 24 10.7 24 24s-10.7 24-24 24H177.9l71 71c9.4 9.4 9.4 24.6 0 33.9s-24.6 9.4-33.9 0L103 273c-9.4-9.4-9.4-24.6 0-33.9L215 127z',
@@ -85,6 +129,17 @@ function WorkspaceNavIcon({
 }: {
   icon: WorkspaceIcon
 }) {
+  if ('src' in icon) {
+    return (
+      <img
+        aria-hidden="true"
+        alt={icon.alt}
+        className="workspace-nav-icon workspace-nav-icon--image"
+        src={icon.src}
+      />
+    )
+  }
+
   return (
     <svg
       aria-hidden="true"
@@ -100,7 +155,7 @@ function WorkspaceNavIcon({
 function WorkspaceCollapseIcon({
   icon,
 }: {
-  icon: WorkspaceIcon
+  icon: WorkspaceSvgIcon
 }) {
   return (
     <svg
@@ -117,6 +172,30 @@ function WorkspaceCollapseIcon({
 function WorkspaceLayout({ workspaceRole }: WorkspaceLayoutProps) {
   const { user, role, mustChangePassword, loading } = useAuthContext()
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [swinlearnHeartBursts, setSwinlearnHeartBursts] = useState<WorkspaceHeartBurst[]>([])
+  const heartBurstIdRef = useRef(0)
+  const heartCleanupTimers = useRef<number[]>([])
+
+  useEffect(() => {
+    const cleanupTimers = heartCleanupTimers.current
+
+    return () => {
+      cleanupTimers.forEach((timeoutId) => window.clearTimeout(timeoutId))
+    }
+  }, [])
+
+  const handleSwinlearnLinkClick = () => {
+    const burstId = heartBurstIdRef.current
+
+    heartBurstIdRef.current += 1
+    setSwinlearnHeartBursts((bursts) => [...bursts, { id: burstId }])
+
+    const timeoutId = window.setTimeout(() => {
+      setSwinlearnHeartBursts((bursts) => bursts.filter((burst) => burst.id !== burstId))
+    }, 1200)
+
+    heartCleanupTimers.current.push(timeoutId)
+  }
 
   if (loading) {
     return (
@@ -167,20 +246,38 @@ function WorkspaceLayout({ workspaceRole }: WorkspaceLayoutProps) {
         <nav className="workspace-nav">
           {workspaceLinks.map((link) => {
             const icon = workspaceNavIcons[link.path]
+            const isSwinlearnLink = link.path === 'swinlearn'
 
             return (
               <NavLink
                 key={link.path}
                 className={({ isActive }) =>
                   `workspace-nav-link${icon ? ' workspace-nav-link--stacked' : ''}${
+                    isSwinlearnLink ? ' workspace-nav-link--swinlearn' : ''
+                  }${
                     isActive ? ' workspace-nav-link--active' : ''
                   }`
                 }
                 to={`${basePath}/${link.path}`}
                 title={link.label}
+                onClick={isSwinlearnLink ? handleSwinlearnLinkClick : undefined}
               >
                 {icon && <WorkspaceNavIcon icon={icon} />}
                 <span className="workspace-nav-link-text">{link.label}</span>
+                {isSwinlearnLink &&
+                  swinlearnHeartBursts.map((burst) => (
+                    <span aria-hidden="true" className="workspace-nav-heart-burst" key={burst.id}>
+                      {swinlearnHeartPattern.map((heart) => (
+                        <span
+                          className="workspace-nav-heart"
+                          key={`${burst.id}-${heart.delay}`}
+                          style={workspaceHeartStyle(heart)}
+                        >
+                          &hearts;
+                        </span>
+                      ))}
+                    </span>
+                  ))}
               </NavLink>
             )
           })}

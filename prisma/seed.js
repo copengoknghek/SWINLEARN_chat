@@ -1,5 +1,6 @@
 import { prisma } from '../server/db.js'
 import { hashPassword } from '../server/services/passwords.js'
+import { seedConsultationRooms } from './consultationRooms.js'
 
 const passwordHash = hashPassword('Password123!')
 
@@ -408,6 +409,7 @@ async function main() {
         displayName: 'Admin Demo',
         campus: 'hanoi',
         mustChangePassword: false,
+        status: 'active',
       },
     }),
     prisma.user.create({
@@ -422,6 +424,7 @@ async function main() {
         studentId: 'TCH0001',
         mainMajorId: cs.id,
         mustChangePassword: false,
+        status: 'active',
       },
     }),
     prisma.user.create({
@@ -436,6 +439,7 @@ async function main() {
         studentId: 'STD0001',
         childMajorId: childById.ai.id,
         mustChangePassword: false,
+        status: 'active',
       },
     }),
   ])
@@ -570,6 +574,8 @@ async function main() {
     where: { id: thread.id },
     data: { updatedAt: new Date() },
   })
+
+  await seedConsultationRooms(prisma)
 }
 
 main()

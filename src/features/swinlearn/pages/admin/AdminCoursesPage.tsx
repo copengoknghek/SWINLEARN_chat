@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
 import {
   createCourse,
   createCurriculumRule,
@@ -906,12 +907,12 @@ function AdminCoursesPage() {
         </p>
       </header>
 
-      {courseDialogMode === null && error !== '' && (
-        <div className="workspace-alert workspace-alert--error">{error}</div>
-      )}
-      {courseDialogMode === null && notice !== '' && (
-        <div className="workspace-alert workspace-alert--success">{notice}</div>
-      )}
+      <WorkspaceAlertStack
+        error={error}
+        notice={notice}
+        onDismissError={() => setError('')}
+        onDismissNotice={() => setNotice('')}
+      />
 
       {loading ? (
         <section className="workspace-panel">Loading courses...</section>
@@ -1134,11 +1135,6 @@ function AdminCoursesPage() {
                     Close
                   </button>
                 </div>
-
-                {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-                {notice !== '' && (
-                  <div className="workspace-alert workspace-alert--success">{notice}</div>
-                )}
 
                 <div className="workspace-modal-body">{courseEditor}</div>
               </div>

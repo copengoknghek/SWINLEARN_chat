@@ -109,3 +109,27 @@ To delete the Docker database volume and start fresh:
 ```bash
 docker compose down -v
 ```
+
+## Agentmemory (optional)
+
+Persistent memory for Cursor/Codex agents. Uses Docker profile `agentmemory` — does not start with the normal app stack.
+
+Start the iii-engine only:
+
+```bash
+npm run agentmemory:up
+```
+
+Start engine + worker (keep terminal open for MCP):
+
+```bash
+scripts/start-agentmemory.cmd
+```
+
+Stop:
+
+```bash
+npm run agentmemory:down
+```
+
+Viewer: http://localhost:3113 (after worker is running)

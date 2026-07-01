@@ -27,3 +27,6 @@ package-lock.json
 *.njsproj
 *.sln
 *.sw?
+
+# Agent skill artifacts
+.cursor/skills/**/__pycache__/

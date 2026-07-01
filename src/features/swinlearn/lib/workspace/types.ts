@@ -1,4 +1,5 @@
 import type { Role } from '../../../../hooks/useAuth'
+import type { CommunityBadgeType } from './communityBadges'
 
 export type ProfileStatus = 'active' | 'inactive'
 export type ProfileCampus = 'hanoi' | 'danang' | 'hcm'
@@ -19,12 +20,15 @@ export type ProfileRow = {
   role: Role
   full_name: string | null
   display_name: string | null
+  avatar_url: string | null
   campus: ProfileCampus | null
   student_id: string | null
   main_major_id: string | null
   child_major_id: string | null
   must_change_password: boolean
   status: ProfileStatus
+  badges?: CommunityBadgeType[]
+  gold_balance?: number
   created_at?: string
   updated_at?: string
 }
@@ -120,8 +124,29 @@ export type StudentCourseCompletionRow = {
   id: string
   student_id: string
   course_id: string
+  final_score: number
   completed_at: string
   created_by: string | null
+}
+
+export type AcademicProgressCourseRow = {
+  id: string
+  course_id: string
+  code: string
+  title: string
+  final_score: number
+  grade: 'F' | 'P' | 'C' | 'D' | 'HD' | null
+  grade_label: string | null
+  credit_points: number
+  counts_toward_total: boolean
+  earned_credit_points: number
+  completed_at: string
+}
+
+export type AcademicProgressData = {
+  total_credit_points: number
+  passed_course_count: number
+  completed_courses: AcademicProgressCourseRow[]
 }
 
 export type CourseOfferingRow = {
@@ -156,6 +181,61 @@ export type CourseRegistrationRequestRow = {
   requested_at?: string
   decided_at: string | null
   decided_by: string | null
+}
+
+export type HelpRequestType = 'general' | 'consultation'
+
+export type HelpRequestStatus =
+  | 'submitted'
+  | 'awaiting_teacher'
+  | 'teacher_declined'
+  | 'awaiting_room'
+  | 'approved'
+  | 'rejected'
+
+export type HelpRequestRow = {
+  id: string
+  requester_id: string
+  type: HelpRequestType
+  topic: string
+  details: string
+  status: HelpRequestStatus
+  teacher_id: string | null
+  offering_id: string | null
+  requested_starts_at: string | null
+  requested_ends_at: string | null
+  room_id: string | null
+  room_name: string | null
+  teacher_responded_at: string | null
+  decided_by: string | null
+  decided_at: string | null
+  created_at?: string
+  requester?: ProfileRow | null
+  teacher?: ProfileRow | null
+  offering_label?: string | null
+}
+
+export type ConsultationTeacherRow = {
+  id: string
+  full_name: string | null
+  display_name: string | null
+  email: string
+  recommended: boolean
+}
+
+export type RoomRow = {
+  id: string
+  name: string
+  created_at?: string
+}
+
+export type HelpRequestInput = {
+  topic: string
+  details?: string
+  teacher_id?: string
+  consultation_date?: string
+  consultation_time?: string
+  offering_id?: string
 }
 
 export type AssignmentRow = {
@@ -279,21 +359,105 @@ export type CourseDetailData = {
   profiles: ProfileRow[]
 }
 
-export type InboxThreadRow = {
-  id: string
-  subject: string
-  course_id: string | null
-  created_by: string
-  created_at: string
-  updated_at: string
+export type SwinlearnKnowledgeIndexRow = {
+  id?: string
+  offering_id?: string
+  package_id?: string | null
+  vector_store_id?: string | null
+  status: 'missing' | 'pending' | 'indexing' | 'ready' | 'stale' | 'error' | 'failed' | string
+  error_message?: string | null
+  indexed_at?: string | null
+  created_at?: string
+  updated_at?: string
 }
 
-export type InboxParticipantRow = {
+export type SwinlearnCourseContextRow = CourseWithMembers & {
+  content_package: CourseContentPackageRow | null
+  knowledge_index: SwinlearnKnowledgeIndexRow
+}
+
+export type SwinlearnCitationRow = {
+  file_id: string | null
+  filename: string
+  score: number | null
+  text: string
+}
+
+export type SwinlearnAttachmentRow = {
   id: string
   thread_id: string
-  user_id: string
-  last_read_at: string | null
+  message_id: string | null
+  original_name: string
+  mime_type: string | null
+  size: number
+  stored_path: string
+  file_kind: string
+  supported_by_file_search: boolean
+  openai_file_id: string | null
+  vector_store_id: string | null
   created_at: string
+}
+
+export type SwinlearnMessageRow = {
+  id: string
+  thread_id: string
+  role: 'student' | 'assistant' | string
+  content: string
+  citations: SwinlearnCitationRow[]
+  selected_offering_ids: string[]
+  model: string | null
+  openai_response_id: string | null
+  created_at: string
+  attachments: SwinlearnAttachmentRow[]
+}
+
+export type SwinlearnThreadRow = {
+  id: string
+  student_id: string
+  title: string
+  pinned: boolean
+  selected_offering_ids: string[]
+  openai_vector_store_id: string | null
+  created_at: string
+  updated_at: string
+  messages: SwinlearnMessageRow[]
+  attachments: SwinlearnAttachmentRow[]
+}
+
+export type SwinlearnContextData = {
+  courses: SwinlearnCourseContextRow[]
+}
+
+export type SwinlearnSendMessageResult = {
+  user: SwinlearnMessageRow
+  assistant: SwinlearnMessageRow
+  attachments: SwinlearnAttachmentRow[]
+}
+
+export type ConnectionStatus = 'pending' | 'accepted' | 'declined'
+
+export type ConnectionState =
+  | 'none'
+  | 'outgoing_pending'
+  | 'incoming_pending'
+  | 'accepted'
+  | 'declined'
+
+export type ConnectionRow = {
+  id: string
+  status: ConnectionStatus
+  state: ConnectionState
+  requested_by: string
+  other_user: ProfileRow | null
+  requested_at: string
+  decided_at: string | null
+}
+
+export type PersonSearchResult = {
+  user: ProfileRow
+  connection_state: ConnectionState
+  connection_id: string | null
+  shared: boolean
 }
 
 export type InboxMessageRow = {
@@ -302,6 +466,26 @@ export type InboxMessageRow = {
   sender_id: string
   body: string
   created_at: string
+}
+
+export type InboxColorKey = 'green' | 'blue' | 'purple' | 'orange' | 'red' | 'teal' | 'pink'
+
+export type ConversationParticipantRow = {
+  user: ProfileRow | null
+  nickname: string | null
+}
+
+export type ConversationRow = {
+  id: string
+  is_group: boolean
+  name: string
+  color: InboxColorKey | null
+  other_user: ProfileRow | null
+  participants: ConversationParticipantRow[]
+  last_message: InboxMessageRow | null
+  unread: boolean
+  updated_at: string
+  messages: InboxMessageRow[]
 }
 
 export type CatalogData = {
@@ -355,6 +539,8 @@ export type AdminUserData = {
   managedCredentials: ManagedUserCredentialRow[]
   courses: CourseCatalogRow[]
   studentCompletions: StudentCourseCompletionRow[]
+  curriculumRules: CurriculumRuleRow[]
+  childMajors: ChildMajorRow[]
 }
 
 export type CourseCatalogInput = {
@@ -399,8 +585,75 @@ export type AssignmentMutationInput = {
 }
 
 export type InboxData = {
-  profiles: ProfileRow[]
-  threads: InboxThreadRow[]
-  participants: InboxParticipantRow[]
-  messages: InboxMessageRow[]
+  conversations: ConversationRow[]
+  connections: ConnectionRow[]
+}
+
+export type CommunityImageRow = {
+  id: string
+  original_name: string
+  mime_type: string | null
+  size: number
+  public_url: string
+  sort_order: number
+  created_at: string
+}
+
+export type CommunityCommentRow = {
+  id: string
+  post_id: string
+  parent_id: string | null
+  author_id: string
+  body: string
+  gif_url: string | null
+  created_at: string
+  author: ProfileRow | null
+  images: CommunityImageRow[]
+  like_count: number
+  liked_by_me: boolean
+  reply_count: number
+  can_delete: boolean
+  replies: CommunityCommentRow[]
+}
+
+export type CommunityPostRow = {
+  id: string
+  offering_id: string
+  author_id: string
+  body: string
+  created_at: string
+  updated_at: string
+  author: ProfileRow | null
+  comment_count: number
+  like_count: number
+  liked_by_me: boolean
+  can_delete: boolean
+  images: CommunityImageRow[]
+  comments: CommunityCommentRow[]
+}
+
+export type CommunityData = {
+  posts: CommunityPostRow[]
+  viewer?: {
+    badges: CommunityBadgeType[]
+    gold_balance: number
+  }
+}
+
+export type GiphyGifRow = {
+  id: string
+  title: string
+  url: string
+  preview_url: string
+  width: number | null
+  height: number | null
+}
+
+export type GiphySearchResult = {
+  gifs: GiphyGifRow[]
+  pagination: {
+    offset: number
+    count: number
+    total_count: number
+  }
 }

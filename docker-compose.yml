@@ -19,16 +19,43 @@ services:
       timeout: 3s
       retries: 20
 
+  qdrant:
+    image: qdrant/qdrant:latest
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    healthcheck:
+      test: ["CMD-SHELL", "bash -c 'echo > /dev/tcp/127.0.0.1/6333'"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
   api:
     build: .
     restart: unless-stopped
     depends_on:
       mysql:
         condition: service_healthy
+      qdrant:
+        condition: service_healthy
     environment:
       API_PORT: 3001
       DATABASE_URL: ${DOCKER_API_DATABASE_URL:-mysql://swinlearn:password@mysql:3306/swinlearn}
       SESSION_SECRET: ${SESSION_SECRET:-docker-development-session-secret-change-me}
+      GROQ_API_KEY: ${GROQ_API_KEY:-}
+      SWINLEARN_GROQ_MODEL: ${SWINLEARN_GROQ_MODEL:-llama-3.1-8b-instant}
+      SWINLEARN_GROQ_VISION_MODEL: ${SWINLEARN_GROQ_VISION_MODEL:-meta-llama/llama-4-scout-17b-16e-instruct}
+      SWINLEARN_GROQ_CONTEXT_CHARS: ${SWINLEARN_GROQ_CONTEXT_CHARS:-12000}
+      SWINLEARN_MAX_FILE_MB: ${SWINLEARN_MAX_FILE_MB:-20}
+      GIPHY_API_KEY: ${GIPHY_API_KEY:-}
+      GEMINI_API_KEY: ${GEMINI_API_KEY:-}
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_API_KEY: ${QDRANT_API_KEY:-}
+      SWINLEARN_EMBED_MODEL: ${SWINLEARN_EMBED_MODEL:-gemini-embedding-001}
+      SWINLEARN_EMBED_DIMS: ${SWINLEARN_EMBED_DIMS:-768}
+      SWINLEARN_RETRIEVAL_TOP_K: ${SWINLEARN_RETRIEVAL_TOP_K:-8}
     ports:
       - "3001:3001"
     volumes:
@@ -61,6 +88,48 @@ services:
       - node_modules:/app/node_modules
     command: ["npm", "run", "dev:native:web", "--", "--host", "0.0.0.0"]
 
+  # Optional: persistent memory for Cursor/Codex agents (profile: agentmemory)
+  # Start:  docker compose --profile agentmemory up -d
+  # Worker: scripts/start-agentmemory.cmd
+  agentmemory-iii-init:
+    profiles: [agentmemory]
+    image: busybox:1.36
+    user: "0:0"
+    volumes:
+      - agentmemory-iii-data:/data
+    entrypoint: ["sh", "-c", "chown -R 65532:65532 /data && chmod 755 /data"]
+    restart: "no"
+
+  agentmemory-iii-engine:
+    profiles: [agentmemory]
+    image: iiidev/iii:${AGENTMEMORY_III_VERSION:-0.11.2}
+    user: "65532:65532"
+    depends_on:
+      agentmemory-iii-init:
+        condition: service_completed_successfully
+    ports:
+      - "127.0.0.1:49134:49134"
+      - "127.0.0.1:3111:3111"
+      - "127.0.0.1:3112:3112"
+      - "127.0.0.1:9464:9464"
+    volumes:
+      - agentmemory-iii-data:/data
+      - ./docker/agentmemory/iii-config.docker.yaml:/app/config.yaml:ro
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O /dev/null http://127.0.0.1:3111/ 2>/dev/null || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
 volumes:
   mysql-data:
   node_modules:
+  qdrant-data:
+  agentmemory-iii-data:

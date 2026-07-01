@@ -160,10 +160,38 @@ async function baselineExistingDatabaseIfNeeded() {
   }
 }
 
+async function recoverFailedMigrations() {
+  const prisma = await createPrismaClient()
+
+  try {
+    const failedRows = await prisma.$queryRaw`
+      SELECT migration_name
+      FROM _prisma_migrations
+      WHERE finished_at IS NULL
+        AND rolled_back_at IS NULL
+    `
+
+    for (const row of failedRows) {
+      const migrationName = String(row.migration_name)
+      console.log(`Recovering failed migration: ${migrationName}`)
+      await run(executable('npx'), ['prisma', 'migrate', 'resolve', '--rolled-back', migrationName])
+    }
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error)
+
+    if (!message.includes('_prisma_migrations')) {
+      throw error
+    }
+  } finally {
+    await prisma.$disconnect()
+  }
+}
+
 async function main() {
   await run(executable('npx'), ['prisma', 'generate'])
   await waitForDatabase()
   await baselineExistingDatabaseIfNeeded()
+  await recoverFailedMigrations()
   await run(executable('npx'), ['prisma', 'migrate', 'deploy'])
   await seedIfEmpty()
   await import('./index.js')

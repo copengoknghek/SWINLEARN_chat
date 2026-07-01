@@ -1,27 +1,32 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuthContext } from '../../../../context/AuthContext'
+import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
 import type { Role } from '../../../../hooks/useAuth'
 import {
   addStudentCourseCompletion,
   createAdminUser,
+  downloadAdminUserImportTemplate,
+  downloadUsersExport,
   fetchAdminUserData,
   fetchCatalog,
   getErrorMessage,
-  importAdminUsers,
+  importAdminUsersWorkbook,
   invokeAdminUserAction,
   orderedProfiles,
   profileName,
   removeStudentCourseCompletion,
   resetAdminUserPassword,
   updateProfile,
+  updateStudentCourseCompletion,
 } from '../../lib/workspace/api'
+import { gradeFromScore, gradeLabel } from '../../lib/workspace/courseGrades'
+import { buildStudentProgressForProfile } from '../../lib/workspace/studentProgressClient'
 import type {
-  AdminUserCreateInput,
   AdminUserImportResult,
   ChildMajorRow,
   CourseCatalogRow,
+  CurriculumRuleRow,
   MainMajorRow,
-  ManagedUserCredentialRow,
   ProfileCampus,
   ProfileRow,
   ProfileStatus,
@@ -60,6 +65,12 @@ const campusLabels: Record<ProfileCampus, string> = {
   hcm: 'HCM',
 }
 
+const statusFilterLabels = {
+  all: 'All statuses',
+  active: 'Active',
+  inactive: 'Not active',
+} as const
+
 const emptyCreateForm: CreateUserForm = {
   fullName: '',
   role: 'student',
@@ -80,138 +91,25 @@ const emptyEditForm: EditUserForm = {
   status: 'active',
 }
 
-const isProfileCampus = (value: string): value is ProfileCampus =>
-  value === 'hanoi' || value === 'danang' || value === 'hcm'
-
-const isCreatableRole = (value: string): value is CreateUserForm['role'] =>
-  value === 'student' || value === 'teacher'
-
-const normalizeCampus = (value: string): ProfileCampus => {
-  const normalized = value.trim().toLowerCase().replace(/[\s-]+/g, '_')
-
-  if (normalized === 'da_nang') {
-    return 'danang'
-  }
-
-  if (normalized === 'ho_chi_minh' || normalized === 'hcmc') {
-    return 'hcm'
-  }
-
-  return isProfileCampus(normalized) ? normalized : 'hanoi'
-}
-
-const normalizeHeader = (value: string) => value.trim().toLowerCase().replace(/[\s-]+/g, '_')
-
-const parseCsv = (text: string) => {
-  const rows: string[][] = []
-  let row: string[] = []
-  let cell = ''
-  let inQuotes = false
-
-  for (let index = 0; index < text.length; index += 1) {
-    const character = text[index]
-    const nextCharacter = text[index + 1]
-
-    if (character === '"' && inQuotes && nextCharacter === '"') {
-      cell += '"'
-      index += 1
-      continue
-    }
-
-    if (character === '"') {
-      inQuotes = !inQuotes
-      continue
-    }
-
-    if (character === ',' && !inQuotes) {
-      row.push(cell.trim())
-      cell = ''
-      continue
-    }
-
-    if ((character === '\n' || character === '\r') && !inQuotes) {
-      if (character === '\r' && nextCharacter === '\n') {
-        index += 1
-      }
-
-      row.push(cell.trim())
-      cell = ''
-
-      if (row.some((value) => value !== '')) {
-        rows.push(row)
-      }
-
-      row = []
-      continue
-    }
-
-    cell += character
-  }
-
-  row.push(cell.trim())
-
-  if (row.some((value) => value !== '')) {
-    rows.push(row)
-  }
-
-  return rows
-}
-
-const csvRowsToUsers = (text: string): AdminUserCreateInput[] => {
-  const rows = parseCsv(text)
-  const [headerRow, ...dataRows] = rows
-
-  if (!headerRow || dataRows.length === 0) {
-    return []
-  }
-
-  const headerMap = new Map(headerRow.map((header, index) => [normalizeHeader(header), index]))
-  const valueFor = (row: string[], names: string[]) => {
-    for (const name of names) {
-      const index = headerMap.get(name)
-
-      if (index !== undefined) {
-        return row[index]?.trim() ?? ''
-      }
-    }
-
-    return ''
-  }
-
-  return dataRows
-    .map((row) => {
-      const roleValue = valueFor(row, ['role']).toLowerCase()
-      const campusValue = valueFor(row, ['campus'])
-      const role = isCreatableRole(roleValue) ? roleValue : 'student'
-
-      return {
-        full_name: valueFor(row, ['full_name', 'name']),
-        role,
-        campus: normalizeCampus(campusValue),
-        user_id: valueFor(row, ['user_id', 'userid', 'student_id', 'studentid', 'student_number']),
-        main_major_id: role === 'teacher'
-          ? valueFor(row, ['main_major_id', 'main_major']) || null
-          : null,
-        child_major_id: valueFor(row, ['child_major_id', 'child_major', 'major_id']) || null,
-      }
-    })
-    .filter((record) => record.full_name !== '' && record.user_id !== '')
-}
-
 function AdminUsersPage() {
   const { user } = useAuthContext()
   const [profiles, setProfiles] = useState<ProfileRow[]>([])
   const [mainMajors, setMainMajors] = useState<MainMajorRow[]>([])
   const [childMajors, setChildMajors] = useState<ChildMajorRow[]>([])
   const [courses, setCourses] = useState<CourseCatalogRow[]>([])
+  const [curriculumRules, setCurriculumRules] = useState<CurriculumRuleRow[]>([])
   const [studentCompletions, setStudentCompletions] = useState<StudentCourseCompletionRow[]>([])
-  const [storedCredentials, setStoredCredentials] = useState<ManagedUserCredentialRow[]>([])
   const [selectedProfileId, setSelectedProfileId] = useState('')
+  const [sidePanel, setSidePanel] = useState<'create' | 'edit'>('create')
   const [createForm, setCreateForm] = useState<CreateUserForm>(emptyCreateForm)
   const [editForm, setEditForm] = useState<EditUserForm>(emptyEditForm)
   const [courseToComplete, setCourseToComplete] = useState('')
+  const [completionScoreToAdd, setCompletionScoreToAdd] = useState('50')
+  const [completionScoreDrafts, setCompletionScoreDrafts] = useState<Record<string, string>>({})
   const [roleFilter, setRoleFilter] = useState<Role | 'all'>('all')
   const [campusFilter, setCampusFilter] = useState<ProfileCampus | 'all'>('all')
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all')
+  const [userSearchQuery, setUserSearchQuery] = useState('')
   const [credentials, setCredentials] = useState<CredentialResult[]>([])
   const [importResults, setImportResults] = useState<AdminUserImportResult[]>([])
   const [loading, setLoading] = useState(true)
@@ -223,15 +121,21 @@ function AdminUsersPage() {
     try {
       const [userData, catalog] = await Promise.all([fetchAdminUserData(), fetchCatalog()])
       const nextProfiles = userData.profiles
-      const nextSelectedProfile =
-        nextProfiles.find((profile) => profile.id === selectedProfileId) ?? nextProfiles[0] ?? null
+      const nextSelectedProfile = selectedProfileId
+        ? nextProfiles.find((profile) => profile.id === selectedProfileId) ?? null
+        : null
 
       setProfiles(nextProfiles)
       setMainMajors(catalog.mainMajors)
-      setChildMajors(catalog.childMajors)
+      setChildMajors(userData.childMajors.length > 0 ? userData.childMajors : catalog.childMajors)
       setCourses(userData.courses)
+      setCurriculumRules(userData.curriculumRules)
       setStudentCompletions(userData.studentCompletions)
-      setStoredCredentials(userData.managedCredentials)
+
+      if (selectedProfileId && !nextSelectedProfile) {
+        setSidePanel('create')
+      }
+
       setSelectedProfileId(nextSelectedProfile?.id ?? '')
       setCourseToComplete((current) => current || userData.courses[0]?.id || '')
 
@@ -261,11 +165,31 @@ function AdminUsersPage() {
   }, [loadProfiles])
 
   const ordered = useMemo(() => orderedProfiles(profiles), [profiles])
+  const normalizedUserSearchQuery = userSearchQuery.trim().toLowerCase()
   const filteredProfiles = ordered.filter((profile) => {
     const roleMatches = roleFilter === 'all' || profile.role === roleFilter
     const campusMatches = campusFilter === 'all' || profile.campus === campusFilter
+    const searchableProfileText = [
+      profileName(profile),
+      profile.full_name,
+      profile.display_name,
+      profile.email,
+      profile.id,
+      profile.student_id,
+    ]
+      .filter(Boolean)
+      .join(' ')
+      .toLowerCase()
+    const searchMatches =
+      normalizedUserSearchQuery === '' ||
+      searchableProfileText.includes(normalizedUserSearchQuery)
+    const statusMatches =
+      statusFilter === 'all' ||
+      (statusFilter === 'active'
+        ? profile.status === 'active'
+        : profile.status === 'inactive')
 
-    return roleMatches && campusMatches
+    return roleMatches && campusMatches && statusMatches && searchMatches
   })
   const selectedProfile = profiles.find((profile) => profile.id === selectedProfileId) ?? null
   const mainMajorsById = useMemo(() => {
@@ -304,15 +228,19 @@ function AdminUsersPage() {
   const availableCompletionCourses = courses.filter(
     (course) => !selectedCompletedCourseIds.has(course.id),
   )
-  const credentialsByUserId = useMemo(() => {
-    const map = new Map<string, ManagedUserCredentialRow>()
-
-    for (const credential of storedCredentials) {
-      map.set(credential.user_id, credential)
+  const selectedStudentProgress = useMemo(() => {
+    if (!selectedProfile || selectedProfile.role !== 'student') {
+      return null
     }
 
-    return map
-  }, [storedCredentials])
+    return buildStudentProgressForProfile({
+      profile: selectedProfile,
+      courses,
+      curriculumRules,
+      childMajors,
+      completions: studentCompletions,
+    })
+  }, [selectedProfile, courses, curriculumRules, childMajors, studentCompletions])
 
   const roleCounts = useMemo(
     () => ({
@@ -374,7 +302,7 @@ function AdminUsersPage() {
     }
   }
 
-  const handleCsvImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleExcelImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
 
     if (!file) {
@@ -387,20 +315,13 @@ function AdminUsersPage() {
     setImportResults([])
 
     try {
-      const text = await file.text()
-      const records = csvRowsToUsers(text)
-
-      if (records.length === 0) {
-        throw new Error('CSV must include full_name or name, role, campus, and user_id columns.')
-      }
-
-      const results = await importAdminUsers(records)
+      const results = await importAdminUsersWorkbook(file)
       const successfulCredentials = results
         .filter((result) => result.success && result.temp_password)
         .map((result) => ({
           email: result.email,
           tempPassword: result.temp_password ?? '',
-          source: `CSV row ${result.row}`,
+          source: `Excel row ${result.row}`,
         }))
 
       setImportResults(results)
@@ -408,14 +329,53 @@ function AdminUsersPage() {
       setNotice(`${successfulCredentials.length} users imported. Temporary passwords are saved until users change them.`)
       await loadProfiles()
     } catch (importError) {
-      setError(getErrorMessage(importError, 'CSV users could not be imported'))
+      setError(getErrorMessage(importError, 'Excel users could not be imported'))
     } finally {
       setSaving(false)
       event.target.value = ''
     }
   }
 
+  const handleDownloadTemplate = async () => {
+    setError('')
+    setNotice('')
+
+    try {
+      await downloadAdminUserImportTemplate()
+    } catch (downloadError) {
+      setError(getErrorMessage(downloadError, 'Import template could not be downloaded'))
+    }
+  }
+
+  const handleExportUsers = async (includeCredentials: boolean) => {
+    const exportIds = filteredProfiles.map((profile) => profile.id)
+
+    if (exportIds.length === 0) {
+      setNotice('')
+      setError('No users match the current filters to export.')
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await downloadUsersExport(exportIds, includeCredentials)
+    } catch (downloadError) {
+      setError(getErrorMessage(downloadError, 'User export could not be downloaded'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleShowCreatePanel = () => {
+    setSidePanel('create')
+    setSelectedProfileId('')
+  }
+
   const handleSelectProfile = (profile: ProfileRow) => {
+    setSidePanel('edit')
     setSelectedProfileId(profile.id)
     setEditForm({
       fullName: profile.full_name ?? '',
@@ -449,7 +409,6 @@ function AdminUsersPage() {
         student_id: editForm.role === 'admin' ? null : editForm.studentId.trim().toUpperCase() || null,
         main_major_id: editForm.role === 'teacher' ? editForm.mainMajorId || null : null,
         child_major_id: editForm.role === 'student' ? editForm.childMajorId || null : null,
-        status: editForm.status,
       })
 
       setNotice('User profile updated.')
@@ -494,17 +453,59 @@ function AdminUsersPage() {
       return
     }
 
+    const finalScore = Number(completionScoreToAdd)
+
+    if (!Number.isInteger(finalScore) || finalScore < 0 || finalScore > 100) {
+      setError('Final score must be an integer from 0 to 100.')
+      return
+    }
+
     setSaving(true)
     setError('')
     setNotice('')
 
     try {
-      await addStudentCourseCompletion(selectedProfile.id, courseToComplete)
+      await addStudentCourseCompletion(selectedProfile.id, courseToComplete, finalScore)
       setCourseToComplete('')
+      setCompletionScoreToAdd('50')
       setNotice('Completed course added.')
       await loadProfiles()
     } catch (completionError) {
       setError(getErrorMessage(completionError, 'Completed course could not be added'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleUpdateCompletionScore = async (completionId: string) => {
+    const draft = completionScoreDrafts[completionId]
+
+    if (draft === undefined) {
+      return
+    }
+
+    const finalScore = Number(draft)
+
+    if (!Number.isInteger(finalScore) || finalScore < 0 || finalScore > 100) {
+      setError('Final score must be an integer from 0 to 100.')
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await updateStudentCourseCompletion(completionId, finalScore)
+      setCompletionScoreDrafts((current) => {
+        const next = { ...current }
+        delete next[completionId]
+        return next
+      })
+      setNotice('Completion score updated.')
+      await loadProfiles()
+    } catch (completionError) {
+      setError(getErrorMessage(completionError, 'Completion score could not be updated'))
     } finally {
       setSaving(false)
     }
@@ -542,6 +543,7 @@ function AdminUsersPage() {
       })
 
       setSelectedProfileId('')
+      setSidePanel('create')
       setNotice('User account deleted.')
       await loadProfiles()
     } catch (deleteError) {
@@ -556,27 +558,24 @@ function AdminUsersPage() {
       <header className="workspace-page-header">
         <span className="workspace-eyebrow">Admin workspace</span>
         <h1 className="workspace-page-title">User management</h1>
-        <p className="workspace-page-subtitle">
-          Create teachers and students from the admin workspace,
-          import CSV users, issue temporary passwords, and reset access when needed.
-        </p>
       </header>
 
-      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-      {notice !== '' && <div className="workspace-alert workspace-alert--success">{notice}</div>}
+      <WorkspaceAlertStack
+        error={error}
+        notice={notice}
+        onDismissError={() => setError('')}
+        onDismissNotice={() => setNotice('')}
+      />
 
-      <div className="workspace-grid workspace-grid--three">
-        <article className="workspace-card">
-          <span className="workspace-chip">Admins</span>
-          <h2>{roleCounts.admin}</h2>
+      <div className="workspace-grid workspace-grid--three admin-users-stats-grid">
+        <article className="workspace-card admin-users-stats-card">
+          Admins {roleCounts.admin}
         </article>
-        <article className="workspace-card">
-          <span className="workspace-chip">Teachers</span>
-          <h2>{roleCounts.teacher}</h2>
+        <article className="workspace-card admin-users-stats-card">
+          Teachers {roleCounts.teacher}
         </article>
-        <article className="workspace-card">
-          <span className="workspace-chip">Students</span>
-          <h2>{roleCounts.student}</h2>
+        <article className="workspace-card admin-users-stats-card">
+          Students {roleCounts.student}
         </article>
       </div>
 
@@ -619,7 +618,7 @@ function AdminUsersPage() {
 
       {importResults.length > 0 && (
         <section className="workspace-panel">
-          <h2>CSV import results</h2>
+          <h2>Excel import results</h2>
           <div className="workspace-table">
             {importResults.map((result) => (
               <div className="workspace-row workspace-row--four" key={`${result.row}-${result.email}`}>
@@ -640,7 +639,7 @@ function AdminUsersPage() {
         <section className="workspace-panel">Loading users...</section>
       ) : (
         <div className="workspace-grid workspace-grid--two">
-          <section className="workspace-panel">
+          <section className="workspace-panel admin-users-list-panel">
             <div className="workspace-section-heading">
               <div>
                 <h2>All users</h2>
@@ -648,70 +647,146 @@ function AdminUsersPage() {
               </div>
             </div>
 
-            <div className="workspace-toolbar" aria-label="User filters">
-              {(['all', 'admin', 'teacher', 'student'] as const).map((role) => (
-                <button
-                  key={role}
-                  type="button"
-                  className={`workspace-tab${roleFilter === role ? ' workspace-tab--active' : ''}`}
-                  onClick={() => setRoleFilter(role)}
-                >
-                  {role === 'all' ? 'All roles' : role}
-                </button>
-              ))}
-              {(['all', 'hanoi', 'danang', 'hcm'] as const).map((campus) => (
-                <button
-                  key={campus}
-                  type="button"
-                  className={`workspace-tab workspace-tab--quiet${campusFilter === campus ? ' workspace-tab--active' : ''}`}
-                  onClick={() => setCampusFilter(campus)}
-                >
-                  {campus === 'all' ? 'All campuses' : campusLabels[campus]}
-                </button>
-              ))}
+            <div className="admin-users-filter-toolbar" aria-label="User filters">
+              <label className="admin-users-search">
+                <span>Search</span>
+                <input
+                  type="search"
+                  placeholder="Search name or ID"
+                  value={userSearchQuery}
+                  onChange={(event) => setUserSearchQuery(event.target.value)}
+                  aria-label="Search users by name or ID"
+                />
+              </label>
+              <details className="admin-users-filter-dropdown" aria-label="Role filter">
+                <summary className="admin-users-filter-summary">
+                  <span>Role</span>
+                  <strong>{roleFilter === 'all' ? 'All roles' : roleFilter}</strong>
+                </summary>
+                <div className="admin-users-filter-menu">
+                  {(['all', 'admin', 'teacher', 'student'] as const).map((role) => (
+                    <button
+                      key={role}
+                      type="button"
+                      className={`workspace-tab${roleFilter === role ? ' workspace-tab--active' : ''}`}
+                      onClick={(event) => {
+                        setRoleFilter(role)
+                        event.currentTarget.closest('details')?.removeAttribute('open')
+                      }}
+                    >
+                      {role === 'all' ? 'All roles' : role}
+                    </button>
+                  ))}
+                </div>
+              </details>
+              <details className="admin-users-filter-dropdown" aria-label="Campus filter">
+                <summary className="admin-users-filter-summary">
+                  <span>Campus</span>
+                  <strong>{campusFilter === 'all' ? 'All campuses' : campusLabels[campusFilter]}</strong>
+                </summary>
+                <div className="admin-users-filter-menu">
+                  {(['all', 'hanoi', 'danang', 'hcm'] as const).map((campus) => (
+                    <button
+                      key={campus}
+                      type="button"
+                      className={`workspace-tab workspace-tab--quiet${campusFilter === campus ? ' workspace-tab--active' : ''}`}
+                      onClick={(event) => {
+                        setCampusFilter(campus)
+                        event.currentTarget.closest('details')?.removeAttribute('open')
+                      }}
+                    >
+                      {campus === 'all' ? 'All campuses' : campusLabels[campus]}
+                    </button>
+                  ))}
+                </div>
+              </details>
+              <details className="admin-users-filter-dropdown" aria-label="Status filter">
+                <summary className="admin-users-filter-summary">
+                  <span>Status</span>
+                  <strong>{statusFilterLabels[statusFilter]}</strong>
+                </summary>
+                <div className="admin-users-filter-menu">
+                  {(['all', 'active', 'inactive'] as const).map((status) => (
+                    <button
+                      key={status}
+                      type="button"
+                      className={`workspace-tab workspace-tab--quiet${statusFilter === status ? ' workspace-tab--active' : ''}`}
+                      onClick={(event) => {
+                        setStatusFilter(status)
+                        event.currentTarget.closest('details')?.removeAttribute('open')
+                      }}
+                    >
+                      {statusFilterLabels[status]}
+                    </button>
+                  ))}
+                </div>
+              </details>
             </div>
 
-            <div className="workspace-table workspace-table--spaced" role="table" aria-label="Users">
-              {filteredProfiles.map((profile) => {
-                const activeCredential = credentialsByUserId.get(profile.id)
-                const visiblePassword =
-                  profile.must_change_password && activeCredential
-                    ? activeCredential.temp_password
-                    : ''
-
-                return (
+            <div className="admin-users-table-scroll">
+            <div className="workspace-table admin-users-table" role="table" aria-label="Users">
+              <div className="admin-users-table-header" role="row">
+                <span>User</span>
+                <span>User ID</span>
+                <span>Role</span>
+                <span>Campus</span>
+                <span>Status</span>
+              </div>
+              {filteredProfiles.map((profile) => (
                   <button
                     key={profile.id}
                     type="button"
-                    className={`workspace-row workspace-row--button workspace-row--four${selectedProfileId === profile.id ? ' workspace-row--active' : ''}`}
+                    className={`workspace-row workspace-row--button admin-users-row${selectedProfileId === profile.id ? ' workspace-row--active' : ''}`}
                     onClick={() => handleSelectProfile(profile)}
                   >
-                    <span>
+                    <span className="admin-users-user">
                       <strong>{profileName(profile)}</strong>
-                      <small>
-                        {profile.email}
-                        {profile.student_id ? ` - ${profile.student_id}` : ''}
-                      </small>
+                      <small>{profile.email}</small>
                     </span>
-                    <span>{profile.role}</span>
-                    <span>
+                    <span className="admin-users-column admin-users-column--userid">
+                      {profile.student_id ?? '—'}
+                    </span>
+                    <span className="admin-users-column admin-users-column--role">{profile.role}</span>
+                    <span className="admin-users-column admin-users-column--campus">
                       {profile.campus ? campusLabels[profile.campus] : 'No campus'}
                       <small>{profileMajorLabel(profile)}</small>
                     </span>
-                    <span>
-                      {visiblePassword !== ''
-                        ? visiblePassword
-                        : profile.must_change_password
-                          ? 'Pending change'
-                          : profile.status}
+                    <span className="admin-users-column admin-users-column--status">
+                      {profile.status === 'active' ? 'Active' : 'Inactive'}
                     </span>
                   </button>
-                )
-              })}
+                ))}
+            </div>
+            </div>
+
+            <div className="workspace-section-heading admin-users-export-actions">
+              <div>
+                <h3>Export users</h3>
+                <p>Download the users currently shown by your filters.</p>
+              </div>
+              <div className="workspace-inline-actions">
+                <button
+                  type="button"
+                  className="workspace-secondary-action"
+                  disabled={saving}
+                  onClick={() => void handleExportUsers(false)}
+                >
+                  Export pending password users
+                </button>
+                <button
+                  type="button"
+                  className="workspace-secondary-action"
+                  disabled={saving}
+                  onClick={() => void handleExportUsers(true)}
+                >
+                  Export pending credentials
+                </button>
+              </div>
             </div>
           </section>
 
-          <aside className="workspace-grid">
+          <aside className="workspace-grid admin-users-side-panel">
+            {sidePanel === 'create' ? (
             <section className="workspace-panel">
               <h2>Create user</h2>
               <form className="workspace-form" onSubmit={(event) => void handleCreateUser(event)}>
@@ -819,26 +894,50 @@ function AdminUsersPage() {
                   {saving ? 'Creating...' : 'Create account'}
                 </button>
               </form>
-            </section>
 
-            <section className="workspace-panel">
-              <h2>CSV import</h2>
+              <div className="admin-users-side-divider" aria-hidden="true" />
+
+              <h2>Excel import</h2>
               <p>
-                Upload columns: full_name, role, campus, user_id, plus main_major_id for teachers
-                or child_major_id for students.
+                Upload columns: Full name, User ID, Role, Campus, Major, and optional Status.
+                Major uses the readable major title for teachers or students.
               </p>
               <form className="workspace-form">
+                <div className="workspace-inline-actions">
+                  <button
+                    type="button"
+                    className="workspace-secondary-action"
+                    disabled={saving}
+                    onClick={() => void handleDownloadTemplate()}
+                  >
+                    Download template
+                  </button>
+                </div>
                 <label>
-                  <span>CSV file</span>
-                  <input type="file" accept=".csv,text/csv" onChange={(event) => void handleCsvImport(event)} />
+                  <span>Excel file</span>
+                  <input
+                    type="file"
+                    accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+                    onChange={(event) => void handleExcelImport(event)}
+                  />
                 </label>
               </form>
             </section>
-
+            ) : selectedProfile ? (
             <section className="workspace-panel">
-              <h2>Edit selected user</h2>
-              {selectedProfile ? (
-                <>
+              <div className="workspace-section-heading">
+                <div>
+                  <h2>Edit user</h2>
+                  <p>{profileName(selectedProfile)}</p>
+                </div>
+                <button
+                  type="button"
+                  className="workspace-secondary-action"
+                  onClick={handleShowCreatePanel}
+                >
+                  Create user
+                </button>
+              </div>
                   <form className="workspace-form" onSubmit={(event) => void handleUpdateUser(event)}>
                     <label>
                       <span>Full name</span>
@@ -955,33 +1054,26 @@ function AdminUsersPage() {
                   )}
                   <label>
                     <span>Status</span>
-                    <select
-                      value={editForm.status}
-                      onChange={(event) =>
-                        setEditForm((current) => ({
-                          ...current,
-                          status: event.target.value as ProfileStatus,
-                        }))
-                      }
-                    >
-                      <option value="active">Active</option>
-                      <option value="inactive">Inactive</option>
-                    </select>
+                    <span className="admin-users-readonly-status">
+                      {selectedProfile.status === 'active' ? 'Active' : 'Inactive'}
+                    </span>
                   </label>
-                  <button type="submit" disabled={saving}>
-                    {saving ? 'Saving...' : 'Save profile'}
-                  </button>
-                  <button type="button" onClick={() => void handleResetPassword()} disabled={saving}>
-                    Reset password
-                  </button>
-                  <button
-                    type="button"
-                    className="workspace-danger-action workspace-danger-action--wide"
-                    onClick={() => void handleDeleteUser()}
-                    disabled={saving || selectedProfile.id === user?.id}
-                  >
-                    Delete auth user
-                  </button>
+                  <div className="workspace-form-actions workspace-form-actions--three">
+                    <button type="submit" disabled={saving}>
+                      {saving ? 'Saving...' : 'Save profile'}
+                    </button>
+                    <button type="button" onClick={() => void handleResetPassword()} disabled={saving}>
+                      Reset password
+                    </button>
+                    <button
+                      type="button"
+                      className="workspace-danger-action workspace-danger-action--wide"
+                      onClick={() => void handleDeleteUser()}
+                      disabled={saving || selectedProfile.id === user?.id}
+                    >
+                      Delete auth user
+                    </button>
+                  </div>
                   </form>
 
                   {selectedProfile.role === 'student' && (
@@ -991,29 +1083,76 @@ function AdminUsersPage() {
                           <h3>Completed courses</h3>
                           <p>Passed courses count toward prerequisites and completed credit points.</p>
                         </div>
+                        {selectedStudentProgress && (
+                          <span className="workspace-chip">
+                            Total credit: {selectedStudentProgress.total_credit_points}
+                          </span>
+                        )}
                       </div>
 
                       <div className="workspace-table">
                         {selectedStudentCompletions.map((completion) => {
                           const course = coursesById.get(completion.course_id)
+                          const progressRow = selectedStudentProgress?.completed_courses.find(
+                            (row) => row.id === completion.id,
+                          )
+                          const grade = gradeFromScore(completion.final_score)
+                          const scoreDraft = completionScoreDrafts[completion.id]
+                          const scoreValue =
+                            scoreDraft === undefined ? String(completion.final_score) : scoreDraft
+                          const scoreDirty =
+                            scoreDraft !== undefined && Number(scoreDraft) !== completion.final_score
 
                           return (
-                            <div className="workspace-row" key={completion.id}>
+                            <div className="workspace-row admin-completion-row" key={completion.id}>
                               <span>
                                 <strong>{course?.code ?? 'Course'}</strong>
                                 <small>{course?.title ?? 'Completed course'}</small>
                               </span>
-                              <span>
-                                {course?.credit_points ?? 0} credit points
+                              <label className="admin-completion-score-field">
+                                <span className="sr-only">Final score</span>
+                                <input
+                                  type="number"
+                                  min={0}
+                                  max={100}
+                                  step={1}
+                                  value={scoreValue}
+                                  disabled={saving}
+                                  onChange={(event) =>
+                                    setCompletionScoreDrafts((current) => ({
+                                      ...current,
+                                      [completion.id]: event.target.value,
+                                    }))
+                                  }
+                                />
+                              </label>
+                              <span className="workspace-chip admin-completion-grade">
+                                {grade ? `${grade} · ${gradeLabel(grade)}` : '—'}
                               </span>
-                              <button
-                                type="button"
-                                className="workspace-danger-action"
-                                onClick={() => void handleRemoveCompletion(completion.id)}
-                                disabled={saving}
-                              >
-                                Remove
-                              </button>
+                              <span>
+                                {progressRow?.counts_toward_total
+                                  ? `${course?.credit_points ?? 0} credit points`
+                                  : '—'}
+                              </span>
+                              <div className="admin-completion-actions">
+                                {scoreDirty && (
+                                  <button
+                                    type="button"
+                                    onClick={() => void handleUpdateCompletionScore(completion.id)}
+                                    disabled={saving}
+                                  >
+                                    Save score
+                                  </button>
+                                )}
+                                <button
+                                  type="button"
+                                  className="workspace-danger-action"
+                                  onClick={() => void handleRemoveCompletion(completion.id)}
+                                  disabled={saving}
+                                >
+                                  Remove
+                                </button>
+                              </div>
                             </div>
                           )
                         })}
@@ -1038,6 +1177,17 @@ function AdminUsersPage() {
                             ))}
                           </select>
                         </label>
+                        <label>
+                          <span>Final score (0–100)</span>
+                          <input
+                            type="number"
+                            min={0}
+                            max={100}
+                            step={1}
+                            value={completionScoreToAdd}
+                            onChange={(event) => setCompletionScoreToAdd(event.target.value)}
+                          />
+                        </label>
                         <button
                           type="button"
                           onClick={() => void handleAddCompletion()}
@@ -1048,11 +1198,8 @@ function AdminUsersPage() {
                       </div>
                     </div>
                   )}
-                </>
-              ) : (
-                <p>Select a user to edit their profile.</p>
-              )}
             </section>
+            ) : null}
           </aside>
         </div>
       )}

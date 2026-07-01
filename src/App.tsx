@@ -10,6 +10,7 @@ import WorkspaceLayout from './features/swinlearn/layouts/WorkspaceLayout/Worksp
 import AdminCourseOfferPage from './features/swinlearn/pages/admin/AdminCourseOfferPage'
 import AdminCoursesPage from './features/swinlearn/pages/admin/AdminCoursesPage'
 import AdminUsersPage from './features/swinlearn/pages/admin/AdminUsersPage'
+import AdminRequestsPage from './features/swinlearn/pages/admin/AdminRequestsPage'
 import AccountPage from './features/swinlearn/pages/shared/AccountPage'
 import CourseDetailPage from './features/swinlearn/pages/shared/CourseDetailPage'
 import HelpPage from './features/swinlearn/pages/shared/HelpPage'
@@ -18,6 +19,7 @@ import MyCoursesPage from './features/swinlearn/pages/shared/MyCoursesPage'
 import WorkspaceCalendarPage from './features/swinlearn/pages/shared/WorkspaceCalendarPage'
 import RegisterCoursesPage from './features/swinlearn/pages/student/RegisterCoursesPage'
 import SwinlearnPage from './features/swinlearn/pages/student/SwinlearnPage/SwinlearnPage'
+import TeacherRequestsPage from './features/swinlearn/pages/teacher/TeacherRequestsPage'
 
 function App() {
   return (
@@ -37,6 +39,7 @@ function App() {
           <Route path="courses" element={<AdminCoursesPage />} />
           <Route path="course-offer" element={<AdminCourseOfferPage />} />
           <Route path="users" element={<AdminUsersPage />} />
+          <Route path="requests" element={<AdminRequestsPage />} />
           <Route path="inbox" element={<InboxPage />} />
           <Route path="account" element={<AccountPage />} />
           <Route path="*" element={<Navigate to="/admin/courses" replace />} />
@@ -49,6 +52,7 @@ function App() {
           <Route path="my-courses/:courseId/:section?" element={<CourseDetailPage />} />
           <Route path="calendar" element={<WorkspaceCalendarPage />} />
           <Route path="inbox" element={<InboxPage />} />
+          <Route path="requests" element={<TeacherRequestsPage />} />
           <Route path="help" element={<HelpPage />} />
           <Route path="account" element={<AccountPage />} />
           <Route path="*" element={<Navigate to="/teacher/my-courses" replace />} />

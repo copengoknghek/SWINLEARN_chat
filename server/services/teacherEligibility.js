@@ -70,10 +70,6 @@ export function getTeacherCourseEligibilityError({
     return 'Only teacher profiles can be assigned to a teaching team.'
   }
 
-  if (teacher.status !== 'active') {
-    return 'Only active teachers can be assigned to a teaching team.'
-  }
-
   const teacherMainMajorId = mainMajorIdFromTeacher(teacher)
 
   if (!teacherMainMajorId) {

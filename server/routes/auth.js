@@ -39,7 +39,7 @@ authRouter.post(
       },
     })
 
-    if (!user || user.status !== 'active' || !verifyPassword(password, user.passwordHash)) {
+    if (!user || !verifyPassword(password, user.passwordHash)) {
       sendError(response, 401, 'Invalid email or password')
       return
     }
@@ -83,6 +83,7 @@ authRouter.post(
       data: {
         passwordHash: hashPassword(password),
         mustChangePassword: false,
+        status: 'active',
         managedCredentials: {
           deleteMany: {},
         },

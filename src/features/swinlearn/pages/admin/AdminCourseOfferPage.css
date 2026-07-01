@@ -1,6 +1,6 @@
 .admin-course-offer-page .admin-course-offer-layout {
   align-items: start;
-  grid-template-columns: minmax(0, 1fr) minmax(340px, 420px);
+  grid-template-columns: minmax(0, 1fr) minmax(550px, 350px);
 }
 
 .admin-course-offer-page .admin-course-offer-summary {

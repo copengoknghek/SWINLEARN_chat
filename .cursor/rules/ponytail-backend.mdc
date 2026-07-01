@@ -1,0 +1,21 @@
+---
+description: Ponytail minimal-code rules for backend and data layer only
+globs: server/**,prisma/**,src/lib/api/**,src/hooks/useAuth.ts
+alwaysApply: false
+---
+
+# Ponytail (backend scope)
+
+Apply ponytail's lazy-senior-dev ladder **only** when editing matched backend/API files:
+
+1. Does this need to exist? (YAGNI)
+2. Stdlib / native platform feature?
+3. Already-installed dependency?
+4. One line if possible
+5. Minimum code that works
+
+Never cut: validation at trust boundaries, error handling, security, accessibility.
+
+**Does not apply** to frontend visual work — use `design-taste-frontend` or `ui-ux-pro-max` for UI in `src/features/**`.
+
+When ponytail conflicts with superpowers TDD, superpowers wins for tests.

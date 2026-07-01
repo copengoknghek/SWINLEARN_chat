@@ -25,8 +25,9 @@ const {
 } = await loadTsModule('./courseDetailSections.ts')
 
 test('normalizes the allowed course detail sections', () => {
-  assert.deepEqual(courseDetailSections, ['home', 'modules', 'assignments', 'grades'])
+  assert.deepEqual(courseDetailSections, ['home', 'modules', 'assignments', 'grades', 'community'])
   assert.equal(isCourseDetailSection('modules'), true)
+  assert.equal(isCourseDetailSection('community'), true)
   assert.equal(isCourseDetailSection('announcements'), false)
 })
 
@@ -36,6 +37,7 @@ test('builds stable section paths for role course routes', () => {
     '/student/my-courses/course%20101/assignments',
   )
   assert.equal(courseDetailSectionLabels.grades, 'Grades')
+  assert.equal(courseDetailSectionLabels.community, 'Community')
 })
 
 test('summarizes imported course content and upcoming assignments', () => {

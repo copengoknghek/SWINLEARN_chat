@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
 import {
   addCourseMember,
   approveCourseRegistrationRequest,
@@ -285,6 +286,8 @@ function AdminCourseOfferPage() {
       return
     }
 
+    const form = event.currentTarget
+
     setSaving(true)
     setError('')
     setNotice('')
@@ -292,7 +295,7 @@ function AdminCourseOfferPage() {
     try {
       const result = await importCourseOfferingContent(selectedOffering.id, contentImportFile)
 
-      event.currentTarget.reset()
+      form.reset()
       setContentImportFile(null)
       setNotice(`Imported ${result.module_count} modules and ${result.item_count} items.`)
       await loadData()
@@ -417,8 +420,12 @@ function AdminCourseOfferPage() {
         </p>
       </header>
 
-      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-      {notice !== '' && <div className="workspace-alert workspace-alert--success">{notice}</div>}
+      <WorkspaceAlertStack
+        error={error}
+        notice={notice}
+        onDismissError={() => setError('')}
+        onDismissNotice={() => setNotice('')}
+      />
 
       {loading ? (
         <section className="workspace-panel">Loading course offers...</section>
@@ -804,8 +811,6 @@ function AdminCourseOfferPage() {
                     Close
                   </button>
                 </div>
-
-                {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
 
                 <form className="workspace-form" onSubmit={(event) => void handleOfferingSubmit(event)}>
                   <label>

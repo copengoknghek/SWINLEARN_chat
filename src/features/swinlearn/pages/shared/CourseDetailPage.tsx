@@ -4,16 +4,22 @@ import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
 import {
   createAssignment,
+  createCommunityPost,
+  deleteCommunityPost,
+  fetchCommunity,
   fetchCourseDetail,
   getErrorMessage,
   profileName,
   submitAssignment,
+  toggleCommunityLike,
   updateAssignment,
 } from '../../lib/workspace/api'
 import type {
   AssignmentMutationInput,
   AssignmentRow,
   AssignmentSubmissionRow,
+  CommunityPostRow,
+  CommunityImageRow,
   CourseContentItemRow,
   CourseDetailData,
   CourseTerm,
@@ -28,6 +34,11 @@ import {
   summarizeCourseDetail,
   type CourseDetailSection,
 } from './courseDetailSections'
+import CommunityCommentThread from './CommunityCommentThread'
+import { CommunityAuthorHeader } from '../../components/CommunityAuthorHeader'
+import { CommunityConfirmDialog } from '../../components/CommunityConfirmDialog'
+import { CommunityShareModal } from '../../components/CommunityShareModal'
+import { CommunityVoteButton } from '../../components/CommunityVoteButton'
 
 const termLabels: Record<CourseTerm, string> = {
   semester_1: 'Semester 1',
@@ -96,6 +107,9 @@ const buildProfilesById = (profiles: ProfileRow[]) => {
 
 const formatTerm = (term: CourseTerm) => termLabels[term] ?? term.replace('_', ' ')
 
+const communityMaxImagesPerPost = 4
+const workspaceAlertDismissMs = 5000
+
 function CourseDetailPage() {
   const { courseId = '', section } = useParams()
   const { workspaceRole } = useOutletContext<{ workspaceRole: Role }>()
@@ -110,6 +124,21 @@ function CourseDetailPage() {
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [currentTimestamp] = useState(() => Date.now())
+  const [modulesCollapsed, setModulesCollapsed] = useState(false)
+  const [communityPosts, setCommunityPosts] = useState<CommunityPostRow[]>([])
+  const [communityViewerGold, setCommunityViewerGold] = useState(0)
+  const [communityLoading, setCommunityLoading] = useState(false)
+  const [newPostBody, setNewPostBody] = useState('')
+  const [pendingPostImages, setPendingPostImages] = useState<File[]>([])
+  const [isCommunityPostComposerOpen, setCommunityPostComposerOpen] = useState(false)
+  const [openCommunityCommentPostIds, setOpenCommunityCommentPostIds] = useState<Record<string, boolean>>({})
+  const [sharePost, setSharePost] = useState<CommunityPostRow | null>(null)
+  const [pendingDeletePostId, setPendingDeletePostId] = useState<string | null>(null)
+  const [highlightPostId, setHighlightPostId] = useState<string | null>(null)
+  const [communityImagePreview, setCommunityImagePreview] = useState<{
+    images: CommunityImageRow[]
+    index: number
+  } | null>(null)
   const coursePageRef = useRef<HTMLElement | null>(null)
   const moduleContentRef = useRef<HTMLElement | null>(null)
 
@@ -139,6 +168,28 @@ function CourseDetailPage() {
     }
   }, [courseId])
 
+  const loadCommunity = useCallback(async ({ silent = false }: { silent?: boolean } = {}) => {
+    if (!courseId) {
+      return
+    }
+
+    if (!silent) {
+      setCommunityLoading(true)
+    }
+
+    try {
+      const data = await fetchCommunity(courseId)
+      setCommunityPosts(data.posts)
+      setCommunityViewerGold(data.viewer?.gold_balance ?? 0)
+    } catch (loadError) {
+      setError(getErrorMessage(loadError, 'Community could not be loaded'))
+    } finally {
+      if (!silent) {
+        setCommunityLoading(false)
+      }
+    }
+  }, [courseId])
+
   useEffect(() => {
     if (!isCourseDetailSection(section)) {
       return undefined
@@ -148,6 +199,240 @@ function CourseDetailPage() {
 
     return () => window.clearTimeout(timeoutId)
   }, [loadData, section])
+
+  useEffect(() => {
+    if (activeSection !== 'community' || !courseId) {
+      return undefined
+    }
+
+    const timeoutId = window.setTimeout(() => void loadCommunity(), 0)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [activeSection, courseId, loadCommunity])
+
+  useEffect(() => {
+    if (error === '' && notice === '') {
+      return undefined
+    }
+
+    const timeoutId = window.setTimeout(() => {
+      setError('')
+      setNotice('')
+    }, workspaceAlertDismissMs)
+
+    return () => window.clearTimeout(timeoutId)
+  }, [error, notice])
+
+  useEffect(() => {
+    if (activeSection !== 'community' || communityLoading || communityPosts.length === 0) {
+      return undefined
+    }
+
+    const hash = window.location.hash.replace(/^#/, '')
+
+    if (!hash.startsWith('post-')) {
+      return undefined
+    }
+
+    const postId = hash.slice('post-'.length)
+    const target = document.getElementById(`community-post-${postId}`)
+
+    if (!target) {
+      return undefined
+    }
+
+    const scrollTimeoutId = window.setTimeout(() => {
+      setOpenCommunityCommentPostIds((current) => ({ ...current, [postId]: true }))
+      setHighlightPostId(postId)
+      target.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    }, 0)
+
+    const highlightTimeoutId = window.setTimeout(() => setHighlightPostId(null), 2000)
+
+    return () => {
+      window.clearTimeout(scrollTimeoutId)
+      window.clearTimeout(highlightTimeoutId)
+    }
+  }, [activeSection, communityLoading, communityPosts.length])
+
+  const pendingImagePreviews = useMemo(
+    () => pendingPostImages.map((file) => URL.createObjectURL(file)),
+    [pendingPostImages],
+  )
+
+  useEffect(
+    () => () => {
+      for (const preview of pendingImagePreviews) {
+        URL.revokeObjectURL(preview)
+      }
+    },
+    [pendingImagePreviews],
+  )
+
+  useEffect(() => {
+    if (!communityImagePreview) {
+      return undefined
+    }
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setCommunityImagePreview(null)
+        return
+      }
+
+      if (communityImagePreview.images.length < 2) {
+        return
+      }
+
+      if (event.key === 'ArrowLeft') {
+        setCommunityImagePreview((current) => {
+          if (!current) {
+            return current
+          }
+
+          const nextIndex =
+            (current.index - 1 + current.images.length) % current.images.length
+
+          return { ...current, index: nextIndex }
+        })
+      }
+
+      if (event.key === 'ArrowRight') {
+        setCommunityImagePreview((current) => {
+          if (!current) {
+            return current
+          }
+
+          const nextIndex = (current.index + 1) % current.images.length
+
+          return { ...current, index: nextIndex }
+        })
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+      window.removeEventListener('keydown', handleKeyDown)
+    }
+  }, [communityImagePreview])
+
+  const openCommunityImagePreview = (images: CommunityImageRow[], index: number) => {
+    setCommunityImagePreview({ images, index })
+  }
+
+  const shiftCommunityImagePreview = (direction: -1 | 1) => {
+    setCommunityImagePreview((current) => {
+      if (!current || current.images.length < 2) {
+        return current
+      }
+
+      const nextIndex =
+        (current.index + direction + current.images.length) % current.images.length
+
+      return { ...current, index: nextIndex }
+    })
+  }
+
+  const renderCommunityImageLightbox = () => {
+    if (!communityImagePreview) {
+      return null
+    }
+
+    const currentImage = communityImagePreview.images[communityImagePreview.index]
+    const hasMultiple = communityImagePreview.images.length > 1
+
+    return (
+      <div
+        className="course-detail-community-lightbox"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Image preview"
+        onClick={() => setCommunityImagePreview(null)}
+      >
+        <button
+          type="button"
+          className="course-detail-community-lightbox-close"
+          aria-label="Close image preview"
+          onClick={() => setCommunityImagePreview(null)}
+        >
+          &times;
+        </button>
+
+        {hasMultiple && (
+          <button
+            type="button"
+            className="course-detail-community-lightbox-nav course-detail-community-lightbox-nav--prev"
+            aria-label="Previous image"
+            onClick={(event) => {
+              event.stopPropagation()
+              shiftCommunityImagePreview(-1)
+            }}
+          >
+            &lsaquo;
+          </button>
+        )}
+
+        <figure
+          className="course-detail-community-lightbox-frame"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <img src={currentImage.public_url} alt={currentImage.original_name} />
+          {hasMultiple && (
+            <figcaption>
+              {communityImagePreview.index + 1} / {communityImagePreview.images.length}
+            </figcaption>
+          )}
+        </figure>
+
+        {hasMultiple && (
+          <button
+            type="button"
+            className="course-detail-community-lightbox-nav course-detail-community-lightbox-nav--next"
+            aria-label="Next image"
+            onClick={(event) => {
+              event.stopPropagation()
+              shiftCommunityImagePreview(1)
+            }}
+          >
+            &rsaquo;
+          </button>
+        )}
+      </div>
+    )
+  }
+
+  const addPendingPostImages = (files: File[]) => {
+    const imageFiles = files.filter((file) => file.type.startsWith('image/'))
+
+    if (imageFiles.length === 0) {
+      return
+    }
+
+    setPendingPostImages((current) => [...current, ...imageFiles].slice(0, communityMaxImagesPerPost))
+  }
+
+  const removePendingPostImage = (index: number) => {
+    setPendingPostImages((current) => current.filter((_, itemIndex) => itemIndex !== index))
+  }
+
+  const handleCommunityPostPaste = (event: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const imageFiles = Array.from(event.clipboardData.items)
+      .filter((item) => item.type.startsWith('image/'))
+      .map((item) => item.getAsFile())
+      .filter((file): file is File => file !== null)
+
+    if (imageFiles.length === 0) {
+      return
+    }
+
+    event.preventDefault()
+    addPendingPostImages(imageFiles)
+  }
 
   const allContentItems = useMemo(
     () => detail?.contentPackage?.modules.flatMap((module) => module.items) ?? [],
@@ -321,6 +606,78 @@ function CourseDetailPage() {
     }
   }
 
+  const handleCommunityPost = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!courseId || (!newPostBody.trim() && pendingPostImages.length === 0)) {
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await createCommunityPost(courseId, newPostBody.trim(), pendingPostImages)
+      setNewPostBody('')
+      setPendingPostImages([])
+      setCommunityPostComposerOpen(false)
+      setNotice('Post published.')
+      await loadCommunity({ silent: true })
+    } catch (postError) {
+      setError(getErrorMessage(postError, 'Post could not be published'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const toggleCommunityComments = (postId: string) => {
+    setOpenCommunityCommentPostIds((current) => ({
+      ...current,
+      [postId]: !current[postId],
+    }))
+  }
+
+  const handleCommunityLike = async (postId: string) => {
+    if (!courseId) {
+      return
+    }
+
+    try {
+      const result = await toggleCommunityLike(courseId, postId)
+      setCommunityPosts((current) =>
+        current.map((post) =>
+          post.id === postId
+            ? { ...post, liked_by_me: result.liked, like_count: result.like_count }
+            : post,
+        ),
+      )
+    } catch (likeError) {
+      setError(getErrorMessage(likeError, 'Like could not be updated'))
+    }
+  }
+
+  const handleDeleteCommunityPost = async () => {
+    if (!pendingDeletePostId) {
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await deleteCommunityPost(pendingDeletePostId)
+      setPendingDeletePostId(null)
+      setNotice('Post deleted.')
+      await loadCommunity({ silent: true })
+    } catch (deleteError) {
+      setError(getErrorMessage(deleteError, 'Post could not be deleted'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const renderAssignmentPanel = (assignment: AssignmentRow | null) => {
     if (!assignment) {
       return null
@@ -424,7 +781,6 @@ function CourseDetailPage() {
         <section className="workspace-panel course-detail-overview">
           <div className="workspace-section-heading">
             <div>
-              <span className="workspace-chip">{detail.course.code}</span>
               <h2>Course home</h2>
             </div>
           </div>
@@ -504,30 +860,55 @@ function CourseDetailPage() {
     }
 
     return (
-      <div className="course-detail-layout course-detail-layout--modules">
-        <aside className="workspace-panel course-detail-nav">
-          <h2>Modules</h2>
-          <div className="course-detail-module-list">
-            {detail.contentPackage.modules.map((module) => (
-              <section key={module.id}>
-                <h3>{module.title}</h3>
-                <div className="course-detail-item-list">
-                  {module.items.map((item) => (
-                    <button
-                      key={item.id}
-                      type="button"
-                      className={`course-detail-item${activeContentItem?.id === item.id ? ' course-detail-item--active' : ''}`}
-                      style={{ marginLeft: `${item.indent * 14}px` }}
-                      onClick={() => openContentItem(item)}
-                    >
-                      <span>{item.title}</span>
-                      <small>{itemTypeLabel[item.item_type]}</small>
-                    </button>
-                  ))}
-                </div>
-              </section>
-            ))}
+      <div
+        className={`course-detail-layout course-detail-layout--modules${
+          modulesCollapsed ? ' course-detail-layout--modules-collapsed' : ''
+        }`}
+      >
+        <aside
+          id="course-detail-modules-panel"
+          className={`workspace-panel course-detail-nav${
+            modulesCollapsed ? ' course-detail-nav--collapsed' : ''
+          }`}
+        >
+          <div className="course-detail-module-header">
+            {!modulesCollapsed && <h2>Modules</h2>}
+            <button
+              type="button"
+              className="course-detail-module-toggle"
+              aria-controls="course-detail-modules-panel"
+              aria-expanded={!modulesCollapsed}
+              aria-label={modulesCollapsed ? 'Show modules' : 'Collapse modules'}
+              title={modulesCollapsed ? 'Show modules' : 'Collapse modules'}
+              onClick={() => setModulesCollapsed((current) => !current)}
+            >
+              {modulesCollapsed ? '>' : '<'}
+            </button>
           </div>
+
+          {!modulesCollapsed && (
+            <div className="course-detail-module-list">
+              {detail.contentPackage.modules.map((module) => (
+                <section key={module.id}>
+                  <h3>{module.title}</h3>
+                  <div className="course-detail-item-list">
+                    {module.items.map((item) => (
+                      <button
+                        key={item.id}
+                        type="button"
+                        className={`course-detail-item${activeContentItem?.id === item.id ? ' course-detail-item--active' : ''}`}
+                        style={{ marginLeft: `${item.indent * 14}px` }}
+                        onClick={() => openContentItem(item)}
+                      >
+                        <span>{item.title}</span>
+                        <small>{itemTypeLabel[item.item_type]}</small>
+                      </button>
+                    ))}
+                  </div>
+                </section>
+              ))}
+            </div>
+          )}
         </aside>
 
         <main className="workspace-panel course-detail-main" ref={moduleContentRef}>
@@ -535,7 +916,6 @@ function CourseDetailPage() {
             <>
               <div className="workspace-section-heading">
                 <div>
-                  <span className="workspace-chip">{itemTypeLabel[activeContentItem.item_type]}</span>
                   <h2>{activeContentItem.title}</h2>
                 </div>
               </div>
@@ -638,7 +1018,6 @@ function CourseDetailPage() {
           <>
             <div className="workspace-section-heading">
               <div>
-                <span className="workspace-chip">Assignment</span>
                 <h2>{activeAssignment.title}</h2>
               </div>
             </div>
@@ -663,7 +1042,6 @@ function CourseDetailPage() {
     <section className="workspace-panel course-detail-grades-panel">
       <div className="workspace-section-heading">
         <div>
-          <span className="workspace-chip">Read only</span>
           <h2>Grades</h2>
           <p>Scores are not stored yet, so this page shows submission status and available points.</p>
         </div>
@@ -699,6 +1077,263 @@ function CourseDetailPage() {
     </section>
   )
 
+  const renderCommunitySection = () => {
+    if (communityLoading) {
+      return <section className="workspace-panel">Loading community...</section>
+    }
+
+    return (
+      <section className="workspace-panel course-detail-community-panel">
+        <div className="workspace-section-heading">
+          <div>
+            <h2>Community</h2>
+            <p>Share questions and help classmates in this course. Posts stay inside this class.</p>
+          </div>
+          <div className="course-detail-community-heading-actions">
+            {workspaceRole === 'student' && (
+              <span className="course-detail-community-gold-chip" aria-label="Your Swin gold balance">
+                🪙 {communityViewerGold} gold
+              </span>
+            )}
+            {!isCommunityPostComposerOpen && (
+              <button
+                type="button"
+                className="workspace-primary-action course-detail-community-disclosure"
+                onClick={() => setCommunityPostComposerOpen(true)}
+              >
+                New post
+              </button>
+            )}
+          </div>
+        </div>
+
+        {isCommunityPostComposerOpen && (
+          <form className="workspace-form course-detail-community-composer" onSubmit={(event) => void handleCommunityPost(event)}>
+            <label>
+              <span>New post</span>
+              <textarea
+                value={newPostBody}
+                onChange={(event) => setNewPostBody(event.target.value)}
+                onPaste={handleCommunityPostPaste}
+                placeholder="Ask a question, paste a screenshot (Ctrl+V), or share something with your classmates..."
+                rows={3}
+              />
+            </label>
+
+            <div className="course-detail-community-composer-tools">
+              <label className="course-detail-community-upload">
+                <span>Add images</span>
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/gif,image/webp"
+                  multiple
+                  disabled={pendingPostImages.length >= communityMaxImagesPerPost}
+                  onChange={(event) => {
+                    addPendingPostImages(Array.from(event.target.files ?? []))
+                    event.target.value = ''
+                  }}
+                />
+              </label>
+              <span className="workspace-chip">
+                {pendingPostImages.length}/{communityMaxImagesPerPost} images
+              </span>
+            </div>
+
+            {pendingPostImages.length > 0 && (
+              <div className="course-detail-community-pending-images" aria-label="Images to upload">
+                {pendingPostImages.map((image, index) => (
+                  <figure className="course-detail-community-pending-image" key={`${image.name}-${index}`}>
+                    <img src={pendingImagePreviews[index]} alt={image.name || `Image ${index + 1}`} />
+                    <button
+                      type="button"
+                      className="course-detail-community-delete"
+                      onClick={() => removePendingPostImage(index)}
+                    >
+                      Remove
+                    </button>
+                  </figure>
+                ))}
+              </div>
+            )}
+
+            <div className="course-detail-community-form-actions">
+              <button
+                type="submit"
+                disabled={saving || (!newPostBody.trim() && pendingPostImages.length === 0)}
+              >
+                {saving ? 'Posting...' : 'Post'}
+              </button>
+              <button
+                type="button"
+                className="course-detail-community-secondary-action"
+                disabled={saving}
+                onClick={() => {
+                  setCommunityPostComposerOpen(false)
+                  setNewPostBody('')
+                  setPendingPostImages([])
+                }}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        )}
+
+        <div className="course-detail-community-feed">
+          {communityPosts.map((post) => {
+            const isCommentsOpen = Boolean(openCommunityCommentPostIds[post.id])
+
+            return (
+              <article
+                className={`course-detail-community-post${highlightPostId === post.id ? ' course-detail-community-post--highlight' : ''}`}
+                id={`community-post-${post.id}`}
+                key={post.id}
+              >
+                <CommunityAuthorHeader author={post.author} createdAt={post.created_at} />
+
+                <div className="course-detail-community-body">
+                  {post.body && <p className="course-detail-community-post-body">{post.body}</p>}
+
+                  {post.images.length > 0 && (
+                    <div className="course-detail-community-images">
+                      {post.images.map((image, imageIndex) => (
+                        <button
+                          key={image.id}
+                          type="button"
+                          className="course-detail-community-image-button"
+                          aria-label={`View ${image.original_name}`}
+                          onClick={() => openCommunityImagePreview(post.images, imageIndex)}
+                        >
+                          <img
+                            className="course-detail-community-image"
+                            src={image.public_url}
+                            alt={image.original_name}
+                          />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <footer className="course-detail-community-toolbar">
+                  <CommunityVoteButton
+                    active={post.liked_by_me}
+                    count={post.like_count}
+                    onClick={() => void handleCommunityLike(post.id)}
+                  />
+                  <button
+                    type="button"
+                    className="course-detail-community-toolbar-btn"
+                    aria-expanded={isCommentsOpen}
+                    onClick={() => toggleCommunityComments(post.id)}
+                  >
+                    {isCommentsOpen ? 'Hide comments' : 'Comment'} ({post.comment_count})
+                  </button>
+                  <button
+                    type="button"
+                    className="course-detail-community-toolbar-btn"
+                    onClick={() => setSharePost(post)}
+                  >
+                    Share
+                  </button>
+                  {post.can_delete && (
+                    <button
+                      type="button"
+                      className="course-detail-community-toolbar-btn course-detail-community-toolbar-btn--danger"
+                      disabled={saving}
+                      onClick={() => setPendingDeletePostId(post.id)}
+                    >
+                      Delete
+                    </button>
+                  )}
+                </footer>
+
+                {isCommentsOpen && (
+                  <CommunityCommentThread
+                    comments={post.comments}
+                    courseId={courseId}
+                    onError={(message) => setError(message)}
+                    onImagePreview={openCommunityImagePreview}
+                    onRefresh={() => loadCommunity({ silent: true })}
+                    postAuthorId={post.author_id}
+                    postId={post.id}
+                    saving={saving}
+                    setSaving={setSaving}
+                  />
+                )}
+              </article>
+            )
+          })}
+
+          {communityPosts.length === 0 && (
+            <div className="workspace-empty-state">
+              No posts yet. Be the first to start a discussion.
+            </div>
+          )}
+        </div>
+
+        {pendingDeletePostId && (
+          <CommunityConfirmDialog
+            message="This post and all its comments will be permanently removed."
+            onCancel={() => setPendingDeletePostId(null)}
+            onConfirm={() => void handleDeleteCommunityPost()}
+            saving={saving}
+            title="Delete this post?"
+          />
+        )}
+
+        {sharePost && detail && (
+          <CommunityShareModal
+            courseCode={detail.course.code}
+            courseId={courseId}
+            courseMemberIds={detail.course.members.map((member) => member.user_id)}
+            onClose={() => setSharePost(null)}
+            onError={(message) => setError(message)}
+            onSuccess={(message) => {
+              setSharePost(null)
+              setNotice(message)
+            }}
+            post={sharePost}
+            workspaceRole={workspaceRole}
+          />
+        )}
+      </section>
+      )
+    }
+
+  const renderWorkspaceAlerts = () => (
+    (error !== '' || notice !== '') && (
+      <div className="workspace-alert-stack" aria-live="polite">
+        {error !== '' && (
+          <div className="workspace-alert workspace-alert--error" role="alert">
+            <span>{error}</span>
+            <button
+              type="button"
+              className="workspace-alert-close"
+              aria-label="Dismiss error alert"
+              onClick={() => setError('')}
+            >
+              ×
+            </button>
+          </div>
+        )}
+        {notice !== '' && (
+          <div className="workspace-alert workspace-alert--success" role="status">
+            <span>{notice}</span>
+            <button
+              type="button"
+              className="workspace-alert-close"
+              aria-label="Dismiss success alert"
+              onClick={() => setNotice('')}
+            >
+              ×
+            </button>
+          </div>
+        )}
+      </div>
+    )
+  )
+
   const renderActiveSection = () => {
     if (activeSection === 'home') {
       return renderCourseHome()
@@ -710,6 +1345,10 @@ function CourseDetailPage() {
 
     if (activeSection === 'assignments') {
       return renderAssignmentsSection()
+    }
+
+    if (activeSection === 'community') {
+      return renderCommunitySection()
     }
 
     return renderGradesSection()
@@ -730,7 +1369,7 @@ function CourseDetailPage() {
   if (!detail) {
     return (
       <section className="workspace-page">
-        {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
+        {renderWorkspaceAlerts()}
       </section>
     )
   }
@@ -769,10 +1408,10 @@ function CourseDetailPage() {
         </nav>
       </header>
 
-      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-      {notice !== '' && <div className="workspace-alert workspace-alert--success">{notice}</div>}
+      {renderWorkspaceAlerts()}
 
       {renderActiveSection()}
+      {renderCommunityImageLightbox()}
     </section>
   )
 }

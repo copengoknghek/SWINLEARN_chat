@@ -8,6 +8,7 @@ export type AuthUser = {
   email: string
   fullName: string | null
   displayName: string | null
+  avatarUrl: string | null
 }
 
 type AuthProfile = {
@@ -44,6 +45,7 @@ export function useAuth(): UseAuthReturn {
         email: payload.user.email,
         fullName: payload.profile?.full_name ?? null,
         displayName: payload.profile?.display_name ?? null,
+        avatarUrl: payload.profile?.avatar_url ?? null,
       })
       setAuthProfile({
         userId: payload.user.id,

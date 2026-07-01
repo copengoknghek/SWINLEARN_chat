@@ -20,12 +20,13 @@ type ScrollTarget = {
 
 type ScrollScheduler = (callback: () => void) => void
 
-export const courseDetailSections = ['home', 'modules', 'assignments', 'grades'] as const
+export const courseDetailSections = ['home', 'modules', 'assignments', 'grades', 'community'] as const
 
 export type CourseDetailSection = (typeof courseDetailSections)[number]
 
 export const courseDetailSectionLabels: Record<CourseDetailSection, string> = {
   assignments: 'Assignment',
+  community: 'Community',
   grades: 'Grades',
   home: 'Home',
   modules: 'Modules',

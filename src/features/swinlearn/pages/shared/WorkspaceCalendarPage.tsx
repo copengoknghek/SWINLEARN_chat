@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import type { Role } from '../../../../hooks/useAuth'
+import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
 import {
   courseLabel,
   fetchAssignments,
@@ -138,7 +139,7 @@ function WorkspaceCalendarPage() {
         </p>
       </header>
 
-      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
+      <WorkspaceAlertStack error={error} onDismissError={() => setError('')} />
 
       {loading ? (
         <section className="workspace-panel">Loading calendar...</section>

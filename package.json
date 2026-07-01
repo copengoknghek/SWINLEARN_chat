@@ -12,6 +12,9 @@
     "dev:native:web": "vite",
     "docker:dev": "npm run dev",
     "docker:down": "npm run dev:down",
+    "agentmemory:up": "docker compose --profile agentmemory up -d agentmemory-iii-engine",
+    "agentmemory:down": "docker compose --profile agentmemory down",
+    "agentmemory:logs": "docker compose --profile agentmemory logs -f agentmemory-iii-engine",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
@@ -19,16 +22,25 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:seed": "prisma db seed",
-    "prisma:clear-demo": "node prisma/clear-demo-data.js"
+    "prisma:seed:rooms": "node prisma/seed-rooms-only.js",
+    "prisma:clear-demo": "node prisma/clear-demo-data.js",
+    "test": "node --test server/services/*.test.mjs"
   },
   "dependencies": {
+    "@fortawesome/free-solid-svg-icons": "^7.2.0",
+    "@fortawesome/react-fontawesome": "^3.3.1",
     "@prisma/client": "6.19.0",
+    "@qdrant/js-client-rest": "^1.17.0",
     "dotenv": "^17.2.3",
+    "exceljs": "^4.4.0",
     "express": "^5.2.1",
     "multer": "^2.0.2",
+    "node-cron": "^4.5.0",
+    "officeparser": "^5.2.2",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
-    "react-router-dom": "^7.15.1"
+    "react-router-dom": "^7.15.1",
+    "word-extractor": "^1.0.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -40,9 +52,9 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "prisma": "6.19.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.59.2",
-    "prisma": "6.19.0",
     "vite": "^8.0.12"
   },
   "prisma": {

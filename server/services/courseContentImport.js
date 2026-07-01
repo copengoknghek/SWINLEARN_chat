@@ -4,6 +4,7 @@ import path from 'node:path'
 import { inflateRawSync } from 'node:zlib'
 
 import { httpError } from '../http.js'
+import { markSwinlearnIndexesStaleForOffering } from './swinlearnKnowledge.js'
 
 const courseDataPattern = /window\.COURSE_DATA\s*=\s*/
 const localFileMarker = 'viewer/files/'
@@ -602,6 +603,7 @@ export async function importCanvasCourseContent(prisma, {
   })
 
   return prisma.$transaction(async (transaction) => {
+    await markSwinlearnIndexesStaleForOffering(transaction, offering.id)
     await transaction.courseContentPackage.deleteMany({
       where: {
         OR: [

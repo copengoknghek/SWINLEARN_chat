@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAuthContext } from '../../../../context/AuthContext'
+import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
 import {
   checkRegistrationBasket,
   courseLabel,
@@ -200,8 +201,12 @@ function RegisterCoursesPage() {
         </p>
       </header>
 
-      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-      {notice !== '' && <div className="workspace-alert workspace-alert--success">{notice}</div>}
+      <WorkspaceAlertStack
+        error={error}
+        notice={notice}
+        onDismissError={() => setError('')}
+        onDismissNotice={() => setNotice('')}
+      />
 
       {loading ? (
         <section className="workspace-panel">Loading registration options...</section>

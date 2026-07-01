@@ -107,5 +107,5 @@ export async function getSessionUser(request) {
     return null
   }
 
-  return session.user.status === 'active' ? session.user : null
+  return session.user
 }

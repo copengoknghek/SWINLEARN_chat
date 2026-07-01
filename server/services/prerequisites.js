@@ -10,6 +10,7 @@ import {
   mapStudentCourseCompletion,
   mapUserProfile,
 } from '../mappers.js'
+import { getPassedCourseIds } from './studentProgress.js'
 
 const courseTitle = (course) => {
   if (!course) {
@@ -47,12 +48,11 @@ const getCurriculumCourseIds = ({ student, childMajors, courses, curriculumRules
   return new Set([...curriculum.required, ...curriculum.electives].map((course) => course.id))
 }
 
-const getCompletedCourseIds = ({ student, completions }) =>
-  new Set(
-    completions
-      .filter((completion) => completion.student_id === student?.id || completion.user_id === student?.id)
-      .map((completion) => completion.course_id ?? completion.courseId),
-  )
+const getCompletedCourseIds = ({ student, completions }) => getPassedCourseIds(
+  completions.filter(
+    (completion) => completion.student_id === student?.id || completion.user_id === student?.id,
+  ),
+)
 
 const getSelectedConcurrentCourseIds = ({ targetOffering, offeringsById, selectedOfferingIds }) =>
   new Set(

@@ -75,6 +75,41 @@ enum SessionType {
   consultation
 }
 
+enum ConnectionStatus {
+  pending
+  accepted
+  declined
+}
+
+enum GoldReason {
+  like_received
+  comment_received
+  share_received
+  weekly_badge
+  reversal
+}
+
+enum BadgeType {
+  FAN_FAVORITE
+  SUPER_SUPPORTER
+  GOLD_KING
+  TRENDING_CREATOR
+}
+
+enum HelpRequestType {
+  general
+  consultation
+}
+
+enum HelpRequestStatus {
+  submitted
+  awaiting_teacher
+  teacher_declined
+  awaiting_room
+  approved
+  rejected
+}
+
 model User {
   id                 String                    @id @default(cuid())
   email              String                    @unique
@@ -82,12 +117,14 @@ model User {
   role               UserRole
   fullName           String?                   @map("full_name")
   displayName        String?                   @map("display_name")
+  avatarUrl          String?                   @map("avatar_url")
   campus             Campus?
   studentId          String?                   @unique @map("student_id")
   mustChangePassword Boolean                   @default(true) @map("must_change_password")
   status             ProfileStatus            @default(active)
   mainMajorId        String?                   @map("main_major_id")
   childMajorId       String?                   @map("child_major_id")
+  goldBalance        Int                       @default(0) @map("gold_balance")
   createdAt          DateTime                  @default(now()) @map("created_at")
   updatedAt          DateTime                  @updatedAt @map("updated_at")
   mainMajor          MainMajor?                @relation(fields: [mainMajorId], references: [id], onDelete: SetNull)
@@ -105,9 +142,22 @@ model User {
   createdThreads     InboxThread[]             @relation("ThreadCreator")
   sentMessages        InboxMessage[]            @relation("MessageSender")
   inboxParticipants  InboxThreadParticipant[]
+  connectionsA       Connection[]              @relation("ConnectionUserA")
+  connectionsB       Connection[]              @relation("ConnectionUserB")
   sessions           UserSession[]
   managedCredentials ManagedUserCredential[]    @relation("ManagedCredentialUser")
   createdCredentials ManagedUserCredential[]    @relation("ManagedCredentialCreator")
+  swinlearnThreads   SwinlearnThread[]          @relation("SwinlearnThreadStudent")
+  communityPosts     CommunityPost[]            @relation("CommunityPostAuthor")
+  communityComments  CommunityComment[]         @relation("CommunityCommentAuthor")
+  communityPostLikes CommunityPostLike[]        @relation("CommunityPostLikeUser")
+  communityCommentLikes CommunityCommentLike[]   @relation("CommunityCommentLikeUser")
+  goldTransactions   GoldTransaction[]
+  studentBadges      StudentBadge[]
+  shareEvents        ShareEvent[]               @relation("ShareEventSharer")
+  helpRequests       HelpRequest[]              @relation("HelpRequestRequester")
+  consultationTeacherRequests HelpRequest[]     @relation("HelpRequestTeacher")
+  decidedHelpRequests HelpRequest[]             @relation("HelpRequestDecider")
 
   @@index([mainMajorId])
   @@map("users")
@@ -235,6 +285,7 @@ model StudentCourseCompletion {
   id            String   @id @default(cuid())
   studentId     String   @map("student_id")
   courseId      String   @map("course_id")
+  finalScore    Int      @default(50) @map("final_score")
   completedAt   DateTime @default(now()) @map("completed_at")
   createdById   String?  @map("created_by")
   student       User     @relation("StudentCompletions", fields: [studentId], references: [id], onDelete: Cascade)
@@ -264,6 +315,9 @@ model CourseOffering {
   assignments  Assignment[]
   sessions     CourseSession[]
   contentPackages CourseContentPackage[]
+  swinlearnKnowledgeIndex SwinlearnKnowledgeIndex?
+  communityPosts CommunityPost[]
+  helpRequests   HelpRequest[]
 
   @@unique([courseId, term, academicYear])
   @@index([courseId])
@@ -391,6 +445,7 @@ model CourseContentPackage {
   modules            CourseContentModule[]
   items              CourseContentItem[]
   assets             CourseContentAsset[]
+  swinlearnKnowledgeIndexes SwinlearnKnowledgeIndex[]
 
   @@index([courseId, scope])
   @@index([offeringId, scope])
@@ -463,6 +518,9 @@ model CourseContentAsset {
 model InboxThread {
   id           String                   @id @default(cuid())
   subject      String
+  pairKey      String?                  @unique @map("pair_key")
+  isGroup      Boolean                  @default(false) @map("is_group")
+  color        String?
   createdById  String                   @map("created_by")
   createdAt    DateTime                 @default(now()) @map("created_at")
   updatedAt    DateTime                 @updatedAt @map("updated_at")
@@ -477,7 +535,9 @@ model InboxThreadParticipant {
   id         String      @id @default(cuid())
   threadId   String      @map("thread_id")
   userId     String      @map("user_id")
+  nickname   String?
   lastReadAt DateTime?   @map("last_read_at")
+  hiddenAt   DateTime?   @map("hidden_at")
   createdAt  DateTime    @default(now()) @map("created_at")
   thread     InboxThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -499,4 +559,273 @@ model InboxMessage {
   @@index([threadId])
   @@index([senderId])
   @@map("inbox_messages")
+}
+
+model Connection {
+  id            String           @id @default(cuid())
+  userAId       String           @map("user_a_id")
+  userBId       String           @map("user_b_id")
+  requestedById String           @map("requested_by")
+  status        ConnectionStatus @default(pending)
+  requestedAt   DateTime         @default(now()) @map("requested_at")
+  decidedAt     DateTime?        @map("decided_at")
+  userA         User             @relation("ConnectionUserA", fields: [userAId], references: [id], onDelete: Cascade)
+  userB         User             @relation("ConnectionUserB", fields: [userBId], references: [id], onDelete: Cascade)
+
+  @@unique([userAId, userBId])
+  @@index([userBId])
+  @@index([requestedById])
+  @@map("inbox_connections")
+}
+
+model SwinlearnThread {
+  id                  String                @id @default(cuid())
+  studentId           String                @map("student_id")
+  title               String
+  pinned              Boolean               @default(false)
+  selectedOfferingIds Json                  @map("selected_offering_ids")
+  openaiVectorStoreId String?               @map("openai_vector_store_id")
+  createdAt           DateTime              @default(now()) @map("created_at")
+  updatedAt           DateTime              @updatedAt @map("updated_at")
+  student             User                  @relation("SwinlearnThreadStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  messages            SwinlearnMessage[]
+  attachments         SwinlearnAttachment[]
+
+  @@index([studentId, updatedAt])
+  @@map("swinlearn_threads")
+}
+
+model SwinlearnMessage {
+  id                  String                @id @default(cuid())
+  threadId            String                @map("thread_id")
+  role                String
+  content             String                @db.LongText
+  citations           Json?
+  selectedOfferingIds Json                  @map("selected_offering_ids")
+  model               String?
+  openaiResponseId    String?               @map("openai_response_id")
+  createdAt           DateTime              @default(now()) @map("created_at")
+  thread              SwinlearnThread       @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  attachments         SwinlearnAttachment[]
+
+  @@index([threadId, createdAt])
+  @@map("swinlearn_messages")
+}
+
+model SwinlearnAttachment {
+  id                    String             @id @default(cuid())
+  threadId              String             @map("thread_id")
+  messageId             String?            @map("message_id")
+  originalName          String             @map("original_name")
+  mimeType              String?            @map("mime_type")
+  size                  Int
+  storedPath            String             @db.Text @map("stored_path")
+  fileKind              String             @map("file_kind")
+  supportedByFileSearch Boolean            @default(false) @map("supported_by_file_search")
+  openaiFileId          String?            @map("openai_file_id")
+  vectorStoreId         String?            @map("vector_store_id")
+  createdAt             DateTime           @default(now()) @map("created_at")
+  thread                SwinlearnThread    @relation(fields: [threadId], references: [id], onDelete: Cascade)
+  message               SwinlearnMessage?  @relation(fields: [messageId], references: [id], onDelete: SetNull)
+
+  @@index([threadId])
+  @@index([messageId])
+  @@map("swinlearn_attachments")
+}
+
+model SwinlearnKnowledgeIndex {
+  id             String                @id @default(cuid())
+  offeringId     String                @unique @map("offering_id")
+  packageId      String?               @map("package_id")
+  vectorStoreId  String?               @map("vector_store_id")
+  status         String                @default("pending")
+  errorMessage   String?               @db.Text @map("error_message")
+  indexedAt      DateTime?             @map("indexed_at")
+  createdAt      DateTime              @default(now()) @map("created_at")
+  updatedAt      DateTime              @updatedAt @map("updated_at")
+  offering       CourseOffering        @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  package        CourseContentPackage? @relation(fields: [packageId], references: [id], onDelete: SetNull)
+
+  @@index([packageId])
+  @@map("swinlearn_knowledge_indexes")
+}
+
+model CommunityPost {
+  id         String              @id @default(cuid())
+  offeringId String              @map("offering_id")
+  authorId   String              @map("author_id")
+  body       String              @db.Text
+  createdAt  DateTime            @default(now()) @map("created_at")
+  updatedAt  DateTime            @updatedAt @map("updated_at")
+  offering   CourseOffering      @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+  author     User                @relation("CommunityPostAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  comments   CommunityComment[]
+  likes      CommunityPostLike[]
+  images     CommunityPostImage[]
+  shareEvents ShareEvent[]
+
+  @@index([offeringId, createdAt])
+  @@index([authorId])
+  @@map("community_posts")
+}
+
+model CommunityComment {
+  id        String                 @id @default(cuid())
+  postId    String                 @map("post_id")
+  parentId  String?                @map("parent_id")
+  authorId  String                 @map("author_id")
+  body      String                 @db.Text
+  gifUrl    String?                @db.Text @map("gif_url")
+  createdAt DateTime               @default(now()) @map("created_at")
+  post      CommunityPost          @relation(fields: [postId], references: [id], onDelete: Cascade)
+  parent    CommunityComment?        @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies   CommunityComment[]     @relation("CommentReplies")
+  author    User                   @relation("CommunityCommentAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  images    CommunityCommentImage[]
+  likes     CommunityCommentLike[]
+
+  @@index([postId, createdAt])
+  @@index([parentId, createdAt])
+  @@index([authorId])
+  @@map("community_comments")
+}
+
+model CommunityPostLike {
+  id        String        @id @default(cuid())
+  postId    String        @map("post_id")
+  userId    String        @map("user_id")
+  createdAt DateTime      @default(now()) @map("created_at")
+  post      CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User          @relation("CommunityPostLikeUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([postId, userId])
+  @@index([userId])
+  @@map("community_post_likes")
+}
+
+model CommunityPostImage {
+  id           String        @id @default(cuid())
+  postId       String        @map("post_id")
+  originalName String        @map("original_name")
+  mimeType     String?       @map("mime_type")
+  size         Int
+  storedPath   String        @db.Text @map("stored_path")
+  publicUrl    String        @db.Text @map("public_url")
+  sortOrder    Int           @default(0) @map("sort_order")
+  createdAt    DateTime      @default(now()) @map("created_at")
+  post         CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@index([postId, sortOrder])
+  @@map("community_post_images")
+}
+
+model CommunityCommentLike {
+  id        String           @id @default(cuid())
+  commentId String           @map("comment_id")
+  userId    String           @map("user_id")
+  createdAt DateTime         @default(now()) @map("created_at")
+  comment   CommunityComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  user      User             @relation("CommunityCommentLikeUser", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([commentId, userId])
+  @@index([userId])
+  @@map("community_comment_likes")
+}
+
+model CommunityCommentImage {
+  id           String           @id @default(cuid())
+  commentId    String           @map("comment_id")
+  originalName String           @map("original_name")
+  mimeType     String?          @map("mime_type")
+  size         Int
+  storedPath   String           @db.Text @map("stored_path")
+  publicUrl    String           @db.Text @map("public_url")
+  sortOrder    Int              @default(0) @map("sort_order")
+  createdAt    DateTime         @default(now()) @map("created_at")
+  comment      CommunityComment @relation(fields: [commentId], references: [id], onDelete: Cascade)
+
+  @@index([commentId, sortOrder])
+  @@map("community_comment_images")
+}
+
+model GoldTransaction {
+  id         String     @id @default(cuid())
+  userId     String     @map("user_id")
+  amount     Int
+  reason     GoldReason
+  sourceType String?    @map("source_type")
+  sourceId   String?    @map("source_id")
+  weekKey    String?    @map("week_key")
+  createdAt  DateTime   @default(now()) @map("created_at")
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
+  @@index([sourceType, sourceId])
+  @@index([userId, weekKey, reason])
+  @@map("gold_transactions")
+}
+
+model ShareEvent {
+  id          String        @id @default(cuid())
+  postId      String        @map("post_id")
+  sharedById  String        @map("shared_by_id")
+  recipientId String        @map("recipient_id")
+  createdAt   DateTime      @default(now()) @map("created_at")
+  post        CommunityPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  sharedBy    User          @relation("ShareEventSharer", fields: [sharedById], references: [id], onDelete: Cascade)
+
+  @@unique([postId, sharedById, recipientId])
+  @@index([postId])
+  @@index([sharedById])
+  @@map("share_events")
+}
+
+model StudentBadge {
+  id      String    @id @default(cuid())
+  userId  String    @map("user_id")
+  type    BadgeType @unique
+  since   DateTime  @default(now())
+  weekKey String?   @map("week_key")
+  user    User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("student_badges")
+}
+
+model Room {
+  id            String        @id @default(cuid())
+  name          String        @unique
+  createdAt     DateTime      @default(now()) @map("created_at")
+  consultations HelpRequest[] @relation("ConsultationRoom")
+
+  @@map("rooms")
+}
+
+model HelpRequest {
+  id                 String            @id @default(cuid())
+  requesterId        String            @map("requester_id")
+  type               HelpRequestType
+  topic              String
+  details            String            @db.Text
+  status             HelpRequestStatus @default(submitted)
+  teacherId          String?           @map("teacher_id")
+  offeringId         String?           @map("offering_id")
+  requestedStartsAt  DateTime?         @map("requested_starts_at")
+  requestedEndsAt    DateTime?         @map("requested_ends_at")
+  roomId             String?           @map("room_id")
+  teacherRespondedAt DateTime?         @map("teacher_responded_at")
+  decidedById        String?           @map("decided_by")
+  decidedAt          DateTime?         @map("decided_at")
+  createdAt          DateTime          @default(now()) @map("created_at")
+  requester          User              @relation("HelpRequestRequester", fields: [requesterId], references: [id], onDelete: Cascade)
+  teacher            User?             @relation("HelpRequestTeacher", fields: [teacherId], references: [id], onDelete: SetNull)
+  offering           CourseOffering?   @relation(fields: [offeringId], references: [id], onDelete: SetNull)
+  room               Room?             @relation("ConsultationRoom", fields: [roomId], references: [id], onDelete: SetNull)
+  decidedBy          User?             @relation("HelpRequestDecider", fields: [decidedById], references: [id], onDelete: SetNull)
+
+  @@index([requesterId])
+  @@index([teacherId])
+  @@index([status])
+  @@index([roomId])
+  @@map("help_requests")
 }

@@ -1,0 +1,91 @@
+---
+description: Coordinates graphify, agentmemory, superpowers, ponytail, and UI skills without conflicts
+alwaysApply: true
+---
+
+# Skill orchestration (Swinlearn)
+
+This project uses multiple agent skills. Follow this precedence so they complement each other instead of fighting.
+
+## Layer 1 — Process (superpowers)
+
+For new features, refactors, or multi-step work, follow the superpowers workflow:
+
+1. `brainstorming` before writing code
+2. `writing-plans` after design approval
+3. `test-driven-development` during implementation (red-green-refactor)
+4. `subagent-driven-development` or `executing-plans` to execute
+5. `verification-before-completion` before claiming done
+
+Superpowers TDD **overrides** ponytail's minimal-test guidance when both could apply.
+
+## Layer 2 — Knowledge (graphify + agentmemory)
+
+| Need | Tool |
+|------|------|
+| Current codebase structure, call paths, file relationships | `graphify query` / `path` / `explain` (budget ~1200) |
+| Cross-session decisions, unresolved questions, prior work | agentmemory (`recall`, `remember`, `handoff`) |
+
+Rules:
+- Prefer scoped `graphify query "<question>" --budget 1200` before broad file reads.
+- Use agentmemory only when the question depends on past sessions.
+- When saving graph-derived context to agentmemory, save a short decision with concept tags — not full Graphify reports or large query outputs.
+- After modifying code, run `graphify update .` (AST-only, no API cost).
+
+## Layer 3 — UI design (ui-ux-pro-max → design-taste-frontend)
+
+Do **not** run ponytail minimization on frontend visual work.
+
+**Swinlearn routing** (this repo uses React + Vite):
+
+| Area | Path | Primary skill |
+|------|------|---------------|
+| Marketing / public site | `src/features/swinburne/**` | ui-ux-pro-max → design-taste-frontend |
+| Workspace / admin / LMS UI | `src/features/swinlearn/**` | **ui-ux-pro-max** (taste-skill excludes dashboards) |
+| Shared workspace styles | `src/features/swinlearn/styles/**` | ui-ux-pro-max + existing CSS conventions |
+
+**Persisted design system:** read `design-system/swinlearn/MASTER.md` before new UI work. Page overrides live in `design-system/swinlearn/pages/[page].md`.
+
+**ui-ux-pro-max commands** (run from repo root):
+
+```bash
+python .cursor/skills/ui-ux-pro-max/scripts/search.py "<query>" --design-system -p "Swinlearn"
+python .cursor/skills/ui-ux-pro-max/scripts/search.py "<query>" --stack react
+```
+
+| Phase | Skill | When |
+|-------|-------|------|
+| Design system / industry research / palette & typography | `ui-ux-pro-max` | User asks to design, plan UI, pick styles, or build a new page/screen |
+| Implementation & polish | `design-taste-frontend` | Marketing/landing/portfolio after design direction is set |
+
+`ui-ux-pro-max` owns research and design-system output. `design-taste-frontend` owns marketing frontend execution. Do not mix both at once for the same task.
+
+## Layer 4 — Code minimization (ponytail)
+
+Ponytail applies to **backend, utilities, and refactors** — not UI design tasks covered by Layer 3.
+
+Scope: `server/`, `prisma/`, hooks, API routes, data logic, and "keep it simple" requests.
+
+When ponytail and superpowers TDD conflict, superpowers wins for tests. When ponytail and taste-skill conflict on frontend, taste-skill wins.
+
+Invoke ponytail explicitly with `/ponytail`, "be lazy", "yagni", or `ponytail-review` / `ponytail-audit`.
+
+## Layer 5 — Memory handoffs (agentmemory)
+
+**Startup (Windows):** Docker Desktop running → `docker compose --profile agentmemory up -d` (or `scripts/start-agentmemory.cmd` for engine + worker) → keep worker terminal open. MCP is wired in `~/.cursor/mcp.json`. Verify: `scripts/verify-skills.ps1`.
+
+At session end or major milestones, use `remember` or `handoff` (MCP tools or REST) for decisions future sessions need. Tag with concepts like `architecture`, `swinlearn`, `auth`, `courses`.
+
+**Superpowers plugin:** skills are installed in `.agents/skills/`; for session-start auto-bootstrap also run `/add-plugin superpowers` in Cursor chat once.
+
+## Quick reference
+
+```
+/graphify .                          # build or refresh knowledge graph
+graphify query "..." --budget 1200   # scoped codebase question
+recall / remember / handoff          # agentmemory (needs server on :3111)
+ui-ux-pro-max                        # design system phase
+design-taste-frontend                # frontend implementation
+ponytail / ponytail-review           # minimize non-UI code
+brainstorming → writing-plans → TDD  # superpowers feature workflow
+```

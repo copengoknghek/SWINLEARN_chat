@@ -1,4 +1,15 @@
+import { cleanupOfferingVectors } from './swinlearnIndexing.js'
+
 export async function deleteCatalogCourse(prismaClient, courseId) {
+  const offerings = await prismaClient.courseOffering.findMany({
+    select: { id: true },
+    where: { courseId },
+  })
+
+  await cleanupOfferingVectors({
+    offeringIds: offerings.map((offering) => offering.id),
+  })
+
   return prismaClient.$transaction(async (transaction) => {
     await transaction.assignmentSubmission.deleteMany({
       where: {

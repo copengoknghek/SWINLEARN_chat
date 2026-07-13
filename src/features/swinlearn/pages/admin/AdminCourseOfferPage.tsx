@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
+import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
 import {
   addCourseMember,
   approveCourseRegistrationRequest,
@@ -7,6 +8,7 @@ import {
   deleteCourseOffering,
   fetchAdminCourseData,
   getErrorMessage,
+  importCourseOfferingContent,
   profileName,
   rejectCourseRegistrationRequest,
   removeCourseMember,
@@ -70,6 +72,13 @@ const offeringToForm = (offering: CourseWithMembers): CourseOfferingInput => ({
 const memberProfileName = (profilesById: Map<string, ProfileRow>, userId: string) =>
   profileName(profilesById.get(userId))
 
+const toReadableDate = (isoValue: string) =>
+  new Intl.DateTimeFormat('en', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  }).format(new Date(isoValue))
+
 function AdminCourseOfferPage() {
   const [data, setData] = useState<AdminCourseData | null>(null)
   const [loading, setLoading] = useState(true)
@@ -82,6 +91,7 @@ function AdminCourseOfferPage() {
   const [teacherToAdd, setTeacherToAdd] = useState('')
   const [assistantToSet, setAssistantToSet] = useState<string | null>(null)
   const [studentToAdd, setStudentToAdd] = useState('')
+  const [contentImportFile, setContentImportFile] = useState<File | null>(null)
   const [offeringDialogOpen, setOfferingDialogOpen] = useState(false)
   const [saving, setSaving] = useState(false)
 
@@ -138,6 +148,9 @@ function AdminCourseOfferPage() {
     selectedOffering?.members.find((member) => member.role === 'teaching_assistant')?.user_id ?? ''
   const selectedMemberCounts = selectedOffering
     ? getCourseOfferMemberCounts(selectedOffering)
+    : null
+  const selectedContentPackage = selectedOffering
+    ? data?.contentPackages.find((contentPackage) => contentPackage.offering_id === selectedOffering.id) ?? null
     : null
   const pendingRegistrationRequests = selectedOffering
     ? getPendingRegistrationRequestsForOffering(data?.registrationRequests ?? [], selectedOffering.id)
@@ -211,6 +224,7 @@ function AdminCourseOfferPage() {
     setAssistantToSet(null)
     setTeacherToAdd('')
     setStudentToAdd('')
+    setContentImportFile(null)
     setNotice('')
     setError('')
   }
@@ -259,6 +273,34 @@ function AdminCourseOfferPage() {
       await loadData()
     } catch (offeringError) {
       setError(getErrorMessage(offeringError, 'Course offering could not be deleted'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleContentImport = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+
+    if (!selectedOffering || !contentImportFile) {
+      setError('Choose a Canvas course export ZIP first.')
+      return
+    }
+
+    const form = event.currentTarget
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      const result = await importCourseOfferingContent(selectedOffering.id, contentImportFile)
+
+      form.reset()
+      setContentImportFile(null)
+      setNotice(`Imported ${result.module_count} modules and ${result.item_count} items.`)
+      await loadData()
+    } catch (importError) {
+      setError(getErrorMessage(importError, 'Course content could not be imported'))
     } finally {
       setSaving(false)
     }
@@ -378,8 +420,12 @@ function AdminCourseOfferPage() {
         </p>
       </header>
 
-      {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
-      {notice !== '' && <div className="workspace-alert workspace-alert--success">{notice}</div>}
+      <WorkspaceAlertStack
+        error={error}
+        notice={notice}
+        onDismissError={() => setError('')}
+        onDismissNotice={() => setNotice('')}
+      />
 
       {loading ? (
         <section className="workspace-panel">Loading course offers...</section>
@@ -531,6 +577,58 @@ function AdminCourseOfferPage() {
                     <span className="workspace-chip">{selectedMemberCounts.total} members</span>
                   )}
                 </div>
+
+                <section className="admin-course-offer-member-section">
+                  <h3>Course content</h3>
+                  {selectedContentPackage ? (
+                    <div className="workspace-subpanel">
+                      <div className="workspace-section-heading">
+                        <div>
+                          <strong>{selectedContentPackage.source_title}</strong>
+                          <p>
+                            Imported {toReadableDate(selectedContentPackage.imported_at)}
+                            {selectedContentPackage.original_file_name
+                              ? ` from ${selectedContentPackage.original_file_name}`
+                              : ''}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="workspace-meta-row">
+                        <span className="workspace-chip">
+                          {selectedContentPackage.module_count} modules
+                        </span>
+                        <span className="workspace-chip">
+                          {selectedContentPackage.item_count} items
+                        </span>
+                        <span className="workspace-chip">
+                          {selectedContentPackage.asset_count} files
+                        </span>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="workspace-empty-state">
+                      No course content package has been imported for this offering.
+                    </div>
+                  )}
+
+                  <form className="workspace-form" onSubmit={(event) => void handleContentImport(event)}>
+                    <label>
+                      <span>Canvas course export ZIP</span>
+                      <input
+                        type="file"
+                        accept=".zip,application/zip"
+                        onChange={(event) => setContentImportFile(event.target.files?.[0] ?? null)}
+                      />
+                    </label>
+                    <button type="submit" disabled={saving || !contentImportFile}>
+                      {saving
+                        ? 'Importing...'
+                        : selectedContentPackage
+                          ? 'Replace imported content'
+                          : 'Import course content'}
+                    </button>
+                  </form>
+                </section>
 
                 <section className="admin-course-offer-member-section">
                   <h3>Teaching team</h3>
@@ -713,8 +811,6 @@ function AdminCourseOfferPage() {
                     Close
                   </button>
                 </div>
-
-                {error !== '' && <div className="workspace-alert workspace-alert--error">{error}</div>}
 
                 <form className="workspace-form" onSubmit={(event) => void handleOfferingSubmit(event)}>
                   <label>

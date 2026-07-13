@@ -25,6 +25,7 @@ export default defineConfig({
       : undefined,
     proxy: {
       '/api': apiProxyTarget,
+      '/uploads': apiProxyTarget,
     },
   },
 })

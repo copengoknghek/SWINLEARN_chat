@@ -1,12 +1,18 @@
 .swinlearn-workspace {
-  min-height: calc(100vh - 56px);
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 30px);
+  min-height: 0;
+  overflow: hidden;
 }
 
 .swinlearn-layout {
   display: grid;
-  grid-template-columns: 240px minmax(0, 1fr) 240px;
+  flex: 1;
+  grid-template-columns: 260px minmax(0, 1fr) 280px;
   gap: 14px;
-  min-height: 620px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .chat-sidebar,
@@ -14,7 +20,9 @@
   background: #ffffff;
   border: 1px solid var(--border);
   border-radius: 8px;
+  min-height: 0;
   min-width: 0;
+  overflow: hidden;
 }
 
 .chat-sidebar {
@@ -28,13 +36,16 @@
   border-bottom: 1px solid var(--border);
   display: flex;
   justify-content: space-between;
+  min-height: 58px;
   padding: 12px 14px;
 }
 
-.sidebar-title {
+.sidebar-title,
+.chat-header-left,
+.chat-header-right {
   align-items: center;
   display: flex;
-  gap: 8px;
+  gap: 10px;
 }
 
 .sidebar-title span,
@@ -45,41 +56,68 @@
 }
 
 .panel-btn,
-.clear-btn {
+.clear-btn,
+.swinlearn-new-thread,
+.swinlearn-quick-actions button {
   background: #f8f9fb;
   border: 1px solid var(--border);
   border-radius: 8px;
   color: var(--text);
   cursor: pointer;
-  font-weight: 800;
+  font-weight: 200;
+  transition:
+    background 180ms ease,
+    border-color 180ms ease,
+    color 180ms ease;
 }
 
 .panel-btn {
+  flex: 0 0 auto;
   height: 32px;
   width: 32px;
 }
 
-.clear-btn {
+.clear-btn,
+.swinlearn-new-thread,
+.swinlearn-quick-actions button {
   padding: 8px 10px;
+}
+
+.clear-btn:disabled,
+.send-btn:disabled,
+.swinlearn-quick-actions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.panel-btn:hover,
+.panel-btn:focus-visible,
+.clear-btn:hover,
+.clear-btn:focus-visible,
+.swinlearn-new-thread:hover,
+.swinlearn-new-thread:focus-visible,
+.swinlearn-quick-actions button:hover,
+.swinlearn-quick-actions button:focus-visible {
+  background: #6a6a6a;
+  border-color: #6a6a6a;
+  color: #ffffff;
 }
 
 .sidebar-content {
   color: var(--muted);
+  display: flex;
+  flex: 1;
+  flex-direction: column;
   font-size: 0.9rem;
+  gap: 14px;
   line-height: 1.55;
-  padding: 16px;
+  overflow-y: auto;
+  padding: 14px;
 }
 
 .chat-main {
   display: flex;
   flex-direction: column;
-}
-
-.chat-header-left,
-.chat-header-right {
-  align-items: center;
-  display: flex;
-  gap: 10px;
 }
 
 .swin-badge {
@@ -89,24 +127,27 @@
   padding: 8px 12px;
 }
 
-.subtitle {
+.subtitle,
+.swinlearn-muted {
   color: var(--muted);
   font-size: 0.9rem;
 }
 
 .chat-messages-container {
-  align-items: center;
+  align-items: stretch;
   display: flex;
   flex: 1;
   justify-content: center;
-  padding: 24px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .chat-empty-state {
+  align-self: center;
   color: var(--text);
   display: grid;
   gap: 10px;
-  max-width: 420px;
+  max-width: 430px;
   text-align: center;
 }
 
@@ -133,9 +174,122 @@
   line-height: 1.5;
 }
 
+.swinlearn-message-list {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 14px;
+  min-height: 0;
+  overscroll-behavior: contain;
+  overflow-y: auto;
+  padding-right: 4px;
+  width: 100%;
+}
+
+.swinlearn-message {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  max-width: min(760px, 92%);
+  padding: 14px;
+}
+
+.swinlearn-message--assistant {
+  align-self: flex-start;
+  background: #f8fbff;
+}
+
+.swinlearn-message--student {
+  align-self: flex-end;
+  background: #f7fff9;
+  border-color: rgba(34, 197, 94, 0.32);
+}
+
+.swinlearn-message-meta {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.swinlearn-message-meta span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.swinlearn-message p {
+  color: var(--text);
+  line-height: 1.58;
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.swinlearn-source-grid,
+.swinlearn-attachment-list,
+.swinlearn-file-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.swinlearn-source-card {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
+}
+
+.swinlearn-source-card strong {
+  font-size: 0.88rem;
+  overflow-wrap: anywhere;
+}
+
+.swinlearn-source-card span {
+  color: var(--muted);
+  font-size: 0.82rem;
+  line-height: 1.45;
+}
+
+.swinlearn-source-card-header {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.swinlearn-source-score {
+  color: var(--accent, #2563eb);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.swinlearn-index-btn {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.88rem;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  width: 100%;
+}
+
+.swinlearn-index-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .chat-input-area {
-  border-top: 1px solid var(--border);
-  padding: 12px;
+  display: grid;
+  gap: 5px;
+  padding: 10px;
 }
 
 .chat-input-wrapper {
@@ -169,13 +323,311 @@
   padding: 10px 14px;
 }
 
-@media (max-width: 1120px) {
+.swinlearn-quick-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.swinlearn-upload {
+  align-items: center;
+  color: var(--muted);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: space-between;
+}
+
+.swinlearn-upload span {
+  color: var(--text);
+  font-weight: 400;
+}
+
+.swinlearn-upload input {
+  max-width: 100%;
+}
+
+.swinlearn-thread-list {
+  display: grid;
+  gap: 8px;
+}
+
+.swinlearn-thread-row {
+  display: grid;
+  gap: 0;
+  grid-template-columns: minmax(0, 1fr) auto;
+  position: relative;
+}
+
+.swinlearn-thread-row--active .swinlearn-thread,
+.swinlearn-thread-row:hover .swinlearn-thread,
+.swinlearn-thread-row:focus-within .swinlearn-thread {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.swinlearn-thread {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px 0 0 8px;
+  border-right: none;
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px;
+  text-align: left;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease;
+}
+
+.swinlearn-thread-menu-wrap {
+  align-items: stretch;
+  display: flex;
+  position: relative;
+}
+
+.swinlearn-thread-menu-btn {
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  min-width: 34px;
+  padding: 0 8px;
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    color 180ms ease;
+}
+
+.swinlearn-thread-row--active .swinlearn-thread-menu-btn,
+.swinlearn-thread-row:hover .swinlearn-thread-menu-btn,
+.swinlearn-thread-row:focus-within .swinlearn-thread-menu-btn,
+.swinlearn-thread-menu-btn:hover,
+.swinlearn-thread-menu-btn:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+  color: var(--text);
+}
+
+.swinlearn-thread-menu-icon {
+  fill: currentColor;
+  height: 14px;
+  width: 14px;
+}
+
+.swinlearn-thread-menu {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 10px 24px rgba(15, 23, 42, 0.12);
+  display: grid;
+  gap: 2px;
+  min-width: 148px;
+  padding: 6px;
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  z-index: 5;
+}
+
+.swinlearn-thread-menu button {
+  background: transparent;
+  border: none;
+  border-radius: 6px;
+  color: var(--text);
+  cursor: pointer;
+  font: inherit;
+  padding: 8px 10px;
+  text-align: left;
+}
+
+.swinlearn-thread-menu button:hover,
+.swinlearn-thread-menu button:focus-visible {
+  background: var(--accent-soft);
+}
+
+.swinlearn-thread-menu-danger {
+  color: #b91c1c;
+}
+
+.swinlearn-thread-pin {
+  background: var(--accent-soft);
+  border-radius: 999px;
+  color: var(--accent);
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  margin-right: 6px;
+  padding: 2px 6px;
+  text-transform: uppercase;
+  vertical-align: middle;
+}
+
+.swinlearn-thread span {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.swinlearn-thread strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.swinlearn-modal-backdrop {
+  align-items: center;
+  background: rgba(15, 23, 42, 0.45);
+  display: flex;
+  inset: 0;
+  justify-content: center;
+  padding: 20px;
+  position: fixed;
+  z-index: 40;
+}
+
+.swinlearn-modal {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  display: grid;
+  gap: 16px;
+  max-width: 420px;
+  padding: 20px;
+  width: min(100%, 420px);
+}
+
+.swinlearn-modal-header h2 {
+  font-size: 1.1rem;
+  margin: 0;
+}
+
+.swinlearn-modal-field {
+  display: grid;
+  gap: 6px;
+}
+
+.swinlearn-modal-field input {
+  width: 100%;
+}
+
+.swinlearn-modal-copy {
+  color: var(--muted);
+  margin: 0;
+}
+
+.swinlearn-modal-actions {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.swinlearn-modal-actions button {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  cursor: pointer;
+  font: inherit;
+  padding: 8px 14px;
+}
+
+.swinlearn-modal-actions button[type='submit'],
+.swinlearn-modal-actions button:last-child:not(.swinlearn-modal-danger) {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.swinlearn-modal-danger {
+  background: #b91c1c;
+  border-color: #b91c1c;
+  color: #ffffff;
+}
+
+.swinlearn-course-filter {
+  display: grid;
+  gap: 10px;
+}
+
+.swinlearn-course-filter label {
+  align-items: flex-start;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+  grid-template-columns: auto minmax(0, 1fr);
+  padding: 10px;
+}
+
+.swinlearn-course-filter input {
+  margin-top: 3px;
+}
+
+.swinlearn-course-filter span {
+  display: grid;
+  gap: 2px;
+}
+
+.swinlearn-course-filter small {
+  color: var(--muted);
+  grid-column: 2;
+  text-transform: none;
+}
+
+.swinlearn-index-status--ready {
+  color: #15803d;
+}
+
+.swinlearn-index-status--indexing,
+.swinlearn-index-status--pending {
+  color: #b45309;
+}
+
+.swinlearn-index-status--stale,
+.swinlearn-index-status--missing {
+  color: #b45309;
+}
+
+.swinlearn-index-status--error,
+.swinlearn-index-status--failed {
+  color: #b91c1c;
+}
+
+.swinlearn-source-panel {
+  border-top: 1px solid var(--border);
+  display: grid;
+  gap: 10px;
+  padding-top: 14px;
+}
+
+.swinlearn-source-panel h2 {
+  color: var(--text);
+  font-size: 1rem;
+}
+
+@media (max-width: 1180px) {
   .swinlearn-layout {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .chat-sidebar {
-    min-height: 150px;
+    min-height: 170px;
+  }
+}
+
+@media (max-width: 760px) {
+  .swinlearn-workspace {
+    height: calc(100vh - 36px);
   }
 }
 
@@ -188,5 +640,14 @@
 
   .subtitle {
     display: none;
+  }
+
+  .swinlearn-message {
+    max-width: 100%;
+  }
+
+  .chat-input-wrapper {
+    align-items: stretch;
+    flex-direction: column;
   }
 }

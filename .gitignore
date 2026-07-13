@@ -10,6 +10,7 @@ lerna-debug.log*
 node_modules
 dist
 dist-ssr
+uploads/
 *.local
 .env.local
 .env
@@ -26,3 +27,6 @@ package-lock.json
 *.njsproj
 *.sln
 *.sw?
+
+# Agent skill artifacts
+.cursor/skills/**/__pycache__/

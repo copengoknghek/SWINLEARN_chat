@@ -1,4 +1,6 @@
 import express from 'express'
+import { readFile, rm } from 'node:fs/promises'
+import multer from 'multer'
 
 import { requireRole } from '../auth-middleware.js'
 import { prisma } from '../db.js'
@@ -6,7 +8,10 @@ import { asyncHandler, httpError, requireBodyString, sendError } from '../http.j
 import {
   mapChildMajor,
   mapCourse,
+  mapCourseContentPackageSummary,
   mapCourseRegistrationRequest,
+  mapHelpRequest,
+  mapRoom,
   mapCoursePrerequisiteGroup,
   mapCoursePrerequisiteOption,
   mapCurriculumRule,
@@ -16,8 +21,14 @@ import {
   mapStudentCourseCompletion,
   mapUserProfile,
 } from '../mappers.js'
-import { generateTemporaryPassword, hashPassword } from '../services/passwords.js'
+import { readFinalScore } from '../services/courseGrades.js'
 import { readAdminUserCreateInput } from '../services/adminUsers.js'
+import {
+  buildImportTemplateWorkbook,
+  buildUsersExportWorkbook,
+  readImportRowsFromWorkbook,
+} from '../services/adminUserWorkbook.js'
+import { importCanvasCourseContent } from '../services/courseContentImport.js'
 import { validateCurriculumRuleInput } from '../services/curriculum.js'
 import { createCatalogCourseWithRule } from '../services/courseCreation.js'
 import { deleteCatalogCourse } from '../services/courseDeletion.js'
@@ -29,8 +40,19 @@ import {
   getIneligibleStaffForCourse,
   getTeacherCourseEligibilityError,
 } from '../services/teacherEligibility.js'
+import {
+  approveConsultation,
+  approveGeneralRequest,
+  forwardToTeacher,
+  listAllHelpRequests,
+  rejectRequest,
+} from '../services/helpRequests.js'
+import { getAvailableRooms } from '../services/roomAvailability.js'
 
 export const adminRouter = express.Router()
+
+const courseContentUpload = multer({ dest: 'uploads/imports' })
+const userWorkbookUpload = multer({ dest: 'uploads/imports' })
 
 adminRouter.use((request, response, next) => {
   const user = requireRole(request, response, ['admin'])
@@ -211,6 +233,7 @@ const createUserRecord = async (input, currentUserId = null) => {
       studentId: sourceUserId,
       mainMajorId,
       childMajorId,
+      status: 'inactive',
       mustChangePassword: true,
       managedCredentials: {
         create: {
@@ -240,6 +263,7 @@ adminRouter.get(
       prerequisiteOptions,
       studentCompletions,
       offerings,
+      contentPackages,
       registrationRequests,
       profiles,
     ] = await Promise.all([
@@ -253,6 +277,19 @@ adminRouter.get(
         include: offeringsInclude,
         orderBy: [{ academicYear: 'desc' }, { term: 'asc' }],
       }),
+      prisma.courseContentPackage.findMany({
+        where: { scope: 'offering' },
+        include: {
+          _count: {
+            select: {
+              assets: true,
+              items: true,
+              modules: true,
+            },
+          },
+        },
+        orderBy: { importedAt: 'desc' },
+      }),
       prisma.courseRegistrationRequest.findMany({ orderBy: [{ requestedAt: 'desc' }] }),
       prisma.user.findMany({ orderBy: [{ displayName: 'asc' }, { email: 'asc' }] }),
     ])
@@ -265,6 +302,7 @@ adminRouter.get(
       prerequisiteOptions: prerequisiteOptions.map(mapCoursePrerequisiteOption),
       studentCompletions: studentCompletions.map(mapStudentCourseCompletion),
       offerings: offerings.map(mapOffering),
+      contentPackages: contentPackages.map(mapCourseContentPackageSummary),
       registrationRequests: registrationRequests.map(mapCourseRegistrationRequest),
       profiles: profiles.map(mapUserProfile),
     })
@@ -459,6 +497,39 @@ adminRouter.delete(
 )
 
 adminRouter.post(
+  '/course-offerings/:id/content-import',
+  courseContentUpload.single('file'),
+  asyncHandler(async (request, response) => {
+    if (!request.file) {
+      sendError(response, 400, 'A course content ZIP file is required.')
+      return
+    }
+
+    try {
+      const offering = await prisma.courseOffering.findUnique({
+        where: { id: request.params.id },
+      })
+
+      if (!offering) {
+        sendError(response, 404, 'Course offering was not found.')
+        return
+      }
+
+      const result = await importCanvasCourseContent(prisma, {
+        adminId: request.currentUser.id,
+        offering,
+        originalFileName: request.file.originalname,
+        zipPath: request.file.path,
+      })
+
+      response.status(201).json(result)
+    } finally {
+      await rm(request.file.path, { force: true }).catch(() => undefined)
+    }
+  }),
+)
+
+adminRouter.post(
   '/course-offerings/:id/members',
   asyncHandler(async (request, response) => {
     const role = request.body.role
@@ -554,6 +625,18 @@ adminRouter.post(
   '/users/:id/completed-courses',
   asyncHandler(async (request, response) => {
     const courseId = requireBodyString(request.body, 'course_id')
+    const finalScore = readFinalScore(request.body)
+
+    if (finalScore === null) {
+      sendError(response, 400, 'Final score is required (0–100).')
+      return
+    }
+
+    if (finalScore === undefined) {
+      sendError(response, 400, 'Final score must be an integer from 0 to 100.')
+      return
+    }
+
     const completion = await prisma.studentCourseCompletion.upsert({
       where: {
         studentId_courseId: {
@@ -562,16 +645,42 @@ adminRouter.post(
         },
       },
       update: {
+        finalScore,
         createdById: request.currentUser.id,
       },
       create: {
         studentId: request.params.id,
         courseId,
+        finalScore,
         createdById: request.currentUser.id,
       },
     })
 
     response.status(201).json(mapStudentCourseCompletion(completion))
+  }),
+)
+
+adminRouter.patch(
+  '/student-course-completions/:id',
+  asyncHandler(async (request, response) => {
+    const finalScore = readFinalScore(request.body)
+
+    if (finalScore === undefined) {
+      sendError(response, 400, 'Final score must be an integer from 0 to 100.')
+      return
+    }
+
+    if (finalScore === null) {
+      sendError(response, 400, 'Final score is required (0–100).')
+      return
+    }
+
+    const completion = await prisma.studentCourseCompletion.update({
+      where: { id: request.params.id },
+      data: { finalScore },
+    })
+
+    response.json(mapStudentCourseCompletion(completion))
   }),
 )
 
@@ -651,11 +760,14 @@ adminRouter.delete(
 adminRouter.get(
   '/users',
   asyncHandler(async (_request, response) => {
-    const [profiles, managedCredentials, courses, studentCompletions] = await Promise.all([
+    const [profiles, managedCredentials, courses, studentCompletions, curriculumRules, childMajors] =
+      await Promise.all([
       prisma.user.findMany({ orderBy: [{ displayName: 'asc' }, { email: 'asc' }] }),
       prisma.managedUserCredential.findMany({ orderBy: { createdAt: 'desc' } }),
       prisma.course.findMany({ orderBy: { code: 'asc' } }),
       prisma.studentCourseCompletion.findMany({ orderBy: [{ studentId: 'asc' }, { completedAt: 'desc' }] }),
+      prisma.curriculumRule.findMany(),
+      prisma.childMajor.findMany(),
     ])
 
     response.json({
@@ -663,6 +775,8 @@ adminRouter.get(
       managedCredentials: managedCredentials.map(mapManagedCredential),
       courses: courses.map(mapCourse),
       studentCompletions: studentCompletions.map(mapStudentCourseCompletion),
+      curriculumRules: curriculumRules.map(mapCurriculumRule),
+      childMajors: childMajors.map(mapChildMajor),
     })
   }),
 )
@@ -697,6 +811,109 @@ adminRouter.post(
     }
 
     response.json({ results })
+  }),
+)
+
+adminRouter.post(
+  '/users/export',
+  asyncHandler(async (request, response) => {
+    const ids = Array.isArray(request.body.ids)
+      ? request.body.ids.map((id) => String(id).trim()).filter(Boolean)
+      : []
+    const includeCredentials = request.body.include_credentials === true
+
+    if (ids.length === 0) {
+      sendError(response, 400, 'At least one user id is required for export.')
+      return
+    }
+
+    const [catalog, users, managedCredentials] = await Promise.all([
+      orderedCatalog(),
+      prisma.user.findMany({
+        where: { id: { in: ids } },
+        orderBy: [{ displayName: 'asc' }, { email: 'asc' }],
+      }),
+      prisma.managedUserCredential.findMany({
+        where: { userId: { in: ids } },
+      }),
+    ])
+    const usersById = new Map(users.map((user) => [user.id, user]))
+    const orderedUsers = ids
+      .map((id) => usersById.get(id))
+      .filter((user) => user !== undefined)
+    const credentialsByUserId = new Map(
+      managedCredentials.map((credential) => [credential.userId, credential]),
+    )
+    const buffer = await buildUsersExportWorkbook(orderedUsers, credentialsByUserId, catalog, {
+      includeCredentials,
+    })
+
+    response.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response.send(Buffer.from(buffer))
+  }),
+)
+
+adminRouter.get(
+  '/users/import-template',
+  asyncHandler(async (_request, response) => {
+    const buffer = await buildImportTemplateWorkbook()
+
+    response.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response.setHeader('Content-Disposition', 'attachment; filename="admin-user-import-template.xlsx"')
+    response.send(Buffer.from(buffer))
+  }),
+)
+
+adminRouter.post(
+  '/users/import-workbook',
+  userWorkbookUpload.single('file'),
+  asyncHandler(async (request, response) => {
+    if (!request.file) {
+      sendError(response, 400, 'An Excel workbook file is required.')
+      return
+    }
+
+    try {
+      const catalog = await orderedCatalog()
+      const parsedRows = await readImportRowsFromWorkbook(await readFile(request.file.path), catalog)
+      const results = []
+
+      for (const parsedRow of parsedRows) {
+        if (parsedRow.error) {
+          results.push({
+            row: parsedRow.row,
+            email: '',
+            success: false,
+            error: parsedRow.error,
+          })
+          continue
+        }
+
+        try {
+          results.push({
+            row: parsedRow.row,
+            ...(await createUserRecord(parsedRow.input, request.currentUser.id)),
+          })
+        } catch (error) {
+          results.push({
+            row: parsedRow.row,
+            email: '',
+            success: false,
+            error: error instanceof Error ? error.message : 'User could not be imported.',
+          })
+        }
+      }
+
+      response.json({ results })
+    } finally {
+      await rm(request.file.path, { force: true }).catch(() => undefined)
+    }
   }),
 )
 
@@ -745,7 +962,6 @@ adminRouter.patch(
             : String(request.body.student_id || '').trim().toUpperCase() || null,
         mainMajorId,
         childMajorId,
-        status: request.body.status === 'inactive' ? 'inactive' : 'active',
       },
     })
 
@@ -776,6 +992,7 @@ adminRouter.post(
         data: {
           passwordHash: hashPassword(tempPassword),
           mustChangePassword: true,
+          status: 'inactive',
         },
       })
 
@@ -804,5 +1021,76 @@ adminRouter.post(
       email: user.email,
       temp_password: tempPassword,
     })
+  }),
+)
+
+adminRouter.get(
+  '/requests',
+  asyncHandler(async (_request, response) => {
+    const requests = await listAllHelpRequests(prisma)
+    response.json(requests.map(mapHelpRequest))
+  }),
+)
+
+adminRouter.get(
+  '/requests/:id/available-rooms',
+  asyncHandler(async (request, response) => {
+    const helpRequest = await prisma.helpRequest.findUnique({
+      where: { id: request.params.id },
+    })
+
+    if (!helpRequest) {
+      sendError(response, 404, 'Help request was not found.')
+      return
+    }
+
+    const startsAt = request.query.starts_at || helpRequest.requestedStartsAt?.toISOString()
+    const endsAt = request.query.ends_at || helpRequest.requestedEndsAt?.toISOString()
+    const rooms = await getAvailableRooms(prisma, {
+      startsAt,
+      endsAt,
+      excludeRequestId: request.params.id,
+    })
+
+    response.json(rooms.map(mapRoom))
+  }),
+)
+
+adminRouter.post(
+  '/requests/:id/forward',
+  asyncHandler(async (request, response) => {
+    const helpRequest = await forwardToTeacher(prisma, { requestId: request.params.id })
+    response.json(mapHelpRequest(helpRequest))
+  }),
+)
+
+adminRouter.post(
+  '/requests/:id/approve',
+  asyncHandler(async (request, response) => {
+    const roomId = request.body.room_id ? String(request.body.room_id) : null
+    const helpRequest = roomId
+      ? await approveConsultation(prisma, {
+          requestId: request.params.id,
+          adminId: request.currentUser.id,
+          roomId,
+        })
+      : await approveGeneralRequest(prisma, {
+          requestId: request.params.id,
+          adminId: request.currentUser.id,
+        })
+
+    response.json(mapHelpRequest(helpRequest))
+  }),
+)
+
+adminRouter.post(
+  '/requests/:id/reject',
+  asyncHandler(async (request, response) => {
+    const helpRequest = await rejectRequest(prisma, {
+      requestId: request.params.id,
+      adminId: request.currentUser.id,
+    })
+
+    response.json(mapHelpRequest(helpRequest))
   }),
 )

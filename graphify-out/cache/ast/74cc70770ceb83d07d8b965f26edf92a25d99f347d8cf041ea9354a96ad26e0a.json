@@ -1,0 +1,1 @@
+{"nodes": [{"id": "e_project_swinlearn_swinlearn_prisma_migrations_20260624180000_user_avatar_migration_sql", "label": "migration.sql", "file_type": "code", "source_file": "prisma/migrations/20260624180000_user_avatar/migration.sql", "source_location": null}], "edges": []}

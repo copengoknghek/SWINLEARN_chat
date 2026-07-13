@@ -11,6 +11,7 @@ import type {
   AssignmentSubmissionRow,
   CatalogData,
   CourseCatalogInput,
+  CvProfileData,
   CourseContentPackageSummaryRow,
   CourseDetailData,
   CourseMemberRole,
@@ -25,6 +26,7 @@ import type {
   CommunityPostRow,
   GiphySearchResult,
   InboxData,
+  InboxBadgeSummary,
   ConversationRow,
   ManagedUserCredentialRow,
   PersonSearchResult,
@@ -33,6 +35,7 @@ import type {
   RegistrationBasketResult,
   RegistrationData,
   SwinlearnContextData,
+  SubmittedProjectsData,
   SwinlearnSendMessageResult,
   SwinlearnThreadRow,
   ConsultationTeacherRow,
@@ -137,6 +140,12 @@ export async function fetchCommunity(courseId: string): Promise<CommunityData> {
   return apiRequest<CommunityData>(
     `/api/workspace/courses/${encodeURIComponent(courseId)}/community`,
   )
+}
+
+export async function markCommunityRead(courseId: string): Promise<void> {
+  await apiRequest(`/api/workspace/courses/${encodeURIComponent(courseId)}/community/read`, {
+    method: 'POST',
+  })
 }
 
 export async function createCommunityPost(
@@ -264,6 +273,30 @@ export async function fetchSwinlearnContext(): Promise<SwinlearnContextData> {
   return apiRequest<SwinlearnContextData>('/api/workspace/swinlearn/context')
 }
 
+export async function fetchSubmittedProjects(): Promise<SubmittedProjectsData> {
+  return apiRequest<SubmittedProjectsData>('/api/workspace/swinlearn/submitted-projects')
+}
+
+export async function fetchCvProfile(): Promise<CvProfileData> {
+  return apiRequest<CvProfileData>('/api/workspace/cv-profile')
+}
+
+export async function updateCvProfile(input: {
+  phone?: string | null
+  headline_role?: string | null
+  certifications?: string | null
+}): Promise<CvProfileData> {
+  return apiRequest<CvProfileData>('/api/workspace/cv-profile', {
+    method: 'PATCH',
+    body: input,
+  })
+}
+
+export type SwinlearnSendMessageOptions = {
+  intent?: string
+  assignmentIds?: string[]
+}
+
 export async function fetchSwinlearnThreads(): Promise<SwinlearnThreadRow[]> {
   return apiRequest<SwinlearnThreadRow[]>('/api/workspace/swinlearn/threads')
 }
@@ -320,11 +353,22 @@ export async function sendSwinlearnMessage(
   message: string,
   selectedOfferingIds: string[],
   files: FileList | File[] | null,
+  options?: string | SwinlearnSendMessageOptions,
 ): Promise<SwinlearnSendMessageResult> {
+  const resolved =
+    typeof options === 'string' ? { intent: options } : (options ?? {})
   const formData = new FormData()
 
   formData.set('message', message)
   formData.set('selected_offering_ids', JSON.stringify(selectedOfferingIds))
+
+  if (resolved.intent) {
+    formData.set('intent', resolved.intent)
+  }
+
+  if (resolved.assignmentIds?.length) {
+    formData.set('assignment_ids', JSON.stringify(resolved.assignmentIds))
+  }
 
   for (const file of Array.from(files ?? [])) {
     formData.append('files', file)
@@ -688,6 +732,41 @@ export async function fetchAcademicProgress(): Promise<AcademicProgressData> {
   return apiRequest<AcademicProgressData>('/api/workspace/academic-progress')
 }
 
+export async function exportAcademicProgressXlsx(): Promise<void> {
+  const response = await fetch('/api/workspace/academic-progress/export', {
+    credentials: 'include',
+    headers: {
+      Accept: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    },
+  })
+
+  if (!response.ok) {
+    const text = await response.text()
+    let message = 'Grade report could not be exported.'
+
+    try {
+      const data = JSON.parse(text) as { error?: unknown }
+      if (data?.error) {
+        message = String(data.error)
+      }
+    } catch {
+      if (text) {
+        message = text
+      }
+    }
+
+    throw new Error(message)
+  }
+
+  const blob = await response.blob()
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = `swinlearn-grades-${new Date().toISOString().slice(0, 10)}.xlsx`
+  anchor.click()
+  URL.revokeObjectURL(url)
+}
+
 export async function checkRegistrationBasket(
   offeringIds: string[],
 ): Promise<RegistrationBasketResult> {
@@ -761,6 +840,10 @@ export async function fetchInboxData(): Promise<InboxData> {
   return apiRequest<InboxData>('/api/workspace/inbox')
 }
 
+export async function fetchInboxBadge(): Promise<InboxBadgeSummary> {
+  return apiRequest<InboxBadgeSummary>('/api/workspace/inbox/badge')
+}
+
 export async function searchPeople(
   query: string,
   courseId?: string,
@@ -814,12 +897,27 @@ export async function openConversation(recipientId: string): Promise<string> {
   return data.id
 }
 
-export async function sendInboxMessage(conversationId: string, body: string): Promise<void> {
+export async function sendInboxMessage(
+  conversationId: string,
+  input: { body?: string; gifUrl?: string },
+): Promise<void> {
+  const trimmedBody = input.body?.trim() ?? ''
+  const trimmedGifUrl = input.gifUrl?.trim() ?? ''
+  const payload: { body?: string; gif_url?: string } = {}
+
+  if (trimmedBody) {
+    payload.body = trimmedBody
+  }
+
+  if (trimmedGifUrl) {
+    payload.gif_url = trimmedGifUrl
+  }
+
   await apiRequest(
     `/api/workspace/inbox/conversations/${encodeURIComponent(conversationId)}/messages`,
     {
       method: 'POST',
-      body: { body },
+      body: payload,
     },
   )
 }

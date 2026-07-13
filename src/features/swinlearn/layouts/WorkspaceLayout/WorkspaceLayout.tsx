@@ -1,7 +1,8 @@
-import { type CSSProperties, useEffect, useRef, useState } from 'react'
+import { type CSSProperties, useCallback, useEffect, useRef, useState } from 'react'
 import { Navigate, NavLink, Outlet } from 'react-router-dom'
 import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
+import { fetchInboxBadge } from '../../lib/workspace/api'
 import {
   roleLabel,
   workspaceHomePath,
@@ -172,9 +173,41 @@ function WorkspaceCollapseIcon({
 function WorkspaceLayout({ workspaceRole }: WorkspaceLayoutProps) {
   const { user, role, mustChangePassword, loading } = useAuthContext()
   const [isCollapsed, setIsCollapsed] = useState(false)
+  const [inboxBadgeTotal, setInboxBadgeTotal] = useState(0)
   const [swinlearnHeartBursts, setSwinlearnHeartBursts] = useState<WorkspaceHeartBurst[]>([])
   const heartBurstIdRef = useRef(0)
   const heartCleanupTimers = useRef<number[]>([])
+
+  const loadInboxBadge = useCallback(async () => {
+    try {
+      const badge = await fetchInboxBadge()
+      setInboxBadgeTotal(badge.total)
+    } catch {
+      setInboxBadgeTotal(0)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (loading || user === null || role === null || mustChangePassword) {
+      return
+    }
+
+    const hasInboxLink = workspaceLinksByRole[workspaceRole ?? role].some(
+      (link) => link.path === 'inbox',
+    )
+
+    if (!hasInboxLink) {
+      return
+    }
+
+    const timeoutId = window.setTimeout(() => void loadInboxBadge(), 0)
+    const intervalId = window.setInterval(() => void loadInboxBadge(), 15000)
+
+    return () => {
+      window.clearTimeout(timeoutId)
+      window.clearInterval(intervalId)
+    }
+  }, [loadInboxBadge, loading, mustChangePassword, role, user, workspaceRole])
 
   useEffect(() => {
     const cleanupTimers = heartCleanupTimers.current
@@ -247,6 +280,11 @@ function WorkspaceLayout({ workspaceRole }: WorkspaceLayoutProps) {
           {workspaceLinks.map((link) => {
             const icon = workspaceNavIcons[link.path]
             const isSwinlearnLink = link.path === 'swinlearn'
+            const isInboxLink = link.path === 'inbox'
+            const inboxBadgeLabel =
+              inboxBadgeTotal > 99 ? '99+' : String(inboxBadgeTotal)
+            const inboxAriaLabel =
+              inboxBadgeTotal > 0 ? `Inbox, ${inboxBadgeTotal} notifications` : link.label
 
             return (
               <NavLink
@@ -255,14 +293,26 @@ function WorkspaceLayout({ workspaceRole }: WorkspaceLayoutProps) {
                   `workspace-nav-link${icon ? ' workspace-nav-link--stacked' : ''}${
                     isSwinlearnLink ? ' workspace-nav-link--swinlearn' : ''
                   }${
+                    isInboxLink ? ' workspace-nav-link--inbox' : ''
+                  }${
                     isActive ? ' workspace-nav-link--active' : ''
                   }`
                 }
                 to={`${basePath}/${link.path}`}
                 title={link.label}
+                aria-label={isInboxLink ? inboxAriaLabel : link.label}
                 onClick={isSwinlearnLink ? handleSwinlearnLinkClick : undefined}
               >
-                {icon && <WorkspaceNavIcon icon={icon} />}
+                {icon && (
+                  <span className="workspace-nav-icon-wrap">
+                    <WorkspaceNavIcon icon={icon} />
+                    {isInboxLink && inboxBadgeTotal > 0 && (
+                      <span className="workspace-nav-badge" aria-hidden="true">
+                        {inboxBadgeLabel}
+                      </span>
+                    )}
+                  </span>
+                )}
                 <span className="workspace-nav-link-text">{link.label}</span>
                 {isSwinlearnLink &&
                   swinlearnHeartBursts.map((burst) => (

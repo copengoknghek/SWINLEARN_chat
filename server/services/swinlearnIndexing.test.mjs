@@ -5,6 +5,7 @@ import {
   buildChunkRecords,
   buildOfferingSegments,
   buildRetrievedCitations,
+  ensureIndexedOfferings,
   retrieve,
 } from './swinlearnIndexing.js'
 
@@ -158,8 +159,126 @@ test('retrieve searches each offering separately when multiple courses are in sc
     },
   })
 
-  assert.equal(searchCalls.length, 3)
+  assert.equal(searchCalls.length, 4)
   assert.equal(searchCalls[0].limit, 4)
   assert.equal(searchCalls[1].limit, 4)
-  assert.equal(documents.length, 3)
+  assert.equal(documents.length, 4)
+})
+
+const errorIndexOffering = {
+  ...offering,
+  swinlearnKnowledgeIndex: {
+    errorMessage: 'Gemini embedding request failed.',
+    id: 'index-1',
+    offeringId: 'offering-1',
+    packageId: 'package-1',
+    status: 'error',
+    vectorStoreId: null,
+  },
+}
+
+function createIndexingPrisma(offeringRecord) {
+  return {
+    courseOffering: {
+      findUnique: async () => offeringRecord,
+    },
+    swinlearnKnowledgeIndex: {
+      upsert: async ({ create, update }) => ({
+        offeringId: offeringRecord.id,
+        packageId: offeringRecord.contentPackages[0].id,
+        status: 'indexing',
+        ...(update ?? create),
+      }),
+      update: async ({ data }) => ({
+        offeringId: offeringRecord.id,
+        packageId: offeringRecord.contentPackages[0].id,
+        vectorStoreId: data.vectorStoreId ?? null,
+        ...data,
+      }),
+    },
+  }
+}
+
+function createIndexingDeps() {
+  let embedCalls = 0
+
+  return {
+    embedCalls: () => embedCalls,
+    embedder: {
+      configured: true,
+      async embed() {
+        embedCalls += 1
+        return [[1, 0]]
+      },
+    },
+    vectorStore: {
+      configured: true,
+      async deleteByFilter() {},
+      async upsert() {},
+    },
+  }
+}
+
+test('ensureIndexedOfferings skips error status unless force is true', async () => {
+  const deps = createIndexingDeps()
+  const prisma = createIndexingPrisma(errorIndexOffering)
+
+  const skipped = await ensureIndexedOfferings({
+    embedder: deps.embedder,
+    force: false,
+    offeringIds: ['offering-1'],
+    prisma,
+    vectorStore: deps.vectorStore,
+  })
+
+  assert.equal(deps.embedCalls(), 0)
+  assert.equal(skipped[0].status, 'error')
+
+  const retried = await ensureIndexedOfferings({
+    embedder: deps.embedder,
+    force: true,
+    offeringIds: ['offering-1'],
+    prisma,
+    vectorStore: deps.vectorStore,
+  })
+
+  assert.ok(deps.embedCalls() > 0)
+  assert.equal(retried[0].status, 'ready')
+})
+
+test('ensureIndexedOfferings re-indexes ready offerings when force is true', async () => {
+  const readyIndexOffering = {
+    ...offering,
+    swinlearnKnowledgeIndex: {
+      id: 'index-ready',
+      offeringId: 'offering-1',
+      packageId: 'package-1',
+      status: 'ready',
+      vectorStoreId: 'swinlearn-course-knowledge',
+    },
+  }
+  const deps = createIndexingDeps()
+  const prisma = createIndexingPrisma(readyIndexOffering)
+
+  const skipped = await ensureIndexedOfferings({
+    embedder: deps.embedder,
+    force: false,
+    offeringIds: ['offering-1'],
+    prisma,
+    vectorStore: deps.vectorStore,
+  })
+
+  assert.equal(deps.embedCalls(), 0)
+  assert.equal(skipped[0].status, 'ready')
+
+  const reindexed = await ensureIndexedOfferings({
+    embedder: deps.embedder,
+    force: true,
+    offeringIds: ['offering-1'],
+    prisma,
+    vectorStore: deps.vectorStore,
+  })
+
+  assert.ok(deps.embedCalls() > 0)
+  assert.equal(reindexed[0].status, 'ready')
 })

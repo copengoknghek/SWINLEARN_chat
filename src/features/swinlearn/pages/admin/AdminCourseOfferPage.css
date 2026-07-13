@@ -17,10 +17,6 @@
   min-width: 0;
 }
 
-.admin-course-offer-page .admin-course-offer-row {
-  grid-template-columns: minmax(180px, 1.4fr) minmax(110px, 0.8fr) auto auto auto;
-}
-
 .admin-course-offer-page .admin-course-offer-detail {
   position: sticky;
   top: 28px;
@@ -58,10 +54,6 @@
 }
 
 @media (max-width: 640px) {
-  .admin-course-offer-page .admin-course-offer-row {
-    grid-template-columns: 1fr;
-  }
-
   .admin-course-offer-page .admin-registration-request-actions {
     justify-content: flex-start;
   }

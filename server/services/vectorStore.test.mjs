@@ -4,6 +4,8 @@ import test from 'node:test'
 import {
   buildCourseFilter,
   buildRetrievalFilter,
+  buildSubmissionDeleteFilter,
+  buildSubmissionFilter,
   buildUploadFilter,
   createVectorStore,
   mapSearchResultToDocument,
@@ -28,7 +30,7 @@ test('buildUploadFilter scopes search to thread and user', () => {
   })
 })
 
-test('buildRetrievalFilter combines course and upload scopes', () => {
+test('buildRetrievalFilter combines course, upload, and submission scopes', () => {
   assert.deepEqual(buildRetrievalFilter({
     offeringIds: ['off-1'],
     threadId: 'thread-1',
@@ -37,8 +39,22 @@ test('buildRetrievalFilter combines course and upload scopes', () => {
     should: [
       buildCourseFilter(['off-1']),
       buildUploadFilter('thread-1', 'user-1'),
+      buildSubmissionFilter('user-1', ['off-1']),
     ],
   })
+})
+
+test('buildSubmissionDeleteFilter scopes delete to one submission', () => {
+  assert.deepEqual(
+    buildSubmissionDeleteFilter({ assignmentId: 'asg-1', studentId: 'student-1' }),
+    {
+      must: [
+        { key: 'source', match: { value: 'submission' } },
+        { key: 'studentId', match: { value: 'student-1' } },
+        { key: 'assignmentId', match: { value: 'asg-1' } },
+      ],
+    },
+  )
 })
 
 test('mapSearchResultToDocument maps payload and score', () => {

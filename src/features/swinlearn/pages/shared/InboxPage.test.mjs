@@ -26,6 +26,26 @@ test('reply composer uses an icon-only paper plane send button', () => {
   assert.doesNotMatch(inboxPage, /\{saving \? 'Sending\.\.\.' : 'Send'\}/)
 })
 
+test('conversation message list scrolls to the latest message when opened', () => {
+  assert.match(inboxPage, /scrollMessagesToBottom/)
+  assert.match(inboxPage, /messagesEndRef/)
+  assert.match(inboxPage, /ref=\{messageListRef\}/)
+  assert.match(inboxPage, /useLayoutEffect/)
+  assert.match(inboxPage, /list\.scrollTop = list\.scrollHeight/)
+  assert.match(inboxPage, /ResizeObserver/)
+})
+
+test('reply composer supports GIFs and Enter-to-send', () => {
+  assert.match(inboxPage, /import \{ GiphyPicker \} from '\.\.\/\.\.\/components\/GiphyPicker'/)
+  assert.match(inboxPage, /handleEnterToSubmit/)
+  assert.match(inboxPage, /replyDraft/)
+  assert.match(inboxPage, /inboxMessagePreview/)
+  assert.match(inboxPage, /gif_url/)
+  assert.match(inboxPage, /className="inbox-reply-composer"/)
+  assert.match(inboxPage, /requestSubmit\(\)/)
+  assert.match(inboxPage, /sendInboxMessage\(selectedConversationId, \{/)
+})
+
 test('sidebar exposes group creation and conversation search outside the chat frame', () => {
   assert.match(inboxPage, /className="inbox-create-group-button"/)
   assert.match(inboxPage, /Create group/)

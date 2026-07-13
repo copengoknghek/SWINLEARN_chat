@@ -9,6 +9,8 @@ import {
   fetchCommunity,
   fetchCourseDetail,
   getErrorMessage,
+  indexSwinlearnCourses,
+  markCommunityRead,
   profileName,
   submitAssignment,
   toggleCommunityLike,
@@ -39,6 +41,7 @@ import { CommunityAuthorHeader } from '../../components/CommunityAuthorHeader'
 import { CommunityConfirmDialog } from '../../components/CommunityConfirmDialog'
 import { CommunityShareModal } from '../../components/CommunityShareModal'
 import { CommunityVoteButton } from '../../components/CommunityVoteButton'
+import { SwinlearnKnowledgeIndexPanel } from '../../components/SwinlearnKnowledgeIndexPanel'
 
 const termLabels: Record<CourseTerm, string> = {
   semester_1: 'Semester 1',
@@ -65,6 +68,27 @@ const toReadableDate = (isoValue: string) =>
     hour: 'numeric',
     minute: '2-digit',
   }).format(new Date(isoValue))
+
+const submissionIndexLabel = (submission: AssignmentSubmissionRow) => {
+  switch (submission.index_status) {
+    case 'ready':
+      return 'Ready for Swinlearn'
+    case 'error':
+      return submission.index_error || 'Could not index submission'
+    case 'skipped':
+      return 'No readable content for Swinlearn'
+    case 'pending':
+      return 'Indexing...'
+    default:
+      return null
+  }
+}
+
+const submissionFileUrl = (filePath: string) => {
+  const normalized = filePath.replace(/\\/g, '/')
+
+  return normalized.startsWith('/') ? normalized : `/${normalized}`
+}
 
 const defaultAssignmentForm = (courseId = ''): AssignmentMutationInput => ({
   course_id: courseId,
@@ -141,6 +165,11 @@ function CourseDetailPage() {
   } | null>(null)
   const coursePageRef = useRef<HTMLElement | null>(null)
   const moduleContentRef = useRef<HTMLElement | null>(null)
+  const communityReadMarkedRef = useRef<string | null>(null)
+
+  useEffect(() => {
+    communityReadMarkedRef.current = null
+  }, [courseId])
 
   const loadData = useCallback(async () => {
     if (!courseId) {
@@ -181,6 +210,11 @@ function CourseDetailPage() {
       const data = await fetchCommunity(courseId)
       setCommunityPosts(data.posts)
       setCommunityViewerGold(data.viewer?.gold_balance ?? 0)
+
+      if (workspaceRole === 'student' && communityReadMarkedRef.current !== courseId) {
+        communityReadMarkedRef.current = courseId
+        void markCommunityRead(courseId).catch(() => {})
+      }
     } catch (loadError) {
       setError(getErrorMessage(loadError, 'Community could not be loaded'))
     } finally {
@@ -188,7 +222,7 @@ function CourseDetailPage() {
         setCommunityLoading(false)
       }
     }
-  }, [courseId])
+  }, [courseId, workspaceRole])
 
   useEffect(() => {
     if (!isCourseDetailSection(section)) {
@@ -548,7 +582,7 @@ function CourseDetailPage() {
       )
 
       setAssignmentForm(defaultAssignmentForm(detail.course.id))
-      setNotice('Assignment published.')
+      setNotice('Assignment published. Re-index SWINLEARN knowledge so chatbot answers stay current.')
       await loadData()
     } catch (createError) {
       setError(getErrorMessage(createError, 'Assignment could not be created'))
@@ -566,10 +600,30 @@ function CourseDetailPage() {
       await updateAssignment(assignmentId, {
         due_at: new Date(dueAt).toISOString(),
       })
-      setNotice('Due date updated.')
+      setNotice('Due date updated. Re-index SWINLEARN knowledge so chatbot answers stay current.')
       await loadData()
     } catch (updateError) {
       setError(getErrorMessage(updateError, 'Due date could not be updated'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleIndexKnowledge = async () => {
+    if (!detail) {
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await indexSwinlearnCourses([detail.course.id])
+      setNotice('Course knowledge indexed for SWINLEARN retrieval.')
+      await loadData()
+    } catch (indexError) {
+      setError(getErrorMessage(indexError, 'Course knowledge could not be indexed'))
     } finally {
       setSaving(false)
     }
@@ -726,7 +780,12 @@ function CourseDetailPage() {
                       <span>{toReadableDate(submission.submitted_at)}</span>
                       <p>{submission.body || 'No text response.'}</p>
                     </div>
-                    <span className="workspace-chip">{submission.file_paths.length} files</span>
+                    <div className="workspace-chip-row">
+                      <span className="workspace-chip">{submission.file_paths.length} files</span>
+                      {submission.github_url && (
+                        <span className="workspace-chip">GitHub linked</span>
+                      )}
+                    </div>
                   </div>
                 )
               })}
@@ -740,10 +799,38 @@ function CourseDetailPage() {
               {ownSubmission ? 'Submitted' : 'Not submitted'}
             </span>
             {ownSubmission && (
-              <p>
-                Submitted {toReadableDate(ownSubmission.submitted_at)} with{' '}
-                {ownSubmission.file_paths.length} files.
-              </p>
+              <>
+                <p>
+                  Submitted {toReadableDate(ownSubmission.submitted_at)} with{' '}
+                  {ownSubmission.file_paths.length} files.
+                </p>
+                {submissionIndexLabel(ownSubmission) && (
+                  <p className="workspace-muted">{submissionIndexLabel(ownSubmission)}</p>
+                )}
+                <section className="workspace-subpanel workspace-submission-review">
+                  <h4>Your submitted work</h4>
+                  <p>{ownSubmission.body || 'No submission text provided.'}</p>
+                  {ownSubmission.github_url && (
+                    <p>
+                      GitHub:{' '}
+                      <a href={ownSubmission.github_url} rel="noreferrer" target="_blank">
+                        {ownSubmission.github_url}
+                      </a>
+                    </p>
+                  )}
+                  {ownSubmission.file_paths.length > 0 && (
+                    <ul className="workspace-submission-files">
+                      {ownSubmission.file_paths.map((filePath) => (
+                        <li key={filePath}>
+                          <a href={submissionFileUrl(filePath)} rel="noreferrer" target="_blank">
+                            {filePath.split(/[/\\]/).pop()}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </section>
+              </>
             )}
             <form
               className="workspace-form"
@@ -751,7 +838,15 @@ function CourseDetailPage() {
             >
               <label>
                 <span>Submission text</span>
-                <textarea name="body" placeholder="Write your response..." />
+                <textarea
+                  name="body"
+                  placeholder="Write your response..."
+                  defaultValue={ownSubmission?.body ?? ''}
+                />
+                <p className="workspace-muted">
+                  Paste a public GitHub repo URL in your submission text to enable project and CV
+                  help in SWINLEARN.
+                </p>
               </label>
               <label>
                 <span>Files</span>
@@ -950,7 +1045,21 @@ function CourseDetailPage() {
   }
 
   const renderAssignmentsSection = () => (
-    <div className="course-detail-layout course-detail-layout--assignments">
+    <>
+      {workspaceRole === 'teacher' && detail && (
+        <section className="workspace-panel course-detail-swinlearn-index">
+          <SwinlearnKnowledgeIndexPanel
+            assignmentCount={detail.assignments.length}
+            hasContentPackage={Boolean(detail.contentPackage)}
+            knowledgeIndex={detail.knowledge_index}
+            disabled={saving}
+            indexing={saving}
+            onIndex={() => void handleIndexKnowledge()}
+          />
+        </section>
+      )}
+
+      <div className="course-detail-layout course-detail-layout--assignments">
       <aside className="workspace-panel course-detail-side">
         <h2>Assignment</h2>
         <div className="course-detail-assignment-list">
@@ -1036,6 +1145,7 @@ function CourseDetailPage() {
         )}
       </main>
     </div>
+    </>
   )
 
   const renderGradesSection = () => (

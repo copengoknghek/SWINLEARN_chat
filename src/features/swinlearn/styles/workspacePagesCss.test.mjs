@@ -346,30 +346,29 @@ test('inbox uses the global green token without green chat surfaces', () => {
 
 test('inbox reply composer is a compact single lane with an icon-only send control', () => {
   const replyFormRule = css.match(/\.inbox-reply-form\s*\{[^}]*\}/)
-  const replyLabelRule = css.match(/\.inbox-reply-form label\s*\{[^}]*\}/)
-  const replyLabelTextRule = css.match(/\.inbox-reply-form label > span\s*\{[^}]*\}/)
-  const replyTextareaRule = css.match(/\.inbox-reply-form textarea\s*\{[^}]*\}/)
+  const replyRowRule = css.match(/\.inbox-reply-row\s*\{[^}]*\}/)
   const sendButtonRule = css.match(
     /\.inbox-workspace \.inbox-shell \.inbox-reply-form \.inbox-send-button\s*\{[^}]*\}/,
   )
   const sendIconRule = css.match(/\.inbox-send-icon\s*\{[^}]*\}/)
 
   assert.ok(replyFormRule, 'inbox reply form rule should exist')
-  assert.match(replyFormRule[0], /align-items:\s*center/)
-  assert.match(replyFormRule[0], /display:\s*grid/)
+  assert.match(replyFormRule[0], /display:\s*flex/)
+  assert.match(replyFormRule[0], /flex-direction:\s*column/)
   assert.match(replyFormRule[0], /gap:\s*8px/)
-  assert.match(replyFormRule[0], /grid-template-columns:\s*minmax\(0, 1fr\) auto/)
   assert.match(replyFormRule[0], /padding:\s*10px 14px/)
 
-  assert.ok(replyLabelRule, 'inbox reply label rule should exist')
-  assert.match(replyLabelRule[0], /min-width:\s*0/)
+  assert.ok(replyRowRule, 'inbox reply row rule should exist')
+  assert.match(replyRowRule[0], /grid-template-columns:\s*minmax\(0, 1fr\) auto/)
 
-  assert.ok(replyLabelTextRule, 'inbox reply label text rule should exist')
-  assert.match(replyLabelTextRule[0], /clip:\s*rect\(0, 0, 0, 0\)/)
+  const replyComposerRule = css.match(/\.inbox-reply-composer\s*\{[^}]*\}/)
+  const replyComposerTextareaRule = css.match(/\.inbox-reply-composer textarea\s*\{[^}]*\}/)
 
-  assert.ok(replyTextareaRule, 'inbox reply textarea rule should exist')
-  assert.match(replyTextareaRule[0], /min-height:\s*44px/)
-  assert.match(replyTextareaRule[0], /padding:\s*10px 12px/)
+  assert.ok(replyComposerRule, 'inbox reply composer rule should exist')
+  assert.match(replyComposerRule[0], /border:\s*1px solid var\(--border\)/)
+
+  assert.ok(replyComposerTextareaRule, 'inbox reply composer textarea rule should exist')
+  assert.match(replyComposerTextareaRule[0], /min-height:\s*32px/)
 
   assert.ok(sendButtonRule, 'inbox send button rule should exist')
   assert.match(sendButtonRule[0], /background:\s*transparent/)

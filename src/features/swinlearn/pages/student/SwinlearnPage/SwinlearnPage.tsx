@@ -1,5 +1,13 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { WorkspaceAlertStack } from '../../../components/WorkspaceAlertStack'
+import { MarkdownMessage } from '../../../components/MarkdownMessage'
+import { PerfectCvEditPanel } from '../../../components/cv/PerfectCvEditPanel'
+import { CvProjectPreview } from '../../../components/cv/CvProjectPreview'
+import { PerfectCvPreview } from '../../../components/cv/PerfectCvPreview'
+import { PerfectCvProjectPicker } from '../../../components/cv/PerfectCvProjectPicker'
+import { cvProjectMarkdownToWordHtml } from '../../../lib/cvProjectMarkdown.mjs'
+import { perfectCvMarkdownToWordHtmlFromMarkdown } from '../../../lib/perfectCvFormat.mjs'
+import { downloadGradeReportXlsx } from '../../../lib/gradeReportExport.mjs'
 import {
   createSwinlearnThread,
   deleteSwinlearnThread,
@@ -7,10 +15,10 @@ import {
   fetchSwinlearnThread,
   fetchSwinlearnThreads,
   getErrorMessage,
-  indexSwinlearnCourses,
   sendSwinlearnMessage,
   updateSwinlearnThread,
 } from '../../../lib/workspace/api'
+import type { SwinlearnSendMessageOptions } from '../../../lib/workspace/api'
 import type {
   SwinlearnContextData,
   SwinlearnCourseContextRow,
@@ -61,6 +69,85 @@ const formatKnowledgeIndexStatus = (status: string) => {
 const formatCitationScore = (score: number | null) =>
   typeof score === 'number' ? `${Math.round(score * 100)}% match` : null
 
+const VISIBLE_CITATION_COUNT = 2
+
+function MessageCitationList({ message }: { message: SwinlearnMessageRow }) {
+  const [expanded, setExpanded] = useState(false)
+  const citations = messageCitations(message)
+  if (citations.length === 0) return null
+
+  const hiddenCount = citations.length - VISIBLE_CITATION_COUNT
+  const visibleCitations =
+    expanded || hiddenCount <= 0
+      ? citations
+      : citations.slice(0, VISIBLE_CITATION_COUNT)
+
+  return (
+    <div className="swinlearn-source-grid">
+      {visibleCitations.map((citation, index) => (
+        <div className="swinlearn-source-card" key={`${message.id}-${index}`}>
+          <div className="swinlearn-source-card-header">
+            <strong>{citation.filename}</strong>
+            {formatCitationScore(citation.score) && (
+              <span className="swinlearn-source-score">
+                {formatCitationScore(citation.score)}
+              </span>
+            )}
+          </div>
+          {citation.text && <span>{citation.text.slice(0, 160)}</span>}
+        </div>
+      ))}
+      {!expanded && hiddenCount > 0 && (
+        <button
+          type="button"
+          className="swinlearn-source-more"
+          aria-label={`Show ${hiddenCount} more references`}
+          onClick={() => setExpanded(true)}
+        >
+          ...
+        </button>
+      )}
+    </div>
+  )
+}
+
+const isCvExportMessage = (message: SwinlearnMessageRow) =>
+  message.metadata?.contentType === 'cv_export'
+
+const isPerfectCvExportMessage = (message: SwinlearnMessageRow) =>
+  message.metadata?.contentType === 'perfect_cv_export'
+
+const isGradeExportMessage = (message: SwinlearnMessageRow) =>
+  message.metadata?.contentType === 'grade_export'
+
+const cvExportFilename = (prefix = 'swinlearn-cv-projects') =>
+  `${prefix}-${new Date().toISOString().slice(0, 10)}`
+
+const downloadCvFile = (content: string, filename: string, mimeType: string, body = content) => {
+  const blob = new Blob([body], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = filename
+  anchor.click()
+  URL.revokeObjectURL(url)
+}
+
+const downloadCvMarkdown = (content: string, prefix?: string) => {
+  downloadCvFile(content, `${cvExportFilename(prefix)}.md`, 'text/markdown;charset=utf-8')
+}
+
+const isPerfectCvMarkdown = (content: string) =>
+  /##\s*Contact\b/i.test(content) || /Email\s*:/i.test(content)
+
+const downloadCvWord = (content: string, prefix?: string) => {
+  const body = isPerfectCvMarkdown(content)
+    ? `\ufeff${perfectCvMarkdownToWordHtmlFromMarkdown(content)}`
+    : `\ufeff${cvProjectMarkdownToWordHtml(content)}`
+
+  downloadCvFile(content, `${cvExportFilename(prefix)}.doc`, 'application/msword;charset=utf-8', body)
+}
+
 function SwinlearnEllipsisIcon() {
   return (
     <svg className="swinlearn-thread-menu-icon" viewBox="0 0 448 512" aria-hidden="true" focusable="false">
@@ -80,7 +167,6 @@ function SwinlearnPage() {
   const [showFiles, setShowFiles] = useState(true)
   const [loading, setLoading] = useState(true)
   const [sending, setSending] = useState(false)
-  const [indexing, setIndexing] = useState(false)
   const [error, setError] = useState('')
   const [notice, setNotice] = useState('')
   const [openMenuThreadId, setOpenMenuThreadId] = useState('')
@@ -88,6 +174,8 @@ function SwinlearnPage() {
   const [renameDraft, setRenameDraft] = useState('')
   const [deleteThread, setDeleteThread] = useState<SwinlearnThreadRow | null>(null)
   const [threadActionSaving, setThreadActionSaving] = useState(false)
+  const [showPerfectCvPicker, setShowPerfectCvPicker] = useState(false)
+  const [perfectCvPanelMessage, setPerfectCvPanelMessage] = useState<SwinlearnMessageRow | null>(null)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
   const threadMenuRef = useRef<HTMLDivElement | null>(null)
@@ -98,6 +186,19 @@ function SwinlearnPage() {
   )
   const activeMessages = activeThread?.messages ?? []
   const activeAttachments = activeThread?.attachments ?? []
+  const showRightRail = showFiles || perfectCvPanelMessage !== null
+  const layoutClassName = [
+    'swinlearn-layout',
+    showHistory ? 'swinlearn-layout--has-history' : '',
+    showRightRail ? 'swinlearn-layout--has-right' : '',
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const closePerfectCvPanel = () => {
+    setPerfectCvPanelMessage(null)
+    setShowFiles(true)
+  }
 
   const loadThread = useCallback(async (threadId: string) => {
     const thread = await fetchSwinlearnThread(threadId)
@@ -119,13 +220,12 @@ function SwinlearnPage() {
       setContext(nextContext)
       setThreads(nextThreads)
 
-      const enrolledIds = nextContext.courses.map((course) => course.id)
       const firstThread = nextThreads[0]
 
       if (firstThread) {
         await loadThread(firstThread.id)
       } else {
-        setSelectedOfferingIds(enrolledIds)
+        setSelectedOfferingIds([])
       }
     } catch (loadError) {
       setError(getErrorMessage(loadError, 'SWINLEARN could not be loaded'))
@@ -183,7 +283,11 @@ function SwinlearnPage() {
     return thread
   }
 
-  const sendPrompt = async (prompt: string, files: File[] = pendingFiles) => {
+  const sendPrompt = async (
+    prompt: string,
+    files: File[] = pendingFiles,
+    options?: string | SwinlearnSendMessageOptions,
+  ) => {
     const message = prompt.trim()
 
     if (!message || sending) {
@@ -196,7 +300,13 @@ function SwinlearnPage() {
 
     try {
       const thread = await ensureActiveThread(message)
-      const result = await sendSwinlearnMessage(thread.id, message, selectedOfferingIds, files)
+      const result = await sendSwinlearnMessage(
+        thread.id,
+        message,
+        selectedOfferingIds,
+        files,
+        options,
+      )
 
       setDraftMessage('')
       setPendingFiles([])
@@ -212,6 +322,11 @@ function SwinlearnPage() {
             }
           : current,
       )
+
+      if (isPerfectCvExportMessage(result.assistant)) {
+        setPerfectCvPanelMessage(result.assistant)
+      }
+
       await refreshThreads(thread.id)
     } catch (sendError) {
       setError(getErrorMessage(sendError, 'SWINLEARN could not send your message'))
@@ -226,15 +341,11 @@ function SwinlearnPage() {
   }
 
   const toggleCourse = (offeringId: string) => {
-    setSelectedOfferingIds((current) => {
-      if (current.includes(offeringId)) {
-        const next = current.filter((id) => id !== offeringId)
-
-        return next.length > 0 ? next : current
-      }
-
-      return [...current, offeringId]
-    })
+    setSelectedOfferingIds((current) =>
+      current.includes(offeringId)
+        ? current.filter((id) => id !== offeringId)
+        : [...current, offeringId],
+    )
   }
 
   const startNewThread = () => {
@@ -340,7 +451,7 @@ function SwinlearnPage() {
         if (nextActiveThread) {
           await loadThread(nextActiveThread.id)
         } else {
-          setSelectedOfferingIds(context.courses.map((course) => course.id))
+          setSelectedOfferingIds([])
         }
       }
 
@@ -363,37 +474,55 @@ function SwinlearnPage() {
     void sendPrompt(`Summarize selected course knowledge for ${label}.`)
   }
 
-  const findTopicLocation = () => {
-    const topic = draftMessage.trim() || 'machine learning'
+  const draftCvFromProjects = () => {
+    const courses = selectedCourses
 
-    void sendPrompt(`Find topic location in my enrolled course knowledge: ${topic}`)
-  }
-
-  const indexSelectedCourses = async () => {
-    if (indexing || selectedOfferingIds.length === 0) {
+    if (courses.length === 0) {
+      setNotice('Select at least one course, then name assignment titles in your message.')
       return
     }
 
-    setIndexing(true)
-    setError('')
-    setNotice('')
-
-    try {
-      await indexSwinlearnCourses(selectedOfferingIds)
-      const nextContext = await fetchSwinlearnContext()
-
-      setContext(nextContext)
-      setNotice('Course knowledge indexed for retrieval.')
-    } catch (indexError) {
-      setError(getErrorMessage(indexError, 'SWINLEARN could not index the selected courses'))
-    } finally {
-      setIndexing(false)
+    if (courses.length === 1) {
+      setDraftMessage(`Make a CV entry for "Assignment title here" in ${courses[0].code}`)
+      return
     }
+
+    setDraftMessage(
+      `Make CV entries for "Assignment 1" in ${courses[0].code} and "Assignment 3" in ${courses[1].code}`,
+    )
   }
 
-  const needsIndexing = selectedCourses.some((course) =>
-    ['missing', 'stale', 'error', 'failed'].includes(course.knowledge_index.status),
-  )
+  const draftCvForAllSubmitted = () => {
+    const course = selectedCourses[0]
+
+    if (!course) {
+      setNotice('Select a course first.')
+      return
+    }
+
+    void sendPrompt(`Make CV entries for all my submitted assignments in ${course.code}`, [], {
+      intent: 'cv_export',
+    })
+  }
+
+  const exportGrades = () => {
+    void sendPrompt('Export my grade table', [], { intent: 'grade_export' })
+  }
+
+  const downloadGradeExportXlsx = () => {
+    void downloadGradeReportXlsx().catch((error: unknown) => {
+      setNotice(getErrorMessage(error, 'Grade report could not be exported.'))
+    })
+  }
+
+  const handlePerfectCvConfirm = (assignmentIds: string[]) => {
+    setShowPerfectCvPicker(false)
+
+    void sendPrompt('Build my Perfect CV from the selected projects.', [], {
+      assignmentIds,
+      intent: 'perfect_cv',
+    })
+  }
 
   return (
     <section className="workspace-page swinlearn-workspace">
@@ -413,7 +542,7 @@ function SwinlearnPage() {
         onDismissNotice={() => setNotice('')}
       />
 
-      <div className="swinlearn-layout">
+      <div className={layoutClassName}>
         {showHistory && (
           <aside className="chat-sidebar history-sidebar">
             <div className="sidebar-header">
@@ -521,14 +650,6 @@ function SwinlearnPage() {
               <span className="subtitle">AI study tutor</span>
             </div>
             <div className="chat-header-right">
-              <button
-                className="clear-btn"
-                type="button"
-                onClick={summarizeSelectedCourses}
-                disabled={sending || selectedOfferingIds.length === 0}
-              >
-                Summarize selected course
-              </button>
               {!showFiles && (
                 <button
                   className="icon-btn panel-btn"
@@ -565,7 +686,51 @@ function SwinlearnPage() {
                       <strong>{message.role === 'assistant' ? 'SWINLEARN' : 'You'}</strong>
                       <span>{formatDateTime(message.created_at)}</span>
                     </div>
-                    <p>{message.content}</p>
+                    {isPerfectCvExportMessage(message) ? (
+                      <PerfectCvPreview content={message.content} />
+                    ) : isCvExportMessage(message) ? (
+                      <CvProjectPreview content={message.content} />
+                    ) : isGradeExportMessage(message) ? (
+                      <MarkdownMessage content={message.content} />
+                    ) : (
+                      <MarkdownMessage content={message.content} />
+                    )}
+                    {isCvExportMessage(message) && (
+                      <div className="swinlearn-cv-export-actions">
+                        <button
+                          className="clear-btn"
+                          type="button"
+                          onClick={() => downloadCvMarkdown(message.content)}
+                        >
+                          Download as Markdown
+                        </button>
+                        <button
+                          className="clear-btn"
+                          type="button"
+                          onClick={() => downloadCvWord(message.content)}
+                        >
+                          Download as Word
+                        </button>
+                      </div>
+                    )}
+                    {isPerfectCvExportMessage(message) && (
+                      <div className="swinlearn-cv-export-actions">
+                        <button
+                          className="clear-btn"
+                          type="button"
+                          onClick={() => setPerfectCvPanelMessage(message)}
+                        >
+                          Edit &amp; download
+                        </button>
+                      </div>
+                    )}
+                    {isGradeExportMessage(message) && (
+                      <div className="swinlearn-cv-export-actions">
+                        <button className="clear-btn" type="button" onClick={downloadGradeExportXlsx}>
+                          Download Excel
+                        </button>
+                      </div>
+                    )}
                     {message.attachments.length > 0 && (
                       <div className="swinlearn-attachment-list">
                         {message.attachments.map((attachment) => (
@@ -575,23 +740,7 @@ function SwinlearnPage() {
                         ))}
                       </div>
                     )}
-                    {messageCitations(message).length > 0 && (
-                      <div className="swinlearn-source-grid">
-                        {messageCitations(message).map((citation, index) => (
-                          <div className="swinlearn-source-card" key={`${message.id}-${index}`}>
-                            <div className="swinlearn-source-card-header">
-                              <strong>{citation.filename}</strong>
-                              {formatCitationScore(citation.score) && (
-                                <span className="swinlearn-source-score">
-                                  {formatCitationScore(citation.score)}
-                                </span>
-                              )}
-                            </div>
-                            {citation.text && <span>{citation.text.slice(0, 160)}</span>}
-                          </div>
-                        ))}
-                      </div>
-                    )}
+                    <MessageCitationList message={message} />
                   </article>
                 ))}
                 {sending && (
@@ -599,7 +748,11 @@ function SwinlearnPage() {
                     <div className="swinlearn-message-meta">
                       <strong>SWINLEARN</strong>
                     </div>
-                    <p>Reading your selected course knowledge...</p>
+                    <p>
+                      {selectedOfferingIds.length === 0
+                        ? 'Thinking...'
+                        : 'Reading your selected course knowledge...'}
+                    </p>
                   </article>
                 )}
                 <div ref={messagesEndRef} />
@@ -609,11 +762,20 @@ function SwinlearnPage() {
 
           <form className="chat-input-area" onSubmit={handleSubmit}>
             <div className="swinlearn-quick-actions">
+              <button type="button" onClick={draftCvFromProjects} disabled={sending}>
+                CV example prompt
+              </button>
+              <button type="button" onClick={draftCvForAllSubmitted} disabled={sending}>
+                CV all submitted in course
+              </button>
+              <button type="button" onClick={() => setShowPerfectCvPicker(true)} disabled={sending}>
+                Perfect CV
+              </button>
+              <button type="button" onClick={exportGrades} disabled={sending}>
+                Export grades
+              </button>
               <button type="button" onClick={summarizeSelectedCourses} disabled={sending}>
                 Summarize selected course
-              </button>
-              <button type="button" onClick={findTopicLocation} disabled={sending}>
-                Find topic location
               </button>
             </div>
             <div className="chat-input-wrapper">
@@ -651,73 +813,81 @@ function SwinlearnPage() {
           </form>
         </section>
 
-        {showFiles && (
-          <aside className="chat-sidebar export-sidebar">
-            <div className="sidebar-header">
-              <div className="sidebar-title">
-                <span>Courses</span>
-              </div>
-              <button
-                className="icon-btn panel-btn"
-                type="button"
-                onClick={() => setShowFiles(false)}
-                aria-label="Hide files"
-              >
-                &gt;
-              </button>
-            </div>
-            <div className="sidebar-content">
-              {needsIndexing && (
+        {showRightRail &&
+          (perfectCvPanelMessage ? (
+            <PerfectCvEditPanel
+              message={perfectCvPanelMessage}
+              onClose={closePerfectCvPanel}
+              onDownloadMarkdown={(content) => downloadCvMarkdown(content, 'swinlearn-perfect-cv')}
+              onDownloadWord={(content) => downloadCvWord(content, 'swinlearn-perfect-cv')}
+            />
+          ) : (
+            <aside className="chat-sidebar export-sidebar">
+              <div className="sidebar-header">
+                <div className="sidebar-title">
+                  <span>Courses</span>
+                </div>
                 <button
-                  className="swinlearn-index-btn"
+                  className="icon-btn panel-btn"
                   type="button"
-                  onClick={() => void indexSelectedCourses()}
-                  disabled={indexing || sending}
+                  onClick={() => setShowFiles(false)}
+                  aria-label="Hide files"
                 >
-                  {indexing ? 'Indexing courses...' : 'Index selected courses'}
+                  &gt;
                 </button>
-              )}
-              <div className="swinlearn-course-filter">
-                {context.courses.map((course) => (
-                  <label key={course.id}>
-                    <input
-                      type="checkbox"
-                      checked={selectedOfferingIds.includes(course.id)}
-                      onChange={() => toggleCourse(course.id)}
-                    />
-                    <span>
-                      <strong>{course.code}</strong>
-                      {course.title}
-                    </span>
-                    <small
-                      className={`swinlearn-index-status swinlearn-index-status--${course.knowledge_index.status}`}
-                      title={course.knowledge_index.error_message ?? undefined}
-                    >
-                      {formatKnowledgeIndexStatus(course.knowledge_index.status)}
-                    </small>
-                  </label>
-                ))}
-                {context.courses.length === 0 && (
-                  <p className="swinlearn-muted">No enrolled course knowledge is available yet.</p>
-                )}
               </div>
+              <div className="sidebar-content">
+                <p className="swinlearn-muted swinlearn-course-helper">
+                  Optional - select one or more courses to scope knowledge retrieval.
+                </p>
+                <div className="swinlearn-course-filter">
+                  {context.courses.map((course) => (
+                    <label key={course.id}>
+                      <input
+                        type="checkbox"
+                        checked={selectedOfferingIds.includes(course.id)}
+                        onChange={() => toggleCourse(course.id)}
+                      />
+                      <span>
+                        <strong>{course.code}</strong>
+                        {course.title}
+                      </span>
+                      <small
+                        className={`swinlearn-index-status swinlearn-index-status--${course.knowledge_index.status}`}
+                        title={course.knowledge_index.error_message ?? undefined}
+                      >
+                        {formatKnowledgeIndexStatus(course.knowledge_index.status)}
+                      </small>
+                    </label>
+                  ))}
+                  {context.courses.length === 0 && (
+                    <p className="swinlearn-muted">No enrolled course knowledge is available yet.</p>
+                  )}
+                </div>
 
-              <section className="swinlearn-source-panel">
-                <h2>Uploaded files</h2>
-                {activeAttachments.map((attachment) => (
-                  <div className="swinlearn-source-card" key={attachment.id}>
-                    <strong>{attachment.original_name}</strong>
-                    <span>{attachment.file_kind}</span>
-                  </div>
-                ))}
-                {activeAttachments.length === 0 && (
-                  <p className="swinlearn-muted">Files you send in this chat will appear here.</p>
-                )}
-              </section>
-            </div>
-          </aside>
-        )}
+                <section className="swinlearn-source-panel">
+                  <h2>Uploaded files</h2>
+                  {activeAttachments.map((attachment) => (
+                    <div className="swinlearn-source-card" key={attachment.id}>
+                      <strong>{attachment.original_name}</strong>
+                      <span>{attachment.file_kind}</span>
+                    </div>
+                  ))}
+                  {activeAttachments.length === 0 && (
+                    <p className="swinlearn-muted">Files you send in this chat will appear here.</p>
+                  )}
+                </section>
+              </div>
+            </aside>
+          ))}
       </div>
+
+      {showPerfectCvPicker && (
+        <PerfectCvProjectPicker
+          onClose={() => setShowPerfectCvPicker(false)}
+          onConfirm={handlePerfectCvConfirm}
+        />
+      )}
 
       {renameThread && (
         <div

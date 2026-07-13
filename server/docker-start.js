@@ -5,6 +5,8 @@ import { fileURLToPath } from 'node:url'
 
 const databaseWaitAttempts = 30
 const databaseWaitMs = 2000
+const serviceWaitAttempts = 30
+const serviceWaitMs = 2000
 
 const executable = (name) => (process.platform === 'win32' ? `${name}.cmd` : name)
 
@@ -51,6 +53,78 @@ export function shouldBaselineExistingDatabase({ hasPrismaMigrationsTable, userT
 
 export function shouldSeedDemoData({ userCount, seedDemoData }) {
   return userCount === 0 && seedDemoData === 'true'
+}
+
+export function ollamaModelPresent(models, modelName) {
+  return models.some(
+    (model) => model.name === modelName || model.name.startsWith(`${modelName}:`),
+  )
+}
+
+async function waitForHttpService({ label, url, attempts = serviceWaitAttempts, delayMs = serviceWaitMs }) {
+  let lastError
+
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      const response = await fetch(url)
+
+      if (response.ok) {
+        console.log(`${label} is ready.`)
+        return
+      }
+
+      lastError = new Error(`${label} returned status ${response.status}.`)
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error))
+    }
+
+    console.log(`Waiting for ${label} (${attempt}/${attempts})...`)
+    await wait(delayMs)
+  }
+
+  throw lastError ?? new Error(`${label} did not become ready in time.`)
+}
+
+async function waitForQdrant() {
+  const qdrantUrl = process.env.QDRANT_URL
+
+  if (!qdrantUrl) {
+    return
+  }
+
+  await waitForHttpService({ label: 'Qdrant', url: `${qdrantUrl}/healthz` })
+}
+
+async function ensureOllamaEmbedModel() {
+  if ((process.env.SWINLEARN_EMBED_PROVIDER || 'ollama') !== 'ollama') {
+    return
+  }
+
+  const ollamaUrl = process.env.OLLAMA_URL || 'http://ollama:11434'
+  const model = process.env.SWINLEARN_EMBED_MODEL || 'nomic-embed-text'
+
+  await waitForHttpService({ label: 'Ollama', url: `${ollamaUrl}/api/tags` })
+
+  const tagsResponse = await fetch(`${ollamaUrl}/api/tags`)
+  const { models = [] } = await tagsResponse.json()
+
+  if (ollamaModelPresent(models, model)) {
+    console.log(`Ollama model ${model} is ready.`)
+    return
+  }
+
+  console.log(`Pulling Ollama model ${model}...`)
+  const pullResponse = await fetch(`${ollamaUrl}/api/pull`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: model, stream: false }),
+  })
+
+  if (!pullResponse.ok) {
+    throw new Error(`Failed to pull Ollama model ${model}.`)
+  }
+
+  console.log(`Ollama model ${model} is ready.`)
 }
 
 async function waitForDatabase() {
@@ -187,14 +261,42 @@ async function recoverFailedMigrations() {
   }
 }
 
+function startWatchedApiServer() {
+  return new Promise((resolve, reject) => {
+    const nodemonArgs = ['nodemon', '--watch', 'server', '--ext', 'js,mjs', 'server/index.js']
+
+    if (process.env.SWINLEARN_API_LEGACY_WATCH === 'true') {
+      nodemonArgs.splice(1, 0, '--legacy-watch')
+    }
+
+    const child = spawn(executable('npx'), nodemonArgs, {
+      stdio: 'inherit',
+      shell: false,
+    })
+
+    child.on('error', reject)
+    child.on('exit', (code, signal) => {
+      if (signal) {
+        process.exit(0)
+        return
+      }
+
+      process.exit(code ?? 0)
+    })
+  })
+}
+
 async function main() {
   await run(executable('npx'), ['prisma', 'generate'])
   await waitForDatabase()
+  await waitForQdrant()
+  await ensureOllamaEmbedModel()
   await baselineExistingDatabaseIfNeeded()
   await recoverFailedMigrations()
   await run(executable('npx'), ['prisma', 'migrate', 'deploy'])
   await seedIfEmpty()
-  await import('./index.js')
+  console.log('API file watch enabled — server code changes reload without restarting Docker.')
+  await startWatchedApiServer()
 }
 
 if (process.argv[1] === fileURLToPath(import.meta.url)) {

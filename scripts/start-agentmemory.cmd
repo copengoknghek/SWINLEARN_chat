@@ -14,12 +14,12 @@ if errorlevel 1 (
   exit /b 1
 )
 
-echo Starting agentmemory iii-engine via project Docker Compose...
-docker compose --profile agentmemory up -d agentmemory-iii-engine
+echo Starting agentmemory iii-engine via docker-compose.agentmemory.yml...
+docker compose -f docker-compose.agentmemory.yml up -d agentmemory-iii-engine
 if errorlevel 1 (
   echo ERROR: docker compose failed. If port 3111 is in use, stop the old container:
-  echo   docker compose --profile agentmemory down
-  echo   docker rm -f agentmemory-iii-engine-1 2^>nul
+  echo   docker compose -f docker-compose.agentmemory.yml down
+  echo   docker rm -f swinlearn-agentmemory-agentmemory-iii-engine-1 2^>nul
   exit /b 1
 )
 
@@ -30,7 +30,7 @@ curl.exe -s -o NUL http://127.0.0.1:3111/
 if not errorlevel 1 goto engine_ready
 set /a tries+=1
 if %tries% geq 30 (
-  echo ERROR: iii-engine did not become ready. Check: docker compose --profile agentmemory logs agentmemory-iii-engine
+  echo ERROR: iii-engine did not become ready. Check: docker compose -f docker-compose.agentmemory.yml logs agentmemory-iii-engine
   exit /b 1
 )
 timeout /t 1 /nobreak >nul
@@ -40,5 +40,5 @@ goto wait_loop
 echo iii-engine ready.
 echo Starting agentmemory worker (REST :3111/agentmemory/*, viewer :3113)...
 echo Keep this window open while coding. Ctrl+C to stop the worker only.
-echo Stop engine: docker compose --profile agentmemory down
+echo Stop engine: docker compose -f docker-compose.agentmemory.yml down
 npx -y @agentmemory/agentmemory

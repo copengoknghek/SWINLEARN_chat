@@ -1,14 +1,42 @@
 import { htmlToPlainText } from './courseContentImport.js'
+import { mapSwinlearnKnowledgeIndex } from '../mappers.js'
 import { defaultSwinlearnContextChars } from './swinlearnGroq.js'
+
+export async function resolveIndexOfferingIds(prisma, requestedOfferingIds) {
+  const requested = [
+    ...new Set(
+      (Array.isArray(requestedOfferingIds) ? requestedOfferingIds : [])
+        .map((id) => String(id).trim())
+        .filter(Boolean),
+    ),
+  ]
+
+  if (requested.length === 0) {
+    return []
+  }
+
+  const offerings = await prisma.courseOffering.findMany({
+    where: { id: { in: requested } },
+    select: { id: true },
+  })
+  const validIds = new Set(offerings.map((offering) => offering.id))
+
+  return requested.filter((id) => validIds.has(id))
+}
+
+export function buildKnowledgeIndexView(index, contentPackageId, { requireVectors = false } = {}) {
+  return {
+    ...(mapSwinlearnKnowledgeIndex(index) ?? {}),
+    status: indexStatusForPackage(index, contentPackageId, { requireVectors }),
+  }
+}
 
 export function normalizeSelectedOfferingIds(selectedOfferingIds, enrolledOfferingIds) {
   const enrolled = new Set(enrolledOfferingIds)
   const requested = Array.isArray(selectedOfferingIds)
     ? [...new Set(selectedOfferingIds.map((id) => String(id)).filter(Boolean))]
     : []
-  const normalized = requested.filter((id) => enrolled.has(id))
-
-  return normalized.length > 0 ? normalized : [...enrolledOfferingIds]
+  return requested.filter((id) => enrolled.has(id))
 }
 
 export function indexStatusForPackage(index, currentPackageId, { requireVectors = false } = {}) {
@@ -295,7 +323,7 @@ export async function loadSwinlearnKnowledgeDocuments({
   return buildSwinlearnKnowledgeDocuments({ maxChars, offerings })
 }
 
-export async function ensureSwinlearnKnowledgeIndex({ offeringId, prisma }) {
+export async function ensureSwinlearnKnowledgeIndex({ force = false, offeringId, prisma }) {
   const offering = await loadOfferingKnowledge(prisma, offeringId)
 
   if (!offering) {
@@ -307,7 +335,7 @@ export async function ensureSwinlearnKnowledgeIndex({ offeringId, prisma }) {
   const existing = offering.swinlearnKnowledgeIndex
   const status = indexStatusForPackage(existing, currentPackageId)
 
-  if (status === 'ready') {
+  if (!force && status === 'ready') {
     return existing
   }
 

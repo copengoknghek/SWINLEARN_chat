@@ -152,15 +152,28 @@ model User {
   communityComments  CommunityComment[]         @relation("CommunityCommentAuthor")
   communityPostLikes CommunityPostLike[]        @relation("CommunityPostLikeUser")
   communityCommentLikes CommunityCommentLike[]   @relation("CommunityCommentLikeUser")
+  communityReadCursors CommunityReadCursor[]
   goldTransactions   GoldTransaction[]
   studentBadges      StudentBadge[]
   shareEvents        ShareEvent[]               @relation("ShareEventSharer")
   helpRequests       HelpRequest[]              @relation("HelpRequestRequester")
   consultationTeacherRequests HelpRequest[]     @relation("HelpRequestTeacher")
   decidedHelpRequests HelpRequest[]             @relation("HelpRequestDecider")
+  cvProfile          UserCvProfile?
 
   @@index([mainMajorId])
   @@map("users")
+}
+
+model UserCvProfile {
+  userId         String   @id @map("user_id")
+  phone          String?
+  headlineRole   String?  @map("headline_role")
+  certifications String?  @db.Text
+  updatedAt      DateTime @updatedAt @map("updated_at")
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_cv_profiles")
 }
 
 model UserSession {
@@ -317,6 +330,7 @@ model CourseOffering {
   contentPackages CourseContentPackage[]
   swinlearnKnowledgeIndex SwinlearnKnowledgeIndex?
   communityPosts CommunityPost[]
+  communityReadCursors CommunityReadCursor[]
   helpRequests   HelpRequest[]
 
   @@unique([courseId, term, academicYear])
@@ -402,6 +416,10 @@ model AssignmentSubmission {
   studentId    String     @map("student_id")
   body         String     @db.Text
   filePaths    Json       @map("file_paths")
+  githubUrl    String?    @map("github_url")
+  indexStatus  String     @default("pending") @map("index_status")
+  indexError   String?    @db.Text @map("index_error")
+  indexedAt    DateTime?  @map("indexed_at")
   submittedAt  DateTime   @default(now()) @map("submitted_at")
   updatedAt    DateTime   @updatedAt @map("updated_at")
   assignment   Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
@@ -552,6 +570,7 @@ model InboxMessage {
   threadId  String      @map("thread_id")
   senderId  String      @map("sender_id")
   body      String      @db.Text
+  gifUrl    String?     @db.Text @map("gif_url")
   createdAt DateTime    @default(now()) @map("created_at")
   thread    InboxThread @relation(fields: [threadId], references: [id], onDelete: Cascade)
   sender    User        @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
@@ -601,6 +620,7 @@ model SwinlearnMessage {
   role                String
   content             String                @db.LongText
   citations           Json?
+  metadata            Json?
   selectedOfferingIds Json                  @map("selected_offering_ids")
   model               String?
   openaiResponseId    String?               @map("openai_response_id")
@@ -746,6 +766,19 @@ model CommunityCommentImage {
 
   @@index([commentId, sortOrder])
   @@map("community_comment_images")
+}
+
+model CommunityReadCursor {
+  id         String         @id @default(cuid())
+  userId     String         @map("user_id")
+  offeringId String         @map("offering_id")
+  lastReadAt DateTime       @map("last_read_at")
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  offering   CourseOffering @relation(fields: [offeringId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, offeringId])
+  @@index([offeringId])
+  @@map("community_read_cursors")
 }
 
 model GoldTransaction {

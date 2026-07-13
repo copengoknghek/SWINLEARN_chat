@@ -21,6 +21,8 @@ import {
   mapStudentCourseCompletion,
   mapUserProfile,
 } from '../mappers.js'
+import { createSwinlearnRagServices } from '../services/swinlearnIndexing.js'
+import { buildKnowledgeIndexView } from '../services/swinlearnKnowledge.js'
 import { readFinalScore } from '../services/courseGrades.js'
 import { readAdminUserCreateInput } from '../services/adminUsers.js'
 import {
@@ -76,11 +78,24 @@ const orderedCatalog = async () => {
   }
 }
 
+const swinlearnRag = createSwinlearnRagServices()
+
 const offeringsInclude = {
   course: true,
   staff: true,
   enrollments: true,
+  contentPackages: {
+    where: { scope: 'offering' },
+    orderBy: { importedAt: 'desc' },
+    take: 1,
+  },
+  swinlearnKnowledgeIndex: true,
 }
+
+const mapOfferingKnowledgeIndex = (offering) =>
+  buildKnowledgeIndexView(offering.swinlearnKnowledgeIndex, offering.contentPackages?.[0]?.id ?? null, {
+    requireVectors: swinlearnRag.configured,
+  })
 
 const loadTeachingEligibilityContext = async (courseId) => {
   const [mainMajors, childMajors, curriculumRules] = await Promise.all([
@@ -302,6 +317,9 @@ adminRouter.get(
       prerequisiteOptions: prerequisiteOptions.map(mapCoursePrerequisiteOption),
       studentCompletions: studentCompletions.map(mapStudentCourseCompletion),
       offerings: offerings.map(mapOffering),
+      knowledgeIndexes: Object.fromEntries(
+        offerings.map((offering) => [offering.id, mapOfferingKnowledgeIndex(offering)]),
+      ),
       contentPackages: contentPackages.map(mapCourseContentPackageSummary),
       registrationRequests: registrationRequests.map(mapCourseRegistrationRequest),
       profiles: profiles.map(mapUserProfile),

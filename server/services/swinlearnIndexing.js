@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import path from 'node:path'
 
-import { createGeminiEmbedder } from './embeddings.js'
+import { createEmbedder, chunkArray, resolveEmbedBatchDelayMs, resolveEmbedBatchSize, sleep } from './embeddings.js'
 import { htmlToPlainText } from './courseContentImport.js'
 import { indexStatusForPackage, loadOfferingKnowledge } from './swinlearnKnowledge.js'
 import { extractUploadText, parseStudyDocumentFile } from './swinlearnFiles.js'
@@ -10,12 +10,13 @@ import {
   buildCourseFilter,
   buildOfferingDeleteFilter,
   buildRetrievalFilter,
+  buildSubmissionFilter,
   buildUploadFilter,
   createVectorStore,
   defaultCollectionName,
 } from './vectorStore.js'
 
-export const defaultRetrievalTopK = Number(process.env.SWINLEARN_RETRIEVAL_TOP_K || 8)
+export const defaultRetrievalTopK = Number(process.env.SWINLEARN_RETRIEVAL_TOP_K || 3)
 
 const courseLabel = (offering) => `${offering.course.code} - ${offering.course.title}`
 const itemType = (item) => item.itemType ?? item.item_type ?? 'item'
@@ -34,7 +35,7 @@ const officeAssetExtensions = new Set([
 ])
 
 export function createSwinlearnRagServices({
-  embedder = createGeminiEmbedder(),
+  embedder = createEmbedder(),
   vectorStore = createVectorStore(),
 } = {}) {
   return {
@@ -200,6 +201,8 @@ export function buildChunkRecords(segments) {
 }
 
 export async function indexOffering({
+  batchDelayMs = resolveEmbedBatchDelayMs(),
+  batchSize = resolveEmbedBatchSize(),
   embedder,
   offeringId,
   prisma,
@@ -236,17 +239,28 @@ export async function indexOffering({
     await vectorStore.deleteByFilter(buildOfferingDeleteFilter(offeringId))
 
     if (records.length > 0) {
-      const vectors = await embedder.embed(
-        records.map((record) => record.text),
-        { taskType: 'RETRIEVAL_DOCUMENT' },
-      )
-      const points = records.map((record, index) => ({
-        id: randomUUID(),
-        payload: record,
-        vector: vectors[index],
-      }))
+      const batches = chunkArray(records, batchSize)
+      let batchIndex = 0
 
-      await vectorStore.upsert(points)
+      for (const batch of batches) {
+        const vectors = await embedder.embed(
+          batch.map((record) => record.text),
+          { taskType: 'RETRIEVAL_DOCUMENT' },
+        )
+        const points = batch.map((record, vectorIndex) => ({
+          id: randomUUID(),
+          payload: record,
+          vector: vectors[vectorIndex],
+        }))
+
+        await vectorStore.upsert(points)
+
+        if (batchDelayMs > 0 && batchIndex < batches.length - 1) {
+          await sleep(batchDelayMs)
+        }
+
+        batchIndex += 1
+      }
     }
 
     return prisma.swinlearnKnowledgeIndex.update({
@@ -377,7 +391,17 @@ export async function retrieve({
     })
   }
 
-  return [...courseResults, ...uploadResults]
+  let submissionResults = []
+
+  if (userId && offeringIds.length > 0) {
+    submissionResults = await vectorStore.search({
+      filter: buildSubmissionFilter(userId, offeringIds),
+      limit: Math.max(1, Math.floor(topK / 4)),
+      vector: queryVector,
+    })
+  }
+
+  return [...courseResults, ...uploadResults, ...submissionResults]
     .sort((left, right) => (right.score ?? 0) - (left.score ?? 0))
     .filter((document, index, all) => all.findIndex((item) => item.id === document.id) === index)
     .slice(0, topK)
@@ -398,6 +422,7 @@ export async function cleanupOfferingVectors({
 
 export async function ensureIndexedOfferings({
   embedder,
+  force = false,
   offeringIds,
   prisma,
   vectorStore,
@@ -418,12 +443,12 @@ export async function ensureIndexedOfferings({
       { requireVectors: true },
     )
 
-    if (status === 'ready' && offering.swinlearnKnowledgeIndex?.vectorStoreId) {
+    if (!force && status === 'ready' && offering.swinlearnKnowledgeIndex?.vectorStoreId) {
       indexes.push(offering.swinlearnKnowledgeIndex)
       continue
     }
 
-    if (status === 'error') {
+    if (!force && status === 'error') {
       if (offering.swinlearnKnowledgeIndex) {
         indexes.push(offering.swinlearnKnowledgeIndex)
       }
@@ -437,7 +462,7 @@ export async function ensureIndexedOfferings({
       vectorStore,
     })
 
-    if (index?.status === 'ready') {
+    if (index) {
       indexes.push(index)
     }
   }

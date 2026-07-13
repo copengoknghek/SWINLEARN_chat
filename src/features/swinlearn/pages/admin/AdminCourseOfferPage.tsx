@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
+import { SwinlearnKnowledgeIndexPanel } from '../../components/SwinlearnKnowledgeIndexPanel'
 import {
   addCourseMember,
   approveCourseRegistrationRequest,
@@ -9,6 +10,7 @@ import {
   fetchAdminCourseData,
   getErrorMessage,
   importCourseOfferingContent,
+  indexSwinlearnCourses,
   profileName,
   rejectCourseRegistrationRequest,
   removeCourseMember,
@@ -151,6 +153,9 @@ function AdminCourseOfferPage() {
     : null
   const selectedContentPackage = selectedOffering
     ? data?.contentPackages.find((contentPackage) => contentPackage.offering_id === selectedOffering.id) ?? null
+    : null
+  const selectedKnowledgeIndex = selectedOffering
+    ? data?.knowledgeIndexes?.[selectedOffering.id] ?? { status: 'missing' }
     : null
   const pendingRegistrationRequests = selectedOffering
     ? getPendingRegistrationRequestsForOffering(data?.registrationRequests ?? [], selectedOffering.id)
@@ -306,6 +311,26 @@ function AdminCourseOfferPage() {
     }
   }
 
+  const handleIndexKnowledge = async () => {
+    if (!selectedOffering) {
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    setNotice('')
+
+    try {
+      await indexSwinlearnCourses([selectedOffering.id])
+      setNotice('Course knowledge indexed for SWINLEARN retrieval.')
+      await loadData()
+    } catch (indexError) {
+      setError(getErrorMessage(indexError, 'Course knowledge could not be indexed'))
+    } finally {
+      setSaving(false)
+    }
+  }
+
   const handleAddMember = async (role: CourseMemberRole, userId: string) => {
     if (!selectedOffering || !userId) {
       return
@@ -431,7 +456,7 @@ function AdminCourseOfferPage() {
         <section className="workspace-panel">Loading course offers...</section>
       ) : (
         <div className="workspace-grid admin-course-offer-layout">
-          <section className="workspace-panel">
+          <section className="workspace-panel admin-course-offer-list-panel">
             <div className="workspace-section-heading">
               <div>
                 <h2>Offerings</h2>
@@ -517,7 +542,15 @@ function AdminCourseOfferPage() {
               </label>
             </div>
 
-            <div className="workspace-table admin-course-offer-list" role="table" aria-label="Course offerings">
+            <div className="admin-course-offer-table-scroll">
+            <div className="workspace-table admin-course-offer-table" role="table" aria-label="Course offerings">
+              <div className="admin-course-offer-table-header" role="row">
+                <span>Course</span>
+                <span>Term</span>
+                <span>Status</span>
+                <span>Roster</span>
+                <span>Members</span>
+              </div>
               {visibleOfferings.map((offering) => {
                 const counts = getCourseOfferMemberCounts(offering)
 
@@ -528,20 +561,24 @@ function AdminCourseOfferPage() {
                     className={`workspace-row workspace-row--button admin-course-offer-row${resolvedSelectedOfferingId === offering.id ? ' workspace-row--active' : ''}`}
                     onClick={() => handleOfferingSelect(offering)}
                   >
-                    <span>
+                    <span className="admin-course-offer-course">
                       <strong>{offering.code}</strong>
                       <small>{offering.title}</small>
                     </span>
-                    <span>
+                    <span className="admin-course-offer-column admin-course-offer-column--term">
                       {termLabels[offering.term]}
                       <small>{offering.academic_year}</small>
                     </span>
-                    <span>{offering.status}</span>
-                    <span>
+                    <span className="admin-course-offer-column admin-course-offer-column--status">
+                      {offering.status === 'active' ? 'Active' : 'Archived'}
+                    </span>
+                    <span className="admin-course-offer-column admin-course-offer-column--roster">
                       {counts.teacher} teachers
                       <small>{counts.student} students</small>
                     </span>
-                    <span>{counts.total} members</span>
+                    <span className="admin-course-offer-column admin-course-offer-column--members">
+                      {counts.total} members
+                    </span>
                   </button>
                 )
               })}
@@ -549,6 +586,7 @@ function AdminCourseOfferPage() {
               {visibleOfferings.length === 0 && (
                 <div className="workspace-empty-state">No course offerings match these filters.</div>
               )}
+            </div>
             </div>
           </section>
 
@@ -604,6 +642,16 @@ function AdminCourseOfferPage() {
                           {selectedContentPackage.asset_count} files
                         </span>
                       </div>
+                      {selectedKnowledgeIndex && (
+                        <SwinlearnKnowledgeIndexPanel
+                          hasContentPackage
+                          knowledgeIndex={selectedKnowledgeIndex}
+                          disabled={saving}
+                          indexing={saving}
+                          onIndex={() => void handleIndexKnowledge()}
+                          subtitle="Re-index after replacing imported Canvas content so SWINLEARN retrieval stays current."
+                        />
+                      )}
                     </div>
                   ) : (
                     <div className="workspace-empty-state">

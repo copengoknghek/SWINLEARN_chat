@@ -1,5 +1,7 @@
+import { faPeopleRoof } from '@fortawesome/free-solid-svg-icons'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { Link, useOutletContext } from 'react-router-dom'
+import { Link, useLocation, useOutletContext } from 'react-router-dom'
 import type { Role } from '../../../../hooks/useAuth'
 import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
 import {
@@ -13,6 +15,7 @@ import type {
   CourseTerm,
   CourseWithMembers,
 } from '../../lib/workspace/types'
+import { buildCourseDetailPath } from './courseDetailSections'
 
 const termLabels: Record<CourseTerm, string> = {
   semester_1: 'Semester 1',
@@ -56,8 +59,129 @@ function CourseCardIcon({ name }: { name: keyof typeof courseCardIcons }) {
   )
 }
 
+type CourseCardProps = {
+  assignmentCount: number
+  communityUnreadCount: number
+  course: CourseWithMembers
+  termLabel: string
+  workspaceRole: Role
+}
+
+function CourseCard({
+  assignmentCount,
+  communityUnreadCount,
+  course,
+  termLabel,
+  workspaceRole,
+}: CourseCardProps) {
+  const courseHomePath = `/${workspaceRole}/my-courses/${course.id}`
+  const isStudent = workspaceRole === 'student'
+
+  const actionIcons = (
+    <>
+      <span className="workspace-course-card-action">
+        <CourseCardIcon name="announcement" />
+        {assignmentCount > 0 && (
+          <span className="workspace-course-card-badge">{Math.min(assignmentCount, 99)}</span>
+        )}
+      </span>
+      {isStudent && (
+        <Link
+          aria-label={
+            communityUnreadCount > 0
+              ? `Community, ${communityUnreadCount} new updates`
+              : 'Community'
+          }
+          className="workspace-course-card-action workspace-course-card-action--link"
+          to={buildCourseDetailPath('student', course.id, 'community')}
+        >
+          <FontAwesomeIcon className="workspace-course-card-action-svg" icon={faPeopleRoof} />
+          {communityUnreadCount > 0 ? (
+            <span
+              aria-hidden="true"
+              className="workspace-course-card-badge workspace-course-card-badge--notify"
+            >
+              {Math.min(communityUnreadCount, 99)}
+            </span>
+          ) : null}
+        </Link>
+      )}
+      <span className="workspace-course-card-action">
+        <CourseCardIcon name="edit" />
+      </span>
+    </>
+  )
+
+  if (isStudent) {
+    return (
+      <article className="workspace-course-card workspace-card--button">
+        <Link
+          aria-label={`Open ${courseLabel(course)}`}
+          className="workspace-course-card-link workspace-card--link"
+          to={courseHomePath}
+        >
+          <div className="workspace-course-card-visual" aria-hidden="true">
+            <strong>{course.title}</strong>
+            <span className="workspace-course-card-circle" />
+            <span className="workspace-course-card-square" />
+            <span className="workspace-course-card-menu">
+              <span />
+              <span />
+              <span />
+            </span>
+          </div>
+
+          <div className="workspace-course-card-body workspace-course-card-body--linked">
+            <div className="workspace-course-card-copy">
+              <h2>{course.code}</h2>
+              <p className="workspace-course-card-title">{course.title}</p>
+              <p className="workspace-course-card-term">{termLabel}</p>
+            </div>
+          </div>
+        </Link>
+
+        <div className="workspace-course-card-actions workspace-course-card-actions--footer">
+          {actionIcons}
+        </div>
+      </article>
+    )
+  }
+
+  return (
+    <Link
+      aria-label={`Open ${courseLabel(course)}`}
+      className="workspace-course-card workspace-card--button workspace-card--link"
+      to={courseHomePath}
+    >
+      <div className="workspace-course-card-visual" aria-hidden="true">
+        <strong>{course.title}</strong>
+        <span className="workspace-course-card-circle" />
+        <span className="workspace-course-card-square" />
+        <span className="workspace-course-card-menu">
+          <span />
+          <span />
+          <span />
+        </span>
+      </div>
+
+      <div className="workspace-course-card-body">
+        <div className="workspace-course-card-copy">
+          <h2>{course.code}</h2>
+          <p className="workspace-course-card-title">{course.title}</p>
+          <p className="workspace-course-card-term">{termLabel}</p>
+        </div>
+
+        <span className="workspace-course-card-actions" aria-hidden="true">
+          {actionIcons}
+        </span>
+      </div>
+    </Link>
+  )
+}
+
 function MyCoursesPage() {
   const { workspaceRole } = useOutletContext<{ workspaceRole: Role }>()
+  const location = useLocation()
   const [courses, setCourses] = useState<CourseWithMembers[]>([])
   const [assignments, setAssignments] = useState<AssignmentRow[]>([])
   const [termFilter, setTermFilter] = useState<CourseTerm>('semester_1')
@@ -85,7 +209,27 @@ function MyCoursesPage() {
     const timeoutId = window.setTimeout(() => void loadData(), 0)
 
     return () => window.clearTimeout(timeoutId)
-  }, [loadData])
+  }, [loadData, location.pathname])
+
+  useEffect(() => {
+    if (workspaceRole !== 'student') {
+      return undefined
+    }
+
+    const refreshOnFocus = () => {
+      if (document.visibilityState === 'visible') {
+        void loadData()
+      }
+    }
+
+    window.addEventListener('focus', refreshOnFocus)
+    document.addEventListener('visibilitychange', refreshOnFocus)
+
+    return () => {
+      window.removeEventListener('focus', refreshOnFocus)
+      document.removeEventListener('visibilitychange', refreshOnFocus)
+    }
+  }, [loadData, workspaceRole])
 
   const assignmentsByCourse = useMemo(() => {
     const map = new Map<string, AssignmentRow[]>()
@@ -154,45 +298,14 @@ function MyCoursesPage() {
                 const termLabel = `${course.academic_year} HE ${termLabels[course.term]}`
 
                 return (
-                  <Link
-                    aria-label={`Open ${courseLabel(course)}`}
-                    className="workspace-course-card workspace-card--button workspace-card--link"
+                  <CourseCard
+                    assignmentCount={courseAssignments.length}
+                    communityUnreadCount={course.community_unread_count ?? 0}
+                    course={course}
                     key={course.id}
-                    to={`/${workspaceRole}/my-courses/${course.id}`}
-                  >
-                    <div className="workspace-course-card-visual" aria-hidden="true">
-                      <strong>{course.title}</strong>
-                      <span className="workspace-course-card-circle" />
-                      <span className="workspace-course-card-square" />
-                      <span className="workspace-course-card-menu">
-                        <span />
-                        <span />
-                        <span />
-                      </span>
-                    </div>
-
-                    <div className="workspace-course-card-body">
-                      <div className="workspace-course-card-copy">
-                        <h2>{course.code}</h2>
-                        <p className="workspace-course-card-title">{course.title}</p>
-                        <p className="workspace-course-card-term">{termLabel}</p>
-                      </div>
-
-                      <span className="workspace-course-card-actions" aria-hidden="true">
-                        <span className="workspace-course-card-action">
-                          <CourseCardIcon name="announcement" />
-                          {courseAssignments.length > 0 && (
-                            <span className="workspace-course-card-badge">
-                              {Math.min(courseAssignments.length, 99)}
-                            </span>
-                          )}
-                        </span>
-                        <span className="workspace-course-card-action">
-                          <CourseCardIcon name="edit" />
-                        </span>
-                      </span>
-                    </div>
-                  </Link>
+                    termLabel={termLabel}
+                    workspaceRole={workspaceRole}
+                  />
                 )
               })}
             </div>

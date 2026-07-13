@@ -11,6 +11,7 @@ import { CommunityAuthorHeader } from '../../components/CommunityAuthorHeader'
 import { CommunityConfirmDialog } from '../../components/CommunityConfirmDialog'
 import { CommunityVoteButton } from '../../components/CommunityVoteButton'
 import { GiphyPicker } from '../../components/GiphyPicker'
+import { handleEnterToSubmit } from '../../lib/composerEnterSubmit.mjs'
 
 const maxImagesPerComment = 4
 const communityCommentUploadAccept = '.doc,.docx,.pdf,.zip,image/*'
@@ -161,6 +162,11 @@ function CommunityCommentComposer({
             id={commentInputId}
             value={draft.body}
             onChange={(event) => onChange({ ...draft, body: event.target.value })}
+            onKeyDown={(event) =>
+              handleEnterToSubmit(event, () => void onSubmit(), {
+                canSubmit: !saving && canSubmitDraft(draft),
+              })
+            }
             onPaste={(event) => {
               const imageFiles = Array.from(event.clipboardData.items)
                 .filter((item) => item.type.startsWith('image/'))

@@ -218,6 +218,38 @@ test('perfect_cv request produces a perfect_cv_export payload with profile', asy
   assert.equal(result.metadata?.education?.institution, 'Swinburne')
 })
 
+test('perfect cv request wins over a misfired grade_analysis route', async () => {
+  // Reproduces the bug: a follow-up like "i selected assignment 1 cos30043 to
+  // perfect cv" contains "perfect cv" (so the Perfect CV turn is prepared), but
+  // the LLM intent router mislabels it as grade_analysis. The prepared Perfect
+  // CV must not be discarded in favour of a grade table.
+  const result = await handleSwinlearnMessage(
+    baseArgs({
+      sub: {
+        preparePerfectCvTurnImpl: async () => ({
+          status: 'ready',
+          documents: [{ text: 'perfect cv doc' }],
+          assignmentIds: ['a1'],
+          cvProfile: { phone: null, headline_role: 'Dev', certifications: null },
+          education: { campus: 'HCMC', institution: 'Swinburne', majorTitle: 'CS' },
+          skills: { tools: ['React'], roles: ['Frontend'] },
+          header: '# Header',
+        }),
+      },
+      override: {
+        perfectCvRequest: true,
+        offerings: [{ id: 'o1' }],
+        assignmentIds: ['a1'],
+        message: 'i selected assignment 1 cos30043 to perfect cv',
+        route: { intent: 'grade_analysis', confidence: 1, extracted_data: {}, fallback_message: null },
+      },
+    }),
+  )
+
+  assert.equal(result.metadata?.contentType, 'perfect_cv_export')
+  assert.doesNotMatch(result.assistantText, /Grade table|analyze your grade report/i)
+})
+
 test('free-text perfect cv request triggers the perfect cv flow via intent detection', async () => {
   let capturedAssignmentIds = null
 
@@ -313,6 +345,80 @@ test('free-text perfect cv without a named assignment defaults to all submitted 
   assert.deepEqual(capturedAssignmentIds, ['a1'])
 })
 
+test('perfect_cv button survives an "unknown" route classification', async () => {
+  // Reproduces the bug: the Perfect CV button sends "Build my Perfect CV from the
+  // selected projects." which routeIntent may label as "unknown". The prepared
+  // Perfect CV turn must still win instead of the "I didn't catch that" fallback.
+  const result = await handleSwinlearnMessage(
+    baseArgs({
+      sub: {
+        preparePerfectCvTurnImpl: async () => ({
+          status: 'ready',
+          documents: [{ text: 'perfect cv doc' }],
+          assignmentIds: ['a1'],
+          cvProfile: { phone: null, headline_role: 'Dev', certifications: null },
+          education: { campus: 'HCMC', institution: 'Swinburne', majorTitle: 'CS' },
+          skills: { tools: ['React'], roles: ['Frontend'] },
+          header: '# Header',
+        }),
+        // The regular CV turn also fires (perfect_cv matches shouldTryCvFlow) and
+        // would normally return a "missing_course" coaching message — it must not
+        // hijack the Perfect CV output.
+        prepareCvTurnImpl: async () => ({
+          status: 'missing_course',
+          assistantText: 'Please include a course code in your CV request.',
+        }),
+      },
+      override: {
+        perfectCvRequest: true,
+        explicitUiIntent: 'perfect_cv',
+        offerings: [{ id: 'o1' }],
+        assignmentIds: ['a1'],
+        message: 'Build my Perfect CV from the selected projects.',
+        route: { intent: 'unknown', confidence: 1, extracted_data: {}, fallback_message: null },
+      },
+    }),
+  )
+
+  assert.equal(result.metadata?.contentType, 'perfect_cv_export')
+  assert.doesNotMatch(result.assistantText, /didn't quite catch|include a course code/i)
+})
+
+test('perfect_cv button wins over the regular cv-scope coaching message', async () => {
+  // The button text has no assignment title, so prepareCvTurn returns a
+  // "missing_course" coaching reply. That must not replace the Perfect CV.
+  const result = await handleSwinlearnMessage(
+    baseArgs({
+      sub: {
+        preparePerfectCvTurnImpl: async () => ({
+          status: 'ready',
+          documents: [{ text: 'perfect cv doc' }],
+          assignmentIds: ['a1'],
+          cvProfile: {},
+          education: {},
+          skills: {},
+          header: '# Header',
+        }),
+        prepareCvTurnImpl: async () => ({
+          status: 'missing_course',
+          assistantText: 'Please include a course code in your CV request.',
+        }),
+      },
+      override: {
+        perfectCvRequest: true,
+        explicitUiIntent: 'perfect_cv',
+        offerings: [{ id: 'o1' }],
+        assignmentIds: ['a1'],
+        message: 'Build my Perfect CV from the selected projects.',
+        route: { intent: 'document_qa', confidence: 1, extracted_data: { keywords: 'cv' }, fallback_message: null },
+      },
+    }),
+  )
+
+  assert.equal(result.metadata?.contentType, 'perfect_cv_export')
+  assert.doesNotMatch(result.assistantText, /include a course code/i)
+})
+
 test('excluded course scope short-circuits with a scoped message and no retrieval', async () => {
   const result = await handleSwinlearnMessage(
     baseArgs({
@@ -339,6 +445,83 @@ test('smalltalk intent uses the chat reply generator', async () => {
   )
 
   assert.equal(result.assistantText, 'Chào bạn, mình có thể giúp gì?')
+})
+
+test('capabilities request returns the localized English capability list', async () => {
+  const result = await handleSwinlearnMessage(
+    baseArgs({
+      sub: { generateGeminiChatReplyImpl: async () => 'should not be called' },
+      override: {
+        route: { intent: 'smalltalk', confidence: 1, extracted_data: {}, fallback_message: null },
+        message: 'what can you do',
+        responseLocale: 'en',
+      },
+    }),
+  )
+
+  assert.match(result.assistantText, /grade table/i)
+  assert.match(result.assistantText, /course knowledge|Summarize course/i)
+  assert.match(result.assistantText, /Perfect CV/i)
+  assert.match(result.assistantText, /start with/i)
+  assert.equal(result.metadata, null)
+  assert.equal(result.model, null)
+})
+
+test('capabilities request returns the localized Vietnamese capability list', async () => {
+  const result = await handleSwinlearnMessage(
+    baseArgs({
+      sub: { generateGeminiChatReplyImpl: async () => 'should not be called' },
+      override: {
+        route: { intent: 'smalltalk', confidence: 1, extracted_data: {}, fallback_message: null },
+        message: 'bạn có thể làm gì',
+        responseLocale: 'vi',
+      },
+    }),
+  )
+
+  assert.match(result.assistantText, /bảng điểm/i)
+  assert.match(result.assistantText, /kiến thức môn học|tóm tắt/i)
+  assert.match(result.assistantText, /CV hoàn hảo/i)
+  assert.equal(result.metadata, null)
+})
+
+test('non-capability smalltalk still routes to the chat reply generator', async () => {
+  // Regression guard: "hey there" must not be caught by isCapabilitiesRequest.
+  const result = await handleSwinlearnMessage(
+    baseArgs({
+      sub: { generateGeminiChatReplyImpl: async () => 'Chào bạn, mình có thể giúp gì?' },
+      override: {
+        route: { intent: 'smalltalk', confidence: 1, extracted_data: {}, fallback_message: null },
+        message: 'hey there',
+        responseLocale: 'en',
+      },
+    }),
+  )
+
+  assert.equal(result.assistantText, 'Chào bạn, mình có thể giúp gì?')
+})
+
+test('capabilities request during an active grade analysis is not short-circuited', async () => {
+  // If a grade-analysis conversation is already in progress, "what can you do"
+  // must fall through to the grade flow rather than replacing it with the
+  // capability list.
+  const result = await handleSwinlearnMessage(
+    baseArgs({
+      sub: {
+        loadPrerequisiteContextImpl: async () => fakePrereqContext(),
+        classifyGradeAnalysisIntentImpl: async () => ({ agree: null, target_grade: null, fallback_message: null }),
+      },
+      override: {
+        route: { intent: 'smalltalk', confidence: 1, extracted_data: {}, fallback_message: null },
+        gradeAnalysisContext: { state: 'offered' },
+        message: 'what can you do',
+        responseLocale: 'en',
+      },
+    }),
+  )
+
+  assert.equal(result.metadata?.contentType, 'grade_analysis')
+  assert.doesNotMatch(result.assistantText, /Perfect CV|course knowledge/i)
 })
 
 test('unknown intent replies with a did-not-understand message', async () => {

@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "b69f6971ea5f0b8047e0df1956d01450",
+    "mtime": 1783929195.826292,
+    "ast_hash": "63ee77aea32d1a67d68853c019ed7db9",
     "semantic_hash": ""
   },
   "prisma/migrations/20260610020624_init_mysql_schema/migration.sql": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "server/routes/workspace.js": {
-    "mtime": 1783906569.970862,
-    "ast_hash": "10e88dc09016b716ab264b69aa3f9fc3",
+    "mtime": 1783932089.2912796,
+    "ast_hash": "59d48e4425cd809672a9ed5c92ccdf58",
     "semantic_hash": ""
   },
   "server/services/curriculum.js": {
@@ -175,8 +175,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/api.ts": {
-    "mtime": 1783906569.9779286,
-    "ast_hash": "2a09a64c9f18e6f01188e994f08aaf7d",
+    "mtime": 1783929241.576757,
+    "ast_hash": "3220c7762807aaff795f06cf9e193717",
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/navigation.ts": {
@@ -210,8 +210,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/AccountPage.tsx": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "614a4337e9b56f6b0453ec69fe13fb73",
+    "mtime": 1783929298.9363427,
+    "ast_hash": "1164e31ef9cb95bcecafb40098364cf0",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/HelpPage.tsx": {
@@ -235,8 +235,8 @@
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/student/SwinlearnPage/SwinlearnPage.tsx": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "7240e882a84cc0ab94fa425f1cdfe8f5",
+    "mtime": 1783929356.9072676,
+    "ast_hash": "107053e6abf6fbcf4c01521da227dd8b",
     "semantic_hash": ""
   },
   "src/hooks/useAuth.ts": {
@@ -1015,8 +1015,8 @@
     "semantic_hash": ""
   },
   "server/services/swinlearnPrompt.js": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "fb841e5bacbb2658476b03120417da7a",
+    "mtime": 1783927531.8811803,
+    "ast_hash": "523fccb9d8602eb25756355ddf0e4ebd",
     "semantic_hash": ""
   },
   "server/services/swinlearnPrompt.test.mjs": {
@@ -1530,18 +1530,18 @@
     "semantic_hash": ""
   },
   "server/services/gradeReport.js": {
-    "mtime": 1783906570.1064274,
-    "ast_hash": "6cf22a206b9b80081ea8230a5e11350c",
+    "mtime": 1783932059.0262094,
+    "ast_hash": "ab56bcbde4dccae041d5475f6c8e7866",
     "semantic_hash": ""
   },
   "server/services/gradeReport.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "c6cfa44e1ea8f87ba010fe60a43ba78a",
+    "mtime": 1783932575.3579216,
+    "ast_hash": "259f0d49cb80df09bdff231b155a6c99",
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/gradeReportExport.mjs": {
-    "mtime": 1783906570.1054292,
-    "ast_hash": "26163f300e9b8e117244cfd8a17edf9a",
+    "mtime": 1783929328.5681171,
+    "ast_hash": "014934bb259927bd9adc3b30192bada6",
     "semantic_hash": ""
   },
   "src/features/swinlearn/components/cv/CvProjectPreview.tsx": {
@@ -1630,8 +1630,8 @@
     "semantic_hash": ""
   },
   "server/services/swinlearnMessageHandler.js": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "2bdf7ce8efe25cac191f62cae6214e3d",
+    "mtime": 1783926623.0412717,
+    "ast_hash": "922cff0a350858ce1bf8f37c7918aa37",
     "semantic_hash": ""
   },
   "server/services/nluEval.live.test.mjs": {
@@ -1640,8 +1640,8 @@
     "semantic_hash": ""
   },
   "server/services/swinlearnMessageHandler.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "e61b366d4a0c846b759396d9c016b51e",
+    "mtime": 1783926779.6210632,
+    "ast_hash": "b42fd94bcc5d72bde19b7af421471909",
     "semantic_hash": ""
   },
   "server/services/swinlearnNluParsing.test.mjs": {
@@ -1657,11 +1657,6 @@
   "src/features/swinlearn/components/MarkdownMessage.tsx": {
     "mtime": 1783906569.967862,
     "ast_hash": "f678bd0b1951759cb8f9ff0f72e060c3",
-    "semantic_hash": ""
-  },
-  "COMMIT_MSG_TEMP.txt": {
-    "mtime": 1783908588.4737213,
-    "ast_hash": "c3065dc24a347d616901596c69c6ec12",
     "semantic_hash": ""
   }
 }

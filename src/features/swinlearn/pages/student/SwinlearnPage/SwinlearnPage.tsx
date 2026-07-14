@@ -7,7 +7,7 @@ import { PerfectCvPreview } from '../../../components/cv/PerfectCvPreview'
 import { PerfectCvProjectPicker } from '../../../components/cv/PerfectCvProjectPicker'
 import { cvProjectMarkdownToWordHtml } from '../../../lib/cvProjectMarkdown.mjs'
 import { perfectCvMarkdownToWordHtmlFromMarkdown } from '../../../lib/perfectCvFormat.mjs'
-import { downloadGradeReportXlsx } from '../../../lib/gradeReportExport.mjs'
+import { downloadGradeReportPdf, downloadGradeReportXlsx } from '../../../lib/gradeReportExport.mjs'
 import {
   createSwinlearnThread,
   deleteSwinlearnThread,
@@ -204,7 +204,6 @@ function SwinlearnPage() {
     const thread = await fetchSwinlearnThread(threadId)
 
     setActiveThread(thread)
-    setSelectedOfferingIds(thread.selected_offering_ids)
   }, [])
 
   const loadData = useCallback(async () => {
@@ -515,6 +514,12 @@ function SwinlearnPage() {
     })
   }
 
+  const downloadGradeExportPdf = () => {
+    void downloadGradeReportPdf().catch((error: unknown) => {
+      setNotice(getErrorMessage(error, 'Grade report could not be exported.'))
+    })
+  }
+
   const handlePerfectCvConfirm = (assignmentIds: string[]) => {
     setShowPerfectCvPicker(false)
 
@@ -729,6 +734,9 @@ function SwinlearnPage() {
                         <button className="clear-btn" type="button" onClick={downloadGradeExportXlsx}>
                           Download Excel
                         </button>
+                        <button className="clear-btn" type="button" onClick={downloadGradeExportPdf}>
+                          Download PDF
+                        </button>
                       </div>
                     )}
                     {message.attachments.length > 0 && (
@@ -838,7 +846,7 @@ function SwinlearnPage() {
               </div>
               <div className="sidebar-content">
                 <p className="swinlearn-muted swinlearn-course-helper">
-                  Optional - select one or more courses to scope knowledge retrieval.
+                  Optional - no courses selected by default. Select one or more to scope knowledge retrieval.
                 </p>
                 <div className="swinlearn-course-filter">
                   {context.courses.map((course) => (

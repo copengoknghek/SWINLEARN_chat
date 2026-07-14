@@ -32,7 +32,12 @@ import {
   defaultSwinlearnModel,
   defaultSwinlearnVisionModel,
 } from './swinlearnGroq.js'
-import { buildSwinlearnInstructions, isPerfectCvRequest } from './swinlearnPrompt.js'
+import {
+  buildSwinlearnInstructions,
+  formatCapabilitiesResponse,
+  isCapabilitiesRequest,
+  isPerfectCvRequest,
+} from './swinlearnPrompt.js'
 import { buildExcludedCourseMessage, resolveMessageCourseScope } from './swinlearnCourseScope.js'
 import {
   detectCvThreadContext,
@@ -485,6 +490,28 @@ export async function handleSwinlearnMessage({
     })
   }
 
+  // A "what can you do" style question is answered by a fixed, language-aware
+  // capability list. Resolve it locally (no LLM, no retrieval) and return early
+  // so it is never mislabeled as smalltalk/greeting. Skip when an explicit UI
+  // intent, an in-progress CV thread, or an active grade-analysis conversation
+  // is already owning the turn.
+  if (
+    !gradeAnalysisContext &&
+    !perfectCvRequest &&
+    !cvThreadContext &&
+    !explicitUiIntent &&
+    isCapabilitiesRequest(message)
+  ) {
+    return {
+      assistantText: formatCapabilitiesResponse(responseLocale),
+      citations: [],
+      metadata: null,
+      model: null,
+      providerResponseId: null,
+      route,
+    }
+  }
+
   if (perfectCvRequest) {
     perfectCvTurn = await preparePerfectCvTurnImpl({
       assignmentIds: perfectCvAssignmentIds,
@@ -494,6 +521,14 @@ export async function handleSwinlearnMessage({
       studentId,
     })
   }
+
+  // A CV/Perfect-CV turn was prepared from an explicit UI intent or detected text.
+  // When set, the message must not be discarded as smalltalk/unknown regardless of
+  // how the intent router classified it (e.g. the Perfect CV button sends a sentence
+  // that routeIntent may label "unknown").
+  const cvTurnPrepared =
+    Boolean(perfectCvTurn?.status) ||
+    Boolean(cvTurn?.status && cvTurn.status !== 'not_cv')
 
   const cvRequest = shouldTryCvFlow({
     cvThreadContext,
@@ -566,7 +601,7 @@ export async function handleSwinlearnMessage({
     assistantText = buildExcludedCourseMessage(
       courseScope.excludedFromPool.length > 0 ? courseScope.excludedFromPool : courseScope.courseCodes,
     )
-  } else if (route.intent === 'smalltalk' && !gradeAnalysisContext) {
+  } else if (route.intent === 'smalltalk' && !gradeAnalysisContext && !cvTurnPrepared) {
     if (isGibberish(message)) {
       assistantText = formatUnknownUnderstanding(responseLocale)
     } else {
@@ -575,9 +610,15 @@ export async function handleSwinlearnMessage({
         message,
       })
     }
-  } else if (route.intent === 'unknown' && !gradeAnalysisContext) {
+  } else if (route.intent === 'unknown' && !gradeAnalysisContext && !cvTurnPrepared) {
     assistantText = formatUnknownUnderstanding(responseLocale)
-  } else if (route.intent === 'grade_analysis' || gradeAnalysisContext) {
+  } else if (
+    (route.intent === 'grade_analysis' || gradeAnalysisContext) &&
+    // A prepared CV/Perfect CV turn means the student explicitly asked for a CV
+    // (button intent or "perfect cv" text). Do not let a misfired grade_analysis
+    // route hijack it — unless we are mid grade-analysis conversation.
+    !(!gradeAnalysisContext && (perfectCvTurn?.status || (cvTurn?.status && cvTurn.status !== 'not_cv')))
+  ) {
     const gradeResult = await handleGradeAnalysis({
       gradeAnalysisContext,
       message,
@@ -593,7 +634,17 @@ export async function handleSwinlearnMessage({
     gradeAnalysisReply = gradeResult.gradeAnalysisReply ?? null
   } else if (perfectCvTurn?.status && perfectCvTurn.status !== 'ready') {
     assistantText = perfectCvTurn.assistantText
-  } else if (cvTurn?.status && cvTurn.status !== 'not_cv' && cvTurn.status !== 'ready') {
+  } else if (
+    cvTurn?.status &&
+    cvTurn.status !== 'not_cv' &&
+    cvTurn.status !== 'ready' &&
+    // A Perfect CV request (button intent or detected text) owns the response.
+    // Do not let the regular CV-scope coaching message hijack it — the button
+    // text has no assignment title, so prepareCvTurn would otherwise return a
+    // misleading "include a course code" prompt.
+    !perfectCvRequest &&
+    !perfectCvTurn?.status
+  ) {
     assistantText = cvTurn.assistantText
   } else if (perfectCvTurn?.status === 'ready' && !groq.configured) {
     assistantText = finalizePerfectCvResponse(

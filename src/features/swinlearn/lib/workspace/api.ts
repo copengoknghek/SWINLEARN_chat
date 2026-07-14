@@ -767,6 +767,41 @@ export async function exportAcademicProgressXlsx(): Promise<void> {
   URL.revokeObjectURL(url)
 }
 
+export async function exportAcademicProgressPdf(): Promise<void> {
+  const response = await fetch('/api/workspace/academic-progress/export/pdf', {
+    credentials: 'include',
+    headers: {
+      Accept: 'application/pdf',
+    },
+  })
+
+  if (!response.ok) {
+    const text = await response.text()
+    let message = 'Grade report could not be exported.'
+
+    try {
+      const data = JSON.parse(text) as { error?: unknown }
+      if (data?.error) {
+        message = String(data.error)
+      }
+    } catch {
+      if (text) {
+        message = text
+      }
+    }
+
+    throw new Error(message)
+  }
+
+  const blob = await response.blob()
+  const url = URL.createObjectURL(blob)
+  const anchor = document.createElement('a')
+  anchor.href = url
+  anchor.download = `swinlearn-grades-${new Date().toISOString().slice(0, 10)}.pdf`
+  anchor.click()
+  URL.revokeObjectURL(url)
+}
+
 export async function checkRegistrationBasket(
   offeringIds: string[],
 ): Promise<RegistrationBasketResult> {

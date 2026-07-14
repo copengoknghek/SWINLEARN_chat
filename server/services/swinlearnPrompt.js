@@ -38,6 +38,20 @@ const gradeExportPatterns = [
   /\b(bản điểm|ban diem)\b.*\b(của tôi|cua toi|tôi|toi)\b/i,
 ]
 
+const capabilitiesPatterns = [
+  /\bwhat can you do\b/i,
+  /\bwhat (are|do) you (do|offer|help (me )?with)\b/i,
+  /\bwhat (else )?(can|do) (i|we) (ask|use|do)\b/i,
+  /\bhow (can|do) (i|you|we) use (you|this|it)\b/i,
+  /\bwhat are your (features|abilities|capabilities)\b/i,
+  // Vietnamese. Note: \b boundaries are unreliable around diacritics, so these
+  // are written without word boundaries.
+  /(bạn|cậu)[\s\S]{0,40}(có thể|giúp|làm|biết|làm được)[\s\S]{0,40}(gì|những gì|cái gì)/i,
+  /tính năng/i,
+  /hỏi[\s\S]{0,20}(gì|những gì)/i,
+  /(bạn|cậu)[\s\S]{0,20}(giúp|làm|biết)[\s\S]{0,20}(gì|như thế nào)/i,
+]
+
 export const cvProjectTemplate = `**PROJECT NAME**
 Role: [Frontend|Backend|Full Stack|Data/ML|UI/UX|General] | Technologies: [comma-separated tools]
 GitHub: [full URL from submission sources — omit this entire line when none]
@@ -83,6 +97,35 @@ export function isAssignmentCompletionRequest(message) {
   }
 
   return assignmentCompletionPatterns.some((pattern) => pattern.test(text))
+}
+
+export function isCapabilitiesRequest(message) {
+  return capabilitiesPatterns.some((pattern) => pattern.test(String(message ?? '')))
+}
+
+const CAPABILITIES_RESPONSE = {
+  vi: [
+    'Mình là SWINLEARN — trợ lý học tập của bạn. Dưới đây là những gì mình giúp được:',
+    '',
+    '- Kiểm tra & phân tích bảng điểm: xem bảng điểm, tính GPA và chọn mục tiêu tốt nghiệp.',
+    '- Tóm tắt kiến thức môn học: giải thích bài học, tài liệu và trả lời câu hỏi từ PDF bạn đã tải lên.',
+    '- Tạo CV hoàn hảo: xây dựng CV từ các dự án bạn đã nộp trong bài tập.',
+    '',
+    'Bạn muốn bắt đầu với việc nào? (Ví dụ: "xem bảng điểm của mình" hoặc "tóm tắt tuần 2")',
+  ].join('\n'),
+  en: [
+    "I'm SWINLEARN — your study assistant. Here's what I can help with:",
+    '',
+    '- Check & analyze your grade table: view grades, calculate GPA, and pick a graduation goal.',
+    '- Summarize course knowledge: explain lessons, course material, and answer questions from your uploaded PDFs.',
+    '- Build a Perfect CV: turn your submitted assignment projects into a CV.',
+    '',
+    "Which would you like to start with? (e.g. 'show my grade table' or 'summarize week 2')",
+  ].join('\n'),
+}
+
+export function formatCapabilitiesResponse(locale = 'en') {
+  return locale === 'vi' ? CAPABILITIES_RESPONSE.vi : CAPABILITIES_RESPONSE.en
 }
 
 export function buildSwinlearnInstructions({

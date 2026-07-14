@@ -1402,10 +1402,20 @@
       "norm_label": "officeparser"
     },
     {
-      "label": "react",
+      "label": "pdfkit",
       "file_type": "code",
       "source_file": "package.json",
       "source_location": "L45",
+      "_origin": "ast",
+      "id": "package_dependencies_pdfkit",
+      "community": 173,
+      "norm_label": "pdfkit"
+    },
+    {
+      "label": "react",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L46",
       "_origin": "ast",
       "id": "package_dependencies_react",
       "community": 173,
@@ -1415,7 +1425,7 @@
       "label": "react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L46",
+      "source_location": "L47",
       "_origin": "ast",
       "id": "package_dependencies_react_dom",
       "community": 173,
@@ -1425,7 +1435,7 @@
       "label": "react-markdown",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L47",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "package_dependencies_react_markdown",
       "community": 173,
@@ -1435,7 +1445,7 @@
       "label": "react-router-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L48",
+      "source_location": "L49",
       "_origin": "ast",
       "id": "package_dependencies_react_router_dom",
       "community": 173,
@@ -1445,7 +1455,7 @@
       "label": "remark-gfm",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L49",
+      "source_location": "L50",
       "_origin": "ast",
       "id": "package_dependencies_remark_gfm",
       "community": 173,
@@ -1455,7 +1465,7 @@
       "label": "word-extractor",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L50",
+      "source_location": "L51",
       "_origin": "ast",
       "id": "package_dependencies_word_extractor",
       "community": 173,
@@ -1465,7 +1475,7 @@
       "label": "devDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L52",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 171,
@@ -1475,7 +1485,7 @@
       "label": "@eslint/js",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L53",
+      "source_location": "L54",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_js",
       "community": 171,
@@ -1485,7 +1495,7 @@
       "label": "@types/node",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L54",
+      "source_location": "L55",
       "_origin": "ast",
       "id": "package_devdependencies_types_node",
       "community": 171,
@@ -1495,7 +1505,7 @@
       "label": "@types/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L55",
+      "source_location": "L56",
       "_origin": "ast",
       "id": "package_devdependencies_types_react",
       "community": 171,
@@ -1505,7 +1515,7 @@
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L56",
+      "source_location": "L57",
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
       "community": 171,
@@ -1515,7 +1525,7 @@
       "label": "@vitejs/plugin-react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L57",
+      "source_location": "L58",
       "_origin": "ast",
       "id": "package_devdependencies_vitejs_plugin_react",
       "community": 171,
@@ -1525,7 +1535,7 @@
       "label": "eslint",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L58",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "package_devdependencies_eslint",
       "community": 171,
@@ -1535,7 +1545,7 @@
       "label": "eslint-plugin-react-hooks",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L59",
+      "source_location": "L60",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_plugin_react_hooks",
       "community": 171,
@@ -1545,7 +1555,7 @@
       "label": "eslint-plugin-react-refresh",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L60",
+      "source_location": "L61",
       "_origin": "ast",
       "id": "package_devdependencies_eslint_plugin_react_refresh",
       "community": 171,
@@ -1555,7 +1565,7 @@
       "label": "globals",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L61",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "package_devdependencies_globals",
       "community": 171,
@@ -1565,7 +1575,7 @@
       "label": "nodemon",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L62",
+      "source_location": "L63",
       "_origin": "ast",
       "id": "package_devdependencies_nodemon",
       "community": 171,
@@ -1575,7 +1585,7 @@
       "label": "prisma",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L63",
+      "source_location": "L64",
       "_origin": "ast",
       "id": "package_devdependencies_prisma",
       "community": 171,
@@ -1585,7 +1595,7 @@
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L64",
+      "source_location": "L65",
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 171,
@@ -1595,7 +1605,7 @@
       "label": "typescript-eslint",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L65",
+      "source_location": "L66",
       "_origin": "ast",
       "id": "package_devdependencies_typescript_eslint",
       "community": 171,
@@ -1605,7 +1615,7 @@
       "label": "vite",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L66",
+      "source_location": "L67",
       "_origin": "ast",
       "id": "package_devdependencies_vite",
       "community": 171,
@@ -1615,7 +1625,7 @@
       "label": "prisma",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L68",
+      "source_location": "L69",
       "_origin": "ast",
       "id": "package_prisma",
       "community": 176,
@@ -1625,7 +1635,7 @@
       "label": "seed",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L69",
+      "source_location": "L70",
       "_origin": "ast",
       "id": "package_prisma_seed",
       "community": 176,
@@ -1638,7 +1648,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_clear_demo_data",
-      "community": 51,
+      "community": 46,
       "norm_label": "clear-demo-data.js"
     },
     {
@@ -1648,7 +1658,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "prisma_clear_demo_data_demouserids",
-      "community": 51,
+      "community": 46,
       "norm_label": "demouserids"
     },
     {
@@ -1658,7 +1668,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "prisma_clear_demo_data_democoursecodes",
-      "community": 51,
+      "community": 46,
       "norm_label": "democoursecodes"
     },
     {
@@ -1668,7 +1678,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "prisma_clear_demo_data_main",
-      "community": 51,
+      "community": 46,
       "norm_label": "main()"
     },
     {
@@ -1678,7 +1688,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_consultationrooms",
-      "community": 51,
+      "community": 46,
       "norm_label": "consultationrooms.js"
     },
     {
@@ -1688,7 +1698,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_consultationrooms_consultation_room_names",
-      "community": 51,
+      "community": 46,
       "norm_label": "consultation_room_names"
     },
     {
@@ -1698,7 +1708,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "prisma_consultationrooms_seedconsultationrooms",
-      "community": 51,
+      "community": 46,
       "norm_label": "seedconsultationrooms()"
     },
     {
@@ -2448,7 +2458,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_seed_rooms_only",
-      "community": 51,
+      "community": 46,
       "norm_label": "seed-rooms-only.js"
     },
     {
@@ -2458,7 +2468,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "prisma_seed_rooms_only_main",
-      "community": 51,
+      "community": 46,
       "norm_label": "main()"
     },
     {
@@ -2468,7 +2478,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "prisma_seed",
-      "community": 51,
+      "community": 46,
       "norm_label": "seed.js"
     },
     {
@@ -2478,7 +2488,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "prisma_seed_passwordhash",
-      "community": 51,
+      "community": 46,
       "norm_label": "passwordhash"
     },
     {
@@ -2488,7 +2498,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "prisma_seed_aicurriculumcourses",
-      "community": 51,
+      "community": 46,
       "norm_label": "aicurriculumcourses"
     },
     {
@@ -2498,7 +2508,7 @@
       "source_location": "L148",
       "_origin": "ast",
       "id": "prisma_seed_aiprerequisitesbycoursecode",
-      "community": 51,
+      "community": 46,
       "norm_label": "aiprerequisitesbycoursecode"
     },
     {
@@ -2508,7 +2518,7 @@
       "source_location": "L203",
       "_origin": "ast",
       "id": "prisma_seed_seededcourseid",
-      "community": 51,
+      "community": 46,
       "norm_label": "seededcourseid()"
     },
     {
@@ -2518,7 +2528,7 @@
       "source_location": "L205",
       "_origin": "ast",
       "id": "prisma_seed_curriculumruleforcourse",
-      "community": 51,
+      "community": 46,
       "norm_label": "curriculumruleforcourse()"
     },
     {
@@ -2528,7 +2538,7 @@
       "source_location": "L234",
       "_origin": "ast",
       "id": "prisma_seed_seedaiprerequisites",
-      "community": 51,
+      "community": 46,
       "norm_label": "seedaiprerequisites()"
     },
     {
@@ -2538,7 +2548,7 @@
       "source_location": "L277",
       "_origin": "ast",
       "id": "prisma_seed_main",
-      "community": 51,
+      "community": 46,
       "norm_label": "main()"
     },
     {
@@ -2628,7 +2638,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "server_db",
-      "community": 51,
+      "community": 46,
       "norm_label": "db.js"
     },
     {
@@ -2638,7 +2648,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "server_db_prisma",
-      "community": 51,
+      "community": 46,
       "norm_label": "prisma"
     },
     {
@@ -2648,7 +2658,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "server_docker_start",
-      "community": 51,
+      "community": 170,
       "norm_label": "docker-start.js"
     },
     {
@@ -2658,7 +2668,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "server_docker_start_executable",
-      "community": 51,
+      "community": 170,
       "norm_label": "executable()"
     },
     {
@@ -2668,7 +2678,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "server_docker_start_wait",
-      "community": 51,
+      "community": 170,
       "norm_label": "wait()"
     },
     {
@@ -2678,7 +2688,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "server_docker_start_run",
-      "community": 51,
+      "community": 170,
       "norm_label": "run()"
     },
     {
@@ -2688,7 +2698,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "server_docker_start_createprismaclient",
-      "community": 51,
+      "community": 170,
       "norm_label": "createprismaclient()"
     },
     {
@@ -2698,7 +2708,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "server_docker_start_countfromqueryrow",
-      "community": 51,
+      "community": 170,
       "norm_label": "countfromqueryrow()"
     },
     {
@@ -2708,7 +2718,7 @@
       "source_location": "L50",
       "_origin": "ast",
       "id": "server_docker_start_shouldbaselineexistingdatabase",
-      "community": 51,
+      "community": 170,
       "norm_label": "shouldbaselineexistingdatabase()"
     },
     {
@@ -2718,7 +2728,7 @@
       "source_location": "L54",
       "_origin": "ast",
       "id": "server_docker_start_shouldseeddemodata",
-      "community": 51,
+      "community": 170,
       "norm_label": "shouldseeddemodata()"
     },
     {
@@ -2728,7 +2738,7 @@
       "source_location": "L58",
       "_origin": "ast",
       "id": "server_docker_start_ollamamodelpresent",
-      "community": 51,
+      "community": 170,
       "norm_label": "ollamamodelpresent()"
     },
     {
@@ -2738,7 +2748,7 @@
       "source_location": "L64",
       "_origin": "ast",
       "id": "server_docker_start_waitforhttpservice",
-      "community": 51,
+      "community": 170,
       "norm_label": "waitforhttpservice()"
     },
     {
@@ -2748,7 +2758,7 @@
       "source_location": "L88",
       "_origin": "ast",
       "id": "server_docker_start_waitforqdrant",
-      "community": 51,
+      "community": 170,
       "norm_label": "waitforqdrant()"
     },
     {
@@ -2758,7 +2768,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "server_docker_start_ensureollamaembedmodel",
-      "community": 51,
+      "community": 170,
       "norm_label": "ensureollamaembedmodel()"
     },
     {
@@ -2768,7 +2778,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "server_docker_start_waitfordatabase",
-      "community": 51,
+      "community": 170,
       "norm_label": "waitfordatabase()"
     },
     {
@@ -2778,7 +2788,7 @@
       "source_location": "L152",
       "_origin": "ast",
       "id": "server_docker_start_seedifempty",
-      "community": 51,
+      "community": 170,
       "norm_label": "seedifempty()"
     },
     {
@@ -2788,7 +2798,7 @@
       "source_location": "L176",
       "_origin": "ast",
       "id": "server_docker_start_getmigrationnames",
-      "community": 51,
+      "community": 170,
       "norm_label": "getmigrationnames()"
     },
     {
@@ -2798,7 +2808,7 @@
       "source_location": "L187",
       "_origin": "ast",
       "id": "server_docker_start_getdatabasemigrationstate",
-      "community": 51,
+      "community": 170,
       "norm_label": "getdatabasemigrationstate()"
     },
     {
@@ -2808,7 +2818,7 @@
       "source_location": "L215",
       "_origin": "ast",
       "id": "server_docker_start_baselineexistingdatabaseifneeded",
-      "community": 51,
+      "community": 170,
       "norm_label": "baselineexistingdatabaseifneeded()"
     },
     {
@@ -2818,7 +2828,7 @@
       "source_location": "L237",
       "_origin": "ast",
       "id": "server_docker_start_recoverfailedmigrations",
-      "community": 51,
+      "community": 170,
       "norm_label": "recoverfailedmigrations()"
     },
     {
@@ -2828,7 +2838,7 @@
       "source_location": "L264",
       "_origin": "ast",
       "id": "server_docker_start_startwatchedapiserver",
-      "community": 51,
+      "community": 170,
       "norm_label": "startwatchedapiserver()"
     },
     {
@@ -2838,7 +2848,7 @@
       "source_location": "L289",
       "_origin": "ast",
       "id": "server_docker_start_main",
-      "community": 51,
+      "community": 170,
       "norm_label": "main()"
     },
     {
@@ -2868,7 +2878,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "server_http_httperror",
-      "community": 219,
+      "community": 0,
       "norm_label": "httperror()"
     },
     {
@@ -2968,7 +2978,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "server_mappers_mapmanagedcredential",
-      "community": 175,
+      "community": 0,
       "norm_label": "mapmanagedcredential()"
     },
     {
@@ -2978,7 +2988,7 @@
       "source_location": "L46",
       "_origin": "ast",
       "id": "server_mappers_mapmainmajor",
-      "community": 175,
+      "community": 194,
       "norm_label": "mapmainmajor()"
     },
     {
@@ -2988,7 +2998,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "server_mappers_mapchildmajor",
-      "community": 175,
+      "community": 194,
       "norm_label": "mapchildmajor()"
     },
     {
@@ -3018,7 +3028,7 @@
       "source_location": "L85",
       "_origin": "ast",
       "id": "server_mappers_mapcourse",
-      "community": 175,
+      "community": 194,
       "norm_label": "mapcourse()"
     },
     {
@@ -3028,7 +3038,7 @@
       "source_location": "L96",
       "_origin": "ast",
       "id": "server_mappers_mapcourseprerequisitegroup",
-      "community": 175,
+      "community": 194,
       "norm_label": "mapcourseprerequisitegroup()"
     },
     {
@@ -3038,7 +3048,7 @@
       "source_location": "L105",
       "_origin": "ast",
       "id": "server_mappers_mapcourseprerequisiteoption",
-      "community": 175,
+      "community": 194,
       "norm_label": "mapcourseprerequisiteoption()"
     },
     {
@@ -3048,7 +3058,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "server_mappers_mapstudentcoursecompletion",
-      "community": 175,
+      "community": 194,
       "norm_label": "mapstudentcoursecompletion()"
     },
     {
@@ -3058,7 +3068,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "server_mappers_mapcurriculumrule",
-      "community": 175,
+      "community": 194,
       "norm_label": "mapcurriculumrule()"
     },
     {
@@ -3068,7 +3078,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "server_mappers_mapcourseregistrationrequest",
-      "community": 175,
+      "community": 194,
       "norm_label": "mapcourseregistrationrequest()"
     },
     {
@@ -3258,7 +3268,7 @@
       "source_location": "L373",
       "_origin": "ast",
       "id": "server_mappers_mapconnection",
-      "community": 229,
+      "community": 194,
       "norm_label": "mapconnection()"
     },
     {
@@ -3268,7 +3278,7 @@
       "source_location": "L387",
       "_origin": "ast",
       "id": "server_mappers_isthreadvisible",
-      "community": 46,
+      "community": 56,
       "norm_label": "isthreadvisible()"
     },
     {
@@ -3338,7 +3348,7 @@
       "source_location": "L555",
       "_origin": "ast",
       "id": "server_mappers_maproom",
-      "community": 175,
+      "community": 0,
       "norm_label": "maproom()"
     },
     {
@@ -3368,7 +3378,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_admin",
-      "community": 175,
+      "community": 0,
       "norm_label": "admin.js"
     },
     {
@@ -3388,7 +3398,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "routes_admin_coursecontentupload",
-      "community": 175,
+      "community": 0,
       "norm_label": "coursecontentupload"
     },
     {
@@ -3398,7 +3408,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "routes_admin_userworkbookupload",
-      "community": 175,
+      "community": 0,
       "norm_label": "userworkbookupload"
     },
     {
@@ -3408,7 +3418,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "routes_admin_orderedcatalog",
-      "community": 175,
+      "community": 0,
       "norm_label": "orderedcatalog()"
     },
     {
@@ -3418,7 +3428,7 @@
       "source_location": "L81",
       "_origin": "ast",
       "id": "routes_admin_swinlearnrag",
-      "community": 175,
+      "community": 0,
       "norm_label": "swinlearnrag"
     },
     {
@@ -3428,7 +3438,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "routes_admin_offeringsinclude",
-      "community": 175,
+      "community": 0,
       "norm_label": "offeringsinclude"
     },
     {
@@ -3448,7 +3458,7 @@
       "source_location": "L100",
       "_origin": "ast",
       "id": "routes_admin_loadteachingeligibilitycontext",
-      "community": 175,
+      "community": 0,
       "norm_label": "loadteachingeligibilitycontext()"
     },
     {
@@ -3458,7 +3468,7 @@
       "source_location": "L115",
       "_origin": "ast",
       "id": "routes_admin_assertteachercanteachcourse",
-      "community": 175,
+      "community": 0,
       "norm_label": "assertteachercanteachcourse()"
     },
     {
@@ -3468,7 +3478,7 @@
       "source_location": "L130",
       "_origin": "ast",
       "id": "routes_admin_assertstaffcanteachcourse",
-      "community": 175,
+      "community": 0,
       "norm_label": "assertstaffcanteachcourse()"
     },
     {
@@ -3478,7 +3488,7 @@
       "source_location": "L142",
       "_origin": "ast",
       "id": "routes_admin_readcreditpoints",
-      "community": 219,
+      "community": 0,
       "norm_label": "readcreditpoints()"
     },
     {
@@ -3498,7 +3508,7 @@
       "source_location": "L206",
       "_origin": "ast",
       "id": "routes_admin_saveprerequisitegroups",
-      "community": 175,
+      "community": 0,
       "norm_label": "saveprerequisitegroups()"
     },
     {
@@ -3548,7 +3558,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "routes_workspace",
-      "community": 229,
+      "community": 175,
       "norm_label": "workspace.js"
     },
     {
@@ -3568,7 +3578,7 @@
       "source_location": "L134",
       "_origin": "ast",
       "id": "routes_workspace_swinlearnrag",
-      "community": 229,
+      "community": 175,
       "norm_label": "swinlearnrag"
     },
     {
@@ -3578,7 +3588,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "routes_workspace_upload",
-      "community": 229,
+      "community": 175,
       "norm_label": "upload"
     },
     {
@@ -3588,7 +3598,7 @@
       "source_location": "L138",
       "_origin": "ast",
       "id": "routes_workspace_offeringsinclude",
-      "community": 229,
+      "community": 175,
       "norm_label": "offeringsinclude"
     },
     {
@@ -3598,7 +3608,7 @@
       "source_location": "L218",
       "_origin": "ast",
       "id": "routes_workspace_loadstudentcvprofilecontext",
-      "community": 229,
+      "community": 175,
       "norm_label": "loadstudentcvprofilecontext()"
     },
     {
@@ -3608,7 +3618,7 @@
       "source_location": "L326",
       "_origin": "ast",
       "id": "routes_workspace_visibleofferingwhere",
-      "community": 229,
+      "community": 175,
       "norm_label": "visibleofferingwhere()"
     },
     {
@@ -3618,7 +3628,7 @@
       "source_location": "L350",
       "_origin": "ast",
       "id": "routes_workspace_visibleofferingids",
-      "community": 229,
+      "community": 175,
       "norm_label": "visibleofferingids()"
     },
     {
@@ -3628,7 +3638,7 @@
       "source_location": "L361",
       "_origin": "ast",
       "id": "routes_workspace_loadvisibleoffering",
-      "community": 229,
+      "community": 175,
       "norm_label": "loadvisibleoffering()"
     },
     {
@@ -3638,7 +3648,7 @@
       "source_location": "L372",
       "_origin": "ast",
       "id": "routes_workspace_communitycommentinclude",
-      "community": 229,
+      "community": 175,
       "norm_label": "communitycommentinclude()"
     },
     {
@@ -3648,7 +3658,7 @@
       "source_location": "L389",
       "_origin": "ast",
       "id": "routes_workspace_communitypostinclude",
-      "community": 229,
+      "community": 175,
       "norm_label": "communitypostinclude()"
     },
     {
@@ -3658,7 +3668,7 @@
       "source_location": "L410",
       "_origin": "ast",
       "id": "routes_workspace_collectcommunityauthorids",
-      "community": 229,
+      "community": 175,
       "norm_label": "collectcommunityauthorids()"
     },
     {
@@ -3668,7 +3678,7 @@
       "source_location": "L428",
       "_origin": "ast",
       "id": "routes_workspace_mapcommunitycontext",
-      "community": 229,
+      "community": 175,
       "norm_label": "mapcommunitycontext()"
     },
     {
@@ -3678,7 +3688,7 @@
       "source_location": "L1064",
       "_origin": "ast",
       "id": "routes_workspace_readjsonarray",
-      "community": 229,
+      "community": 175,
       "norm_label": "readjsonarray()"
     },
     {
@@ -3688,7 +3698,7 @@
       "source_location": "L1082",
       "_origin": "ast",
       "id": "routes_workspace_readselectedofferingids",
-      "community": 229,
+      "community": 175,
       "norm_label": "readselectedofferingids()"
     },
     {
@@ -3698,7 +3708,7 @@
       "source_location": "L1088",
       "_origin": "ast",
       "id": "routes_workspace_readassignmentids",
-      "community": 229,
+      "community": 175,
       "norm_label": "readassignmentids()"
     },
     {
@@ -3718,7 +3728,7 @@
       "source_location": "L1110",
       "_origin": "ast",
       "id": "routes_workspace_loadswinlearnthread",
-      "community": 229,
+      "community": 175,
       "norm_label": "loadswinlearnthread()"
     },
     {
@@ -3728,7 +3738,7 @@
       "source_location": "L1119",
       "_origin": "ast",
       "id": "routes_workspace_loadthreadmessages",
-      "community": 229,
+      "community": 175,
       "norm_label": "loadthreadmessages()"
     },
     {
@@ -3748,7 +3758,7 @@
       "source_location": "L1561",
       "_origin": "ast",
       "id": "routes_workspace_requirestudentregistrationcontext",
-      "community": 51,
+      "community": 175,
       "norm_label": "requirestudentregistrationcontext()"
     },
     {
@@ -3758,7 +3768,7 @@
       "source_location": "L1571",
       "_origin": "ast",
       "id": "routes_workspace_readofferingids",
-      "community": 229,
+      "community": 175,
       "norm_label": "readofferingids()"
     },
     {
@@ -3768,7 +3778,7 @@
       "source_location": "L1576",
       "_origin": "ast",
       "id": "routes_workspace_activeregistrationofferings",
-      "community": 229,
+      "community": 175,
       "norm_label": "activeregistrationofferings()"
     },
     {
@@ -3778,57 +3788,67 @@
       "source_location": "L1579",
       "_origin": "ast",
       "id": "routes_workspace_evaluateregistrationselection",
-      "community": 229,
+      "community": 175,
       "norm_label": "evaluateregistrationselection()"
+    },
+    {
+      "label": "resolveGradeExportStudentInfo()",
+      "file_type": "code",
+      "source_file": "server/routes/workspace.js",
+      "source_location": "L1628",
+      "_origin": "ast",
+      "id": "routes_workspace_resolvegradeexportstudentinfo",
+      "community": 175,
+      "norm_label": "resolvegradeexportstudentinfo()"
     },
     {
       "label": "connectionPairWhere()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L1963",
+      "source_location": "L2020",
       "_origin": "ast",
       "id": "routes_workspace_connectionpairwhere",
-      "community": 229,
+      "community": 175,
       "norm_label": "connectionpairwhere()"
     },
     {
       "label": "loadPairConnection()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L1969",
+      "source_location": "L2026",
       "_origin": "ast",
       "id": "routes_workspace_loadpairconnection",
-      "community": 229,
+      "community": 175,
       "norm_label": "loadpairconnection()"
     },
     {
       "label": "annotatePeople()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L1975",
+      "source_location": "L2032",
       "_origin": "ast",
       "id": "routes_workspace_annotatepeople",
-      "community": 229,
+      "community": 175,
       "norm_label": "annotatepeople()"
     },
     {
       "label": "decideConnection()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L2165",
+      "source_location": "L2222",
       "_origin": "ast",
       "id": "routes_workspace_decideconnection",
-      "community": 229,
+      "community": 194,
       "norm_label": "decideconnection()"
     },
     {
       "label": "loadThreadParticipant()",
       "file_type": "code",
       "source_file": "server/routes/workspace.js",
-      "source_location": "L2234",
+      "source_location": "L2291",
       "_origin": "ast",
       "id": "routes_workspace_loadthreadparticipant",
-      "community": 229,
+      "community": 175,
       "norm_label": "loadthreadparticipant()"
     },
     {
@@ -4178,7 +4198,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "services_community_assertgifurl",
-      "community": 46,
+      "community": 56,
       "norm_label": "assertgifurl()"
     },
     {
@@ -4358,7 +4378,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_communityshare",
-      "community": 212,
+      "community": 44,
       "norm_label": "communityshare.js"
     },
     {
@@ -4368,7 +4388,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "services_communityshare_excerpt",
-      "community": 212,
+      "community": 44,
       "norm_label": "excerpt()"
     },
     {
@@ -4378,7 +4398,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "services_communityshare_loadofferingmemberids",
-      "community": 212,
+      "community": 44,
       "norm_label": "loadofferingmemberids()"
     },
     {
@@ -4388,7 +4408,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "services_communityshare_buildcommunitysharemessage",
-      "community": 212,
+      "community": 44,
       "norm_label": "buildcommunitysharemessage()"
     },
     {
@@ -4398,7 +4418,7 @@
       "source_location": "L56",
       "_origin": "ast",
       "id": "services_communityshare_sharecommunitypostviainbox",
-      "community": 212,
+      "community": 44,
       "norm_label": "sharecommunitypostviainbox()"
     },
     {
@@ -5418,7 +5438,7 @@
       "source_location": "L935",
       "_origin": "ast",
       "id": "services_cvprojectscope_buildteacherassignmentdocument",
-      "community": 53,
+      "community": 192,
       "norm_label": "buildteacherassignmentdocument()"
     },
     {
@@ -6248,7 +6268,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_geminichat",
-      "community": 221,
+      "community": 138,
       "norm_label": "geminichat.js"
     },
     {
@@ -6258,7 +6278,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "services_geminichat_generategeminichatreply",
-      "community": 221,
+      "community": 138,
       "norm_label": "generategeminichatreply()"
     },
     {
@@ -6268,7 +6288,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_geminichat_test",
-      "community": 221,
+      "community": 138,
       "norm_label": "geminichat.test.mjs"
     },
     {
@@ -6278,7 +6298,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "services_geminichat_test_geminiresponse",
-      "community": 221,
+      "community": 138,
       "norm_label": "geminiresponse()"
     },
     {
@@ -6288,7 +6308,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_giphy",
-      "community": 170,
+      "community": 175,
       "norm_label": "giphy.js"
     },
     {
@@ -6298,7 +6318,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "services_giphy_pickgifurl",
-      "community": 170,
+      "community": 175,
       "norm_label": "pickgifurl()"
     },
     {
@@ -6308,7 +6328,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "services_giphy_mapgiphyresults",
-      "community": 170,
+      "community": 175,
       "norm_label": "mapgiphyresults()"
     },
     {
@@ -6318,7 +6338,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "services_giphy_searchgiphy",
-      "community": 170,
+      "community": 175,
       "norm_label": "searchgiphy()"
     },
     {
@@ -6328,7 +6348,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_giphy_test",
-      "community": 170,
+      "community": 175,
       "norm_label": "giphy.test.mjs"
     },
     {
@@ -6488,7 +6508,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "services_gradeanalysis_formatcourselist",
-      "community": 216,
+      "community": 138,
       "norm_label": "formatcourselist()"
     },
     {
@@ -6558,7 +6578,7 @@
       "source_location": "L190",
       "_origin": "ast",
       "id": "services_gradeanalysis_formatgradeanalysisresult",
-      "community": 216,
+      "community": 138,
       "norm_label": "formatgradeanalysisresult()"
     },
     {
@@ -6725,7 +6745,7 @@
       "label": "WARNING_MESSAGES",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L3",
+      "source_location": "L4",
       "_origin": "ast",
       "id": "services_gradereport_warning_messages",
       "community": 5,
@@ -6735,7 +6755,7 @@
       "label": "GRADE_HEADERS",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L9",
+      "source_location": "L10",
       "_origin": "ast",
       "id": "services_gradereport_grade_headers",
       "community": 5,
@@ -6745,17 +6765,37 @@
       "label": "GRADE_COLUMN_WIDTHS",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L21",
+      "source_location": "L20",
       "_origin": "ast",
       "id": "services_gradereport_grade_column_widths",
       "community": 5,
       "norm_label": "grade_column_widths"
     },
     {
+      "label": "STUDENT_INFO_ROWS",
+      "file_type": "code",
+      "source_file": "server/services/gradeReport.js",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "services_gradereport_student_info_rows",
+      "community": 5,
+      "norm_label": "student_info_rows"
+    },
+    {
+      "label": "formatStudentInfo()",
+      "file_type": "code",
+      "source_file": "server/services/gradeReport.js",
+      "source_location": "L28",
+      "_origin": "ast",
+      "id": "services_gradereport_formatstudentinfo",
+      "community": 5,
+      "norm_label": "formatstudentinfo()"
+    },
+    {
       "label": "warningTierForScore()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L23",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "services_gradereport_warningtierforscore",
       "community": 5,
@@ -6765,7 +6805,7 @@
       "label": "summarizeWarnings()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L45",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "services_gradereport_summarizewarnings",
       "community": 5,
@@ -6775,7 +6815,7 @@
       "label": "enrichProgressWithWarnings()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L60",
+      "source_location": "L74",
       "_origin": "ast",
       "id": "services_gradereport_enrichprogresswithwarnings",
       "community": 5,
@@ -6785,7 +6825,7 @@
       "label": "buildGradeReport()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L78",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "services_gradereport_buildgradereport",
       "community": 5,
@@ -6795,7 +6835,7 @@
       "label": "escapeCsvCell()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L80",
+      "source_location": "L94",
       "_origin": "ast",
       "id": "services_gradereport_escapecsvcell",
       "community": 5,
@@ -6805,7 +6845,7 @@
       "label": "csvRow()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L90",
+      "source_location": "L104",
       "_origin": "ast",
       "id": "services_gradereport_csvrow",
       "community": 5,
@@ -6815,7 +6855,7 @@
       "label": "formatGradeReportCsv()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L92",
+      "source_location": "L106",
       "_origin": "ast",
       "id": "services_gradereport_formatgradereportcsv",
       "community": 5,
@@ -6825,7 +6865,7 @@
       "label": "formatCompletedAt()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L122",
+      "source_location": "L136",
       "_origin": "ast",
       "id": "services_gradereport_formatcompletedat",
       "community": 5,
@@ -6835,7 +6875,7 @@
       "label": "gradeReportWorkbookFilename()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L136",
+      "source_location": "L150",
       "_origin": "ast",
       "id": "services_gradereport_gradereportworkbookfilename",
       "community": 5,
@@ -6845,7 +6885,7 @@
       "label": "buildGradeReportWorkbook()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L139",
+      "source_location": "L153",
       "_origin": "ast",
       "id": "services_gradereport_buildgradereportworkbook",
       "community": 5,
@@ -6855,7 +6895,7 @@
       "label": "formatCourseLine()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L168",
+      "source_location": "L186",
       "_origin": "ast",
       "id": "services_gradereport_formatcourseline",
       "community": 5,
@@ -6865,7 +6905,7 @@
       "label": "formatGradeReportMarkdown()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L174",
+      "source_location": "L192",
       "_origin": "ast",
       "id": "services_gradereport_formatgradereportmarkdown",
       "community": 5,
@@ -6875,7 +6915,7 @@
       "label": "warningMessageForTier()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L207",
+      "source_location": "L225",
       "_origin": "ast",
       "id": "services_gradereport_warningmessagefortier",
       "community": 5,
@@ -6885,7 +6925,7 @@
       "label": "GRADE_TOKEN_PATTERNS",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L212",
+      "source_location": "L230",
       "_origin": "ast",
       "id": "services_gradereport_grade_token_patterns",
       "community": 5,
@@ -6895,7 +6935,7 @@
       "label": "extractGradeFilterTokens()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L220",
+      "source_location": "L238",
       "_origin": "ast",
       "id": "services_gradereport_extractgradefiltertokens",
       "community": 5,
@@ -6905,7 +6945,7 @@
       "label": "isGradeRefinementRequest()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L233",
+      "source_location": "L251",
       "_origin": "ast",
       "id": "services_gradereport_isgraderefinementrequest",
       "community": 5,
@@ -6915,11 +6955,31 @@
       "label": "buildFilteredGradeReport()",
       "file_type": "code",
       "source_file": "server/services/gradeReport.js",
-      "source_location": "L243",
+      "source_location": "L261",
       "_origin": "ast",
       "id": "services_gradereport_buildfilteredgradereport",
       "community": 5,
       "norm_label": "buildfilteredgradereport()"
+    },
+    {
+      "label": "gradeReportPdfFilename()",
+      "file_type": "code",
+      "source_file": "server/services/gradeReport.js",
+      "source_location": "L282",
+      "_origin": "ast",
+      "id": "services_gradereport_gradereportpdffilename",
+      "community": 5,
+      "norm_label": "gradereportpdffilename()"
+    },
+    {
+      "label": "buildGradeReportPdf()",
+      "file_type": "code",
+      "source_file": "server/services/gradeReport.js",
+      "source_location": "L285",
+      "_origin": "ast",
+      "id": "services_gradereport_buildgradereportpdf",
+      "community": 5,
+      "norm_label": "buildgradereportpdf()"
     },
     {
       "label": "gradeReport.test.mjs",
@@ -6935,7 +6995,7 @@
       "label": "sampleProgress",
       "file_type": "code",
       "source_file": "server/services/gradeReport.test.mjs",
-      "source_location": "L16",
+      "source_location": "L19",
       "_origin": "ast",
       "id": "services_gradereport_test_sampleprogress",
       "community": 5,
@@ -7198,7 +7258,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "services_inboxconnections_connectionstatefor",
-      "community": 229,
+      "community": 44,
       "norm_label": "connectionstatefor()"
     },
     {
@@ -7348,7 +7408,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_inboxmessages",
-      "community": 46,
+      "community": 56,
       "norm_label": "inboxmessages.js"
     },
     {
@@ -7358,7 +7418,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "services_inboxmessages_assertinboxmessagecontent",
-      "community": 46,
+      "community": 56,
       "norm_label": "assertinboxmessagecontent()"
     },
     {
@@ -7368,7 +7428,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "services_inboxmessages_inboxmessagepreview",
-      "community": 46,
+      "community": 56,
       "norm_label": "inboxmessagepreview()"
     },
     {
@@ -7378,7 +7438,7 @@
       "source_location": "L38",
       "_origin": "ast",
       "id": "services_inboxmessages_ensuredirectconversation",
-      "community": 46,
+      "community": 44,
       "norm_label": "ensuredirectconversation()"
     },
     {
@@ -7388,7 +7448,7 @@
       "source_location": "L68",
       "_origin": "ast",
       "id": "services_inboxmessages_acceptconnectionwithwelcomemessage",
-      "community": 46,
+      "community": 56,
       "norm_label": "acceptconnectionwithwelcomemessage()"
     },
     {
@@ -7398,7 +7458,7 @@
       "source_location": "L98",
       "_origin": "ast",
       "id": "services_inboxmessages_isconversationunread",
-      "community": 46,
+      "community": 56,
       "norm_label": "isconversationunread()"
     },
     {
@@ -7408,7 +7468,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "services_inboxmessages_countinboxbadge",
-      "community": 46,
+      "community": 56,
       "norm_label": "countinboxbadge()"
     },
     {
@@ -7418,7 +7478,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_inboxmessages_test",
-      "community": 46,
+      "community": 56,
       "norm_label": "inboxmessages.test.mjs"
     },
     {
@@ -7428,7 +7488,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_intentrouter",
-      "community": 21,
+      "community": 174,
       "norm_label": "intentrouter.js"
     },
     {
@@ -7438,7 +7498,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "services_intentrouter_context_hints",
-      "community": 21,
+      "community": 174,
       "norm_label": "context_hints"
     },
     {
@@ -7448,7 +7508,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "services_intentrouter_valid_intents",
-      "community": 21,
+      "community": 174,
       "norm_label": "valid_intents"
     },
     {
@@ -7458,7 +7518,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "services_intentrouter_buildintentrouteruserprompt",
-      "community": 21,
+      "community": 174,
       "norm_label": "buildintentrouteruserprompt()"
     },
     {
@@ -7468,7 +7528,7 @@
       "source_location": "L44",
       "_origin": "ast",
       "id": "services_intentrouter_normalizeintentroute",
-      "community": 21,
+      "community": 174,
       "norm_label": "normalizeintentroute()"
     },
     {
@@ -7478,7 +7538,7 @@
       "source_location": "L70",
       "_origin": "ast",
       "id": "services_intentrouter_parseintentroutejson",
-      "community": 21,
+      "community": 174,
       "norm_label": "parseintentroutejson()"
     },
     {
@@ -7488,7 +7548,7 @@
       "source_location": "L92",
       "_origin": "ast",
       "id": "services_intentrouter_defaultroutefallback",
-      "community": 21,
+      "community": 174,
       "norm_label": "defaultroutefallback()"
     },
     {
@@ -7498,7 +7558,7 @@
       "source_location": "L104",
       "_origin": "ast",
       "id": "services_intentrouter_routeintent",
-      "community": 21,
+      "community": 174,
       "norm_label": "routeintent()"
     },
     {
@@ -7508,7 +7568,7 @@
       "source_location": "L192",
       "_origin": "ast",
       "id": "services_intentrouter_routeintentgroq",
-      "community": 21,
+      "community": 174,
       "norm_label": "routeintentgroq()"
     },
     {
@@ -7518,7 +7578,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_intentrouter_test",
-      "community": 21,
+      "community": 174,
       "norm_label": "intentrouter.test.mjs"
     },
     {
@@ -7528,7 +7588,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "services_intentrouter_test_groqresponse",
-      "community": 21,
+      "community": 174,
       "norm_label": "groqresponse()"
     },
     {
@@ -7538,7 +7598,7 @@
       "source_location": "L21",
       "_origin": "ast",
       "id": "services_intentrouter_test_geminiresponse",
-      "community": 21,
+      "community": 174,
       "norm_label": "geminiresponse()"
     },
     {
@@ -7748,7 +7808,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_prerequisites",
-      "community": 175,
+      "community": 194,
       "norm_label": "prerequisites.js"
     },
     {
@@ -7758,7 +7818,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "services_prerequisites_coursetitle",
-      "community": 175,
+      "community": 194,
       "norm_label": "coursetitle()"
     },
     {
@@ -7768,7 +7828,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "services_prerequisites_coursecreditpoints",
-      "community": 175,
+      "community": 194,
       "norm_label": "coursecreditpoints()"
     },
     {
@@ -7778,7 +7838,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "services_prerequisites_bysortorder",
-      "community": 175,
+      "community": 194,
       "norm_label": "bysortorder()"
     },
     {
@@ -7788,7 +7848,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "services_prerequisites_samestudyperiod",
-      "community": 175,
+      "community": 194,
       "norm_label": "samestudyperiod()"
     },
     {
@@ -7798,7 +7858,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "services_prerequisites_getcourseidfromoffering",
-      "community": 175,
+      "community": 194,
       "norm_label": "getcourseidfromoffering()"
     },
     {
@@ -7808,7 +7868,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "services_prerequisites_getcurriculumcourseids",
-      "community": 175,
+      "community": 169,
       "norm_label": "getcurriculumcourseids()"
     },
     {
@@ -7818,7 +7878,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "services_prerequisites_getcompletedcourseids",
-      "community": 175,
+      "community": 194,
       "norm_label": "getcompletedcourseids()"
     },
     {
@@ -7828,7 +7888,7 @@
       "source_location": "L57",
       "_origin": "ast",
       "id": "services_prerequisites_getselectedconcurrentcourseids",
-      "community": 175,
+      "community": 194,
       "norm_label": "getselectedconcurrentcourseids()"
     },
     {
@@ -7838,7 +7898,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "services_prerequisites_getenrolledconcurrentcourseids",
-      "community": 175,
+      "community": 194,
       "norm_label": "getenrolledconcurrentcourseids()"
     },
     {
@@ -7848,7 +7908,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "services_prerequisites_optionismet",
-      "community": 175,
+      "community": 194,
       "norm_label": "optionismet()"
     },
     {
@@ -7858,7 +7918,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "services_prerequisites_creditrequirementmessage",
-      "community": 175,
+      "community": 194,
       "norm_label": "creditrequirementmessage()"
     },
     {
@@ -7868,7 +7928,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "services_prerequisites_courserequirementmessage",
-      "community": 175,
+      "community": 194,
       "norm_label": "courserequirementmessage()"
     },
     {
@@ -7878,7 +7938,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "services_prerequisites_evaluatecourseeligibility",
-      "community": 175,
+      "community": 194,
       "norm_label": "evaluatecourseeligibility()"
     },
     {
@@ -7908,7 +7968,7 @@
       "source_location": "L207",
       "_origin": "ast",
       "id": "services_prerequisites_loadprerequisitecontext",
-      "community": 194,
+      "community": 175,
       "norm_label": "loadprerequisitecontext()"
     },
     {
@@ -7918,7 +7978,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_profileavatar",
-      "community": 229,
+      "community": 175,
       "norm_label": "profileavatar.js"
     },
     {
@@ -7928,7 +7988,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "services_profileavatar_imageextensions",
-      "community": 229,
+      "community": 175,
       "norm_label": "imageextensions"
     },
     {
@@ -7938,7 +7998,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "services_profileavatar_profileavatarupload",
-      "community": 229,
+      "community": 175,
       "norm_label": "profileavatarupload"
     },
     {
@@ -7948,7 +8008,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "services_profileavatar_validateprofileavatar",
-      "community": 229,
+      "community": 175,
       "norm_label": "validateprofileavatar()"
     },
     {
@@ -7958,7 +8018,7 @@
       "source_location": "L42",
       "_origin": "ast",
       "id": "services_profileavatar_removestoredavatar",
-      "community": 229,
+      "community": 175,
       "norm_label": "removestoredavatar()"
     },
     {
@@ -8028,7 +8088,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_roomavailability",
-      "community": 233,
+      "community": 219,
       "norm_label": "roomavailability.js"
     },
     {
@@ -8038,7 +8098,7 @@
       "source_location": "L3",
       "_origin": "ast",
       "id": "services_roomavailability_intervalsoverlap",
-      "community": 233,
+      "community": 219,
       "norm_label": "intervalsoverlap()"
     },
     {
@@ -8048,7 +8108,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "services_roomavailability_roomisfree",
-      "community": 233,
+      "community": 219,
       "norm_label": "roomisfree()"
     },
     {
@@ -8068,7 +8128,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_roomavailability_test",
-      "community": 233,
+      "community": 219,
       "norm_label": "roomavailability.test.mjs"
     },
     {
@@ -8078,7 +8138,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_scheduler",
-      "community": 51,
+      "community": 46,
       "norm_label": "scheduler.js"
     },
     {
@@ -8088,7 +8148,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "services_scheduler_startgamificationscheduler",
-      "community": 51,
+      "community": 46,
       "norm_label": "startgamificationscheduler()"
     },
     {
@@ -8218,7 +8278,7 @@
       "source_location": "L80",
       "_origin": "ast",
       "id": "services_studentprogress_getpassedcourseids",
-      "community": 175,
+      "community": 194,
       "norm_label": "getpassedcourseids()"
     },
     {
@@ -8618,7 +8678,7 @@
       "source_location": "L99",
       "_origin": "ast",
       "id": "services_swinlearnfiles_parsestudydocumentfile",
-      "community": 177,
+      "community": 8,
       "norm_label": "parsestudydocumentfile()"
     },
     {
@@ -8678,7 +8738,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_swinlearngroq",
-      "community": 218,
+      "community": 211,
       "norm_label": "swinlearngroq.js"
     },
     {
@@ -8688,7 +8748,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "services_swinlearngroq_defaultswinlearncontextchars",
-      "community": 218,
+      "community": 211,
       "norm_label": "defaultswinlearncontextchars"
     },
     {
@@ -8698,7 +8758,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "services_swinlearngroq_trimtext",
-      "community": 218,
+      "community": 211,
       "norm_label": "trimtext()"
     },
     {
@@ -8708,7 +8768,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "services_swinlearngroq_documentcontext",
-      "community": 218,
+      "community": 211,
       "norm_label": "documentcontext()"
     },
     {
@@ -8718,7 +8778,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "services_swinlearngroq_buildswinlearngroqpayload",
-      "community": 218,
+      "community": 211,
       "norm_label": "buildswinlearngroqpayload()"
     },
     {
@@ -8728,7 +8788,7 @@
       "source_location": "L87",
       "_origin": "ast",
       "id": "services_swinlearngroq_extractgroqassistanttext",
-      "community": 218,
+      "community": 211,
       "norm_label": "extractgroqassistanttext()"
     },
     {
@@ -8738,7 +8798,7 @@
       "source_location": "L91",
       "_origin": "ast",
       "id": "services_swinlearngroq_groqcitations",
-      "community": 218,
+      "community": 211,
       "norm_label": "groqcitations()"
     },
     {
@@ -8748,7 +8808,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "services_swinlearngroq_groqrequest",
-      "community": 218,
+      "community": 211,
       "norm_label": "groqrequest()"
     },
     {
@@ -8758,7 +8818,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "services_swinlearngroq_createswinlearngroqclient",
-      "community": 218,
+      "community": 211,
       "norm_label": "createswinlearngroqclient()"
     },
     {
@@ -8768,7 +8828,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_swinlearngroq_test",
-      "community": 218,
+      "community": 211,
       "norm_label": "swinlearngroq.test.mjs"
     },
     {
@@ -9038,7 +9098,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "services_swinlearnknowledge_normalizeselectedofferingids",
-      "community": 229,
+      "community": 172,
       "norm_label": "normalizeselectedofferingids()"
     },
     {
@@ -9148,7 +9208,7 @@
       "source_location": "L276",
       "_origin": "ast",
       "id": "services_swinlearnknowledge_loadofferingknowledge",
-      "community": 172,
+      "community": 138,
       "norm_label": "loadofferingknowledge()"
     },
     {
@@ -9158,7 +9218,7 @@
       "source_location": "L308",
       "_origin": "ast",
       "id": "services_swinlearnknowledge_loadswinlearnknowledgedocuments",
-      "community": 172,
+      "community": 138,
       "norm_label": "loadswinlearnknowledgedocuments()"
     },
     {
@@ -9215,7 +9275,7 @@
       "label": "UI_INTENTS",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L48",
+      "source_location": "L53",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_ui_intents",
       "community": 138,
@@ -9225,7 +9285,7 @@
       "label": "buildExplicitRoute()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L54",
+      "source_location": "L59",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_buildexplicitroute",
       "community": 138,
@@ -9235,7 +9295,7 @@
       "label": "cvKeywordHint()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L67",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_cvkeywordhint",
       "community": 138,
@@ -9245,17 +9305,17 @@
       "label": "assignmentListingHint()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L78",
+      "source_location": "L83",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_assignmentlistinghint",
-      "community": 172,
+      "community": 138,
       "norm_label": "assignmentlistinghint()"
     },
     {
       "label": "shouldTryCvFlow()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L84",
+      "source_location": "L89",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_shouldtrycvflow",
       "community": 138,
@@ -9265,7 +9325,7 @@
       "label": "shouldSkipKnowledgeRetrieval()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L90",
+      "source_location": "L95",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_shouldskipknowledgeretrieval",
       "community": 138,
@@ -9275,17 +9335,17 @@
       "label": "loadKnowledgeDocuments()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L105",
+      "source_location": "L110",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_loadknowledgedocuments",
-      "community": 172,
+      "community": 138,
       "norm_label": "loadknowledgedocuments()"
     },
     {
       "label": "handleGradeAnalysis()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L211",
+      "source_location": "L216",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_handlegradeanalysis",
       "community": 138,
@@ -9295,7 +9355,7 @@
       "label": "fallbackSwinlearnAnswer()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L358",
+      "source_location": "L363",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_fallbackswinlearnanswer",
       "community": 138,
@@ -9305,17 +9365,17 @@
       "label": "resolvePerfectCvAssignmentIdsFromText()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L379",
+      "source_location": "L384",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_resolveperfectcvassignmentidsfromtext",
-      "community": 138,
+      "community": 192,
       "norm_label": "resolveperfectcvassignmentidsfromtext()"
     },
     {
       "label": "handleSwinlearnMessage()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.js",
-      "source_location": "L428",
+      "source_location": "L433",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_handleswinlearnmessage",
       "community": 138,
@@ -9385,7 +9445,7 @@
       "label": "multiGradeContext()",
       "file_type": "code",
       "source_file": "server/services/swinlearnMessageHandler.test.mjs",
-      "source_location": "L401",
+      "source_location": "L584",
       "_origin": "ast",
       "id": "services_swinlearnmessagehandler_test_multigradecontext",
       "community": 225,
@@ -9408,7 +9468,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_swinlearnprompt",
-      "community": 192,
+      "community": 10,
       "norm_label": "swinlearnprompt.js"
     },
     {
@@ -9418,7 +9478,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_swinlearnprompt_assignmentcompletionpatterns",
-      "community": 192,
+      "community": 10,
       "norm_label": "assignmentcompletionpatterns"
     },
     {
@@ -9428,7 +9488,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "services_swinlearnprompt_cvportfoliopatterns",
-      "community": 192,
+      "community": 10,
       "norm_label": "cvportfoliopatterns"
     },
     {
@@ -9438,7 +9498,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "services_swinlearnprompt_perfectcvpatterns",
-      "community": 192,
+      "community": 10,
       "norm_label": "perfectcvpatterns"
     },
     {
@@ -9448,67 +9508,107 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "services_swinlearnprompt_gradeexportpatterns",
-      "community": 192,
+      "community": 10,
       "norm_label": "gradeexportpatterns"
+    },
+    {
+      "label": "capabilitiesPatterns",
+      "file_type": "code",
+      "source_file": "server/services/swinlearnPrompt.js",
+      "source_location": "L41",
+      "_origin": "ast",
+      "id": "services_swinlearnprompt_capabilitiespatterns",
+      "community": 10,
+      "norm_label": "capabilitiespatterns"
     },
     {
       "label": "isCvPortfolioRequest()",
       "file_type": "code",
       "source_file": "server/services/swinlearnPrompt.js",
-      "source_location": "L48",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "services_swinlearnprompt_iscvportfoliorequest",
-      "community": 192,
+      "community": 10,
       "norm_label": "iscvportfoliorequest()"
     },
     {
       "label": "isPerfectCvRequest()",
       "file_type": "code",
       "source_file": "server/services/swinlearnPrompt.js",
-      "source_location": "L58",
+      "source_location": "L72",
       "_origin": "ast",
       "id": "services_swinlearnprompt_isperfectcvrequest",
-      "community": 138,
+      "community": 10,
       "norm_label": "isperfectcvrequest()"
     },
     {
       "label": "isGradeExportRequest()",
       "file_type": "code",
       "source_file": "server/services/swinlearnPrompt.js",
-      "source_location": "L68",
+      "source_location": "L82",
       "_origin": "ast",
       "id": "services_swinlearnprompt_isgradeexportrequest",
-      "community": 192,
+      "community": 10,
       "norm_label": "isgradeexportrequest()"
     },
     {
       "label": "isAssignmentCompletionRequest()",
       "file_type": "code",
       "source_file": "server/services/swinlearnPrompt.js",
-      "source_location": "L78",
+      "source_location": "L92",
       "_origin": "ast",
       "id": "services_swinlearnprompt_isassignmentcompletionrequest",
-      "community": 192,
+      "community": 10,
       "norm_label": "isassignmentcompletionrequest()"
+    },
+    {
+      "label": "isCapabilitiesRequest()",
+      "file_type": "code",
+      "source_file": "server/services/swinlearnPrompt.js",
+      "source_location": "L102",
+      "_origin": "ast",
+      "id": "services_swinlearnprompt_iscapabilitiesrequest",
+      "community": 138,
+      "norm_label": "iscapabilitiesrequest()"
+    },
+    {
+      "label": "CAPABILITIES_RESPONSE",
+      "file_type": "code",
+      "source_file": "server/services/swinlearnPrompt.js",
+      "source_location": "L106",
+      "_origin": "ast",
+      "id": "services_swinlearnprompt_capabilities_response",
+      "community": 10,
+      "norm_label": "capabilities_response"
+    },
+    {
+      "label": "formatCapabilitiesResponse()",
+      "file_type": "code",
+      "source_file": "server/services/swinlearnPrompt.js",
+      "source_location": "L127",
+      "_origin": "ast",
+      "id": "services_swinlearnprompt_formatcapabilitiesresponse",
+      "community": 138,
+      "norm_label": "formatcapabilitiesresponse()"
     },
     {
       "label": "buildSwinlearnInstructions()",
       "file_type": "code",
       "source_file": "server/services/swinlearnPrompt.js",
-      "source_location": "L88",
+      "source_location": "L131",
       "_origin": "ast",
       "id": "services_swinlearnprompt_buildswinlearninstructions",
-      "community": 138,
+      "community": 10,
       "norm_label": "buildswinlearninstructions()"
     },
     {
       "label": "assignmentCoachingMessage()",
       "file_type": "code",
       "source_file": "server/services/swinlearnPrompt.js",
-      "source_location": "L181",
+      "source_location": "L224",
       "_origin": "ast",
       "id": "services_swinlearnprompt_assignmentcoachingmessage",
-      "community": 192,
+      "community": 10,
       "norm_label": "assignmentcoachingmessage()"
     },
     {
@@ -9518,7 +9618,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "services_swinlearnprompt_test",
-      "community": 192,
+      "community": 10,
       "norm_label": "swinlearnprompt.test.mjs"
     },
     {
@@ -9638,7 +9738,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "services_teachereligibility_getineligiblestaffforcourse",
-      "community": 175,
+      "community": 0,
       "norm_label": "getineligiblestaffforcourse()"
     },
     {
@@ -10258,7 +10358,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "coursespage_coursespage",
-      "community": 201,
+      "community": 209,
       "norm_label": "coursespage.tsx"
     },
     {
@@ -10268,7 +10368,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "coursespage_coursespage_normalizesearch",
-      "community": 201,
+      "community": 209,
       "norm_label": "normalizesearch()"
     },
     {
@@ -10278,7 +10378,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "coursespage_coursespage_includesquery",
-      "community": 201,
+      "community": 209,
       "norm_label": "includesquery()"
     },
     {
@@ -10288,7 +10388,7 @@
       "source_location": "L16",
       "_origin": "ast",
       "id": "coursespage_coursespage_pluralize",
-      "community": 201,
+      "community": 209,
       "norm_label": "pluralize()"
     },
     {
@@ -10298,7 +10398,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "coursespage_coursespage_courseunitcard",
-      "community": 201,
+      "community": 209,
       "norm_label": "courseunitcard()"
     },
     {
@@ -10308,7 +10408,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "coursespage_coursespage_coursespage",
-      "community": 201,
+      "community": 209,
       "norm_label": "coursespage()"
     },
     {
@@ -10578,7 +10678,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_markdownmessage",
-      "community": 220,
+      "community": 21,
       "norm_label": "markdownmessage.tsx"
     },
     {
@@ -10588,7 +10688,7 @@
       "source_location": "L4",
       "_origin": "ast",
       "id": "components_markdownmessage_markdownmessage",
-      "community": 220,
+      "community": 21,
       "norm_label": "markdownmessage()"
     },
     {
@@ -10668,7 +10768,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "components_workspacealertstack",
-      "community": 10,
+      "community": 206,
       "norm_label": "workspacealertstack.tsx"
     },
     {
@@ -10678,7 +10778,7 @@
       "source_location": "L5",
       "_origin": "ast",
       "id": "components_workspacealertstack_workspacealertstackprops",
-      "community": 10,
+      "community": 206,
       "norm_label": "workspacealertstackprops"
     },
     {
@@ -10688,7 +10788,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "components_workspacealertstack_workspacealertstack",
-      "community": 10,
+      "community": 206,
       "norm_label": "workspacealertstack()"
     },
     {
@@ -10738,7 +10838,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "cv_perfectcveditpanel",
-      "community": 200,
+      "community": 43,
       "norm_label": "perfectcveditpanel.tsx"
     },
     {
@@ -10748,7 +10848,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "cv_perfectcveditpanel_perfectcveditpanelprops",
-      "community": 200,
+      "community": 43,
       "norm_label": "perfectcveditpanelprops"
     },
     {
@@ -10758,7 +10858,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "cv_perfectcveditpanel_defaultskillstext",
-      "community": 200,
+      "community": 43,
       "norm_label": "defaultskillstext()"
     },
     {
@@ -10768,7 +10868,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "cv_perfectcveditpanel_perfectcveditpanel",
-      "community": 200,
+      "community": 43,
       "norm_label": "perfectcveditpanel()"
     },
     {
@@ -10818,7 +10918,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "cv_perfectcvprojectpicker",
-      "community": 220,
+      "community": 21,
       "norm_label": "perfectcvprojectpicker.tsx"
     },
     {
@@ -10828,7 +10928,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "cv_perfectcvprojectpicker_perfectcvprojectpickerprops",
-      "community": 220,
+      "community": 21,
       "norm_label": "perfectcvprojectpickerprops"
     },
     {
@@ -10838,7 +10938,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "cv_perfectcvprojectpicker_perfectcvprojectpicker",
-      "community": 220,
+      "community": 21,
       "norm_label": "perfectcvprojectpicker()"
     },
     {
@@ -11252,14 +11352,34 @@
       "norm_label": "gradereportfilename()"
     },
     {
-      "label": "downloadGradeReportXlsx()",
+      "label": "gradeReportPdfFilename()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/gradeReportExport.mjs",
       "source_location": "L6",
       "_origin": "ast",
+      "id": "lib_gradereportexport_gradereportpdffilename",
+      "community": 220,
+      "norm_label": "gradereportpdffilename()"
+    },
+    {
+      "label": "downloadGradeReportXlsx()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/gradeReportExport.mjs",
+      "source_location": "L10",
+      "_origin": "ast",
       "id": "lib_gradereportexport_downloadgradereportxlsx",
       "community": 220,
       "norm_label": "downloadgradereportxlsx()"
+    },
+    {
+      "label": "downloadGradeReportPdf()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/gradeReportExport.mjs",
+      "source_location": "L49",
+      "_origin": "ast",
+      "id": "lib_gradereportexport_downloadgradereportpdf",
+      "community": 220,
+      "norm_label": "downloadgradereportpdf()"
     },
     {
       "label": "gradeWarningDetail.mjs",
@@ -11678,7 +11798,7 @@
       "source_location": "L59",
       "_origin": "ast",
       "id": "workspace_api_geterrormessage",
-      "community": 220,
+      "community": 21,
       "norm_label": "geterrormessage()"
     },
     {
@@ -11748,7 +11868,7 @@
       "source_location": "L101",
       "_origin": "ast",
       "id": "workspace_api_fetchprofiles",
-      "community": 10,
+      "community": 206,
       "norm_label": "fetchprofiles()"
     },
     {
@@ -11798,7 +11918,7 @@
       "source_location": "L131",
       "_origin": "ast",
       "id": "workspace_api_fetchworkspacecourses",
-      "community": 10,
+      "community": 206,
       "norm_label": "fetchworkspacecourses()"
     },
     {
@@ -11918,7 +12038,7 @@
       "source_location": "L272",
       "_origin": "ast",
       "id": "workspace_api_fetchswinlearncontext",
-      "community": 220,
+      "community": 21,
       "norm_label": "fetchswinlearncontext()"
     },
     {
@@ -11928,7 +12048,7 @@
       "source_location": "L276",
       "_origin": "ast",
       "id": "workspace_api_fetchsubmittedprojects",
-      "community": 220,
+      "community": 21,
       "norm_label": "fetchsubmittedprojects()"
     },
     {
@@ -11948,7 +12068,7 @@
       "source_location": "L284",
       "_origin": "ast",
       "id": "workspace_api_updatecvprofile",
-      "community": 206,
+      "community": 43,
       "norm_label": "updatecvprofile()"
     },
     {
@@ -11958,7 +12078,7 @@
       "source_location": "L295",
       "_origin": "ast",
       "id": "workspace_api_swinlearnsendmessageoptions",
-      "community": 220,
+      "community": 21,
       "norm_label": "swinlearnsendmessageoptions"
     },
     {
@@ -11968,7 +12088,7 @@
       "source_location": "L300",
       "_origin": "ast",
       "id": "workspace_api_fetchswinlearnthreads",
-      "community": 220,
+      "community": 21,
       "norm_label": "fetchswinlearnthreads()"
     },
     {
@@ -11978,7 +12098,7 @@
       "source_location": "L304",
       "_origin": "ast",
       "id": "workspace_api_createswinlearnthread",
-      "community": 220,
+      "community": 21,
       "norm_label": "createswinlearnthread()"
     },
     {
@@ -11988,7 +12108,7 @@
       "source_location": "L317",
       "_origin": "ast",
       "id": "workspace_api_fetchswinlearnthread",
-      "community": 220,
+      "community": 21,
       "norm_label": "fetchswinlearnthread()"
     },
     {
@@ -11998,7 +12118,7 @@
       "source_location": "L323",
       "_origin": "ast",
       "id": "workspace_api_updateswinlearnthread",
-      "community": 220,
+      "community": 21,
       "norm_label": "updateswinlearnthread()"
     },
     {
@@ -12008,7 +12128,7 @@
       "source_location": "L336",
       "_origin": "ast",
       "id": "workspace_api_deleteswinlearnthread",
-      "community": 220,
+      "community": 21,
       "norm_label": "deleteswinlearnthread()"
     },
     {
@@ -12028,7 +12148,7 @@
       "source_location": "L351",
       "_origin": "ast",
       "id": "workspace_api_sendswinlearnmessage",
-      "community": 220,
+      "community": 21,
       "norm_label": "sendswinlearnmessage()"
     },
     {
@@ -12058,7 +12178,7 @@
       "source_location": "L403",
       "_origin": "ast",
       "id": "workspace_api_updatecourse",
-      "community": 206,
+      "community": 48,
       "norm_label": "updatecourse()"
     },
     {
@@ -12068,7 +12188,7 @@
       "source_location": "L410",
       "_origin": "ast",
       "id": "workspace_api_deletecourse",
-      "community": 206,
+      "community": 48,
       "norm_label": "deletecourse()"
     },
     {
@@ -12078,7 +12198,7 @@
       "source_location": "L414",
       "_origin": "ast",
       "id": "workspace_api_savecourseprerequisites",
-      "community": 206,
+      "community": 48,
       "norm_label": "savecourseprerequisites()"
     },
     {
@@ -12108,7 +12228,7 @@
       "source_location": "L440",
       "_origin": "ast",
       "id": "workspace_api_deletecurriculumrule",
-      "community": 206,
+      "community": 48,
       "norm_label": "deletecurriculumrule()"
     },
     {
@@ -12128,7 +12248,7 @@
       "source_location": "L459",
       "_origin": "ast",
       "id": "workspace_api_updatecourseoffering",
-      "community": 42,
+      "community": 48,
       "norm_label": "updatecourseoffering()"
     },
     {
@@ -12348,7 +12468,7 @@
       "source_location": "L723",
       "_origin": "ast",
       "id": "workspace_api_fetchassignments",
-      "community": 10,
+      "community": 206,
       "norm_label": "fetchassignments()"
     },
     {
@@ -12358,7 +12478,7 @@
       "source_location": "L727",
       "_origin": "ast",
       "id": "workspace_api_fetchregistrationdata",
-      "community": 10,
+      "community": 181,
       "norm_label": "fetchregistrationdata()"
     },
     {
@@ -12382,80 +12502,90 @@
       "norm_label": "exportacademicprogressxlsx()"
     },
     {
-      "label": "checkRegistrationBasket()",
+      "label": "exportAcademicProgressPdf()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
       "source_location": "L770",
       "_origin": "ast",
+      "id": "workspace_api_exportacademicprogresspdf",
+      "community": 215,
+      "norm_label": "exportacademicprogresspdf()"
+    },
+    {
+      "label": "checkRegistrationBasket()",
+      "file_type": "code",
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L805",
+      "_origin": "ast",
       "id": "workspace_api_checkregistrationbasket",
-      "community": 10,
+      "community": 181,
       "norm_label": "checkregistrationbasket()"
     },
     {
       "label": "registerForOfferings()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L781",
+      "source_location": "L816",
       "_origin": "ast",
       "id": "workspace_api_registerforofferings",
-      "community": 10,
+      "community": 181,
       "norm_label": "registerforofferings()"
     },
     {
       "label": "createAssignment()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L790",
+      "source_location": "L825",
       "_origin": "ast",
       "id": "workspace_api_createassignment",
-      "community": 10,
+      "community": 206,
       "norm_label": "createassignment()"
     },
     {
       "label": "updateAssignment()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L799",
+      "source_location": "L834",
       "_origin": "ast",
       "id": "workspace_api_updateassignment",
-      "community": 10,
+      "community": 206,
       "norm_label": "updateassignment()"
     },
     {
       "label": "fetchSubmissions()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L809",
+      "source_location": "L844",
       "_origin": "ast",
       "id": "workspace_api_fetchsubmissions",
-      "community": 10,
+      "community": 206,
       "norm_label": "fetchsubmissions()"
     },
     {
       "label": "submitAssignment()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L813",
+      "source_location": "L848",
       "_origin": "ast",
       "id": "workspace_api_submitassignment",
-      "community": 10,
+      "community": 206,
       "norm_label": "submitassignment()"
     },
     {
       "label": "fetchCalendarSessions()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L835",
+      "source_location": "L870",
       "_origin": "ast",
       "id": "workspace_api_fetchcalendarsessions",
-      "community": 10,
+      "community": 206,
       "norm_label": "fetchcalendarsessions()"
     },
     {
       "label": "fetchInboxData()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L839",
+      "source_location": "L874",
       "_origin": "ast",
       "id": "workspace_api_fetchinboxdata",
       "community": 4,
@@ -12465,7 +12595,7 @@
       "label": "fetchInboxBadge()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L843",
+      "source_location": "L878",
       "_origin": "ast",
       "id": "workspace_api_fetchinboxbadge",
       "community": 181,
@@ -12475,7 +12605,7 @@
       "label": "searchPeople()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L847",
+      "source_location": "L882",
       "_origin": "ast",
       "id": "workspace_api_searchpeople",
       "community": 4,
@@ -12485,7 +12615,7 @@
       "label": "sendConnectionRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L868",
+      "source_location": "L903",
       "_origin": "ast",
       "id": "workspace_api_sendconnectionrequest",
       "community": 178,
@@ -12495,7 +12625,7 @@
       "label": "respondToConnection()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L875",
+      "source_location": "L910",
       "_origin": "ast",
       "id": "workspace_api_respondtoconnection",
       "community": 178,
@@ -12505,17 +12635,17 @@
       "label": "cancelConnection()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L885",
+      "source_location": "L920",
       "_origin": "ast",
       "id": "workspace_api_cancelconnection",
-      "community": 178,
+      "community": 206,
       "norm_label": "cancelconnection()"
     },
     {
       "label": "openConversation()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L891",
+      "source_location": "L926",
       "_origin": "ast",
       "id": "workspace_api_openconversation",
       "community": 178,
@@ -12525,7 +12655,7 @@
       "label": "sendInboxMessage()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L900",
+      "source_location": "L935",
       "_origin": "ast",
       "id": "workspace_api_sendinboxmessage",
       "community": 178,
@@ -12535,17 +12665,17 @@
       "label": "markConversationRead()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L925",
+      "source_location": "L960",
       "_origin": "ast",
       "id": "workspace_api_markconversationread",
-      "community": 178,
+      "community": 206,
       "norm_label": "markconversationread()"
     },
     {
       "label": "createGroupConversation()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L932",
+      "source_location": "L967",
       "_origin": "ast",
       "id": "workspace_api_creategroupconversation",
       "community": 178,
@@ -12555,37 +12685,37 @@
       "label": "updateConversation()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L941",
+      "source_location": "L976",
       "_origin": "ast",
       "id": "workspace_api_updateconversation",
-      "community": 178,
+      "community": 206,
       "norm_label": "updateconversation()"
     },
     {
       "label": "setConversationNickname()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L954",
+      "source_location": "L989",
       "_origin": "ast",
       "id": "workspace_api_setconversationnickname",
-      "community": 178,
+      "community": 206,
       "norm_label": "setconversationnickname()"
     },
     {
       "label": "deleteConversation()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L968",
+      "source_location": "L1003",
       "_origin": "ast",
       "id": "workspace_api_deleteconversation",
-      "community": 178,
+      "community": 206,
       "norm_label": "deleteconversation()"
     },
     {
       "label": "profileName()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L974",
+      "source_location": "L1009",
       "_origin": "ast",
       "id": "workspace_api_profilename",
       "community": 215,
@@ -12595,17 +12725,17 @@
       "label": "courseLabel()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L984",
+      "source_location": "L1019",
       "_origin": "ast",
       "id": "workspace_api_courselabel",
-      "community": 10,
+      "community": 181,
       "norm_label": "courselabel()"
     },
     {
       "label": "fetchConsultationTeachers()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L988",
+      "source_location": "L1023",
       "_origin": "ast",
       "id": "workspace_api_fetchconsultationteachers",
       "community": 206,
@@ -12615,7 +12745,7 @@
       "label": "fetchHelpRequests()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L992",
+      "source_location": "L1027",
       "_origin": "ast",
       "id": "workspace_api_fetchhelprequests",
       "community": 206,
@@ -12625,7 +12755,7 @@
       "label": "submitHelpRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L996",
+      "source_location": "L1031",
       "_origin": "ast",
       "id": "workspace_api_submithelprequest",
       "community": 206,
@@ -12635,7 +12765,7 @@
       "label": "fetchTeacherHelpRequests()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1003",
+      "source_location": "L1038",
       "_origin": "ast",
       "id": "workspace_api_fetchteacherhelprequests",
       "community": 206,
@@ -12645,7 +12775,7 @@
       "label": "respondToHelpRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1007",
+      "source_location": "L1042",
       "_origin": "ast",
       "id": "workspace_api_respondtohelprequest",
       "community": 206,
@@ -12655,7 +12785,7 @@
       "label": "fetchAdminHelpRequests()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1020",
+      "source_location": "L1055",
       "_origin": "ast",
       "id": "workspace_api_fetchadminhelprequests",
       "community": 206,
@@ -12665,7 +12795,7 @@
       "label": "fetchAvailableRoomsForRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1024",
+      "source_location": "L1059",
       "_origin": "ast",
       "id": "workspace_api_fetchavailableroomsforrequest",
       "community": 206,
@@ -12675,7 +12805,7 @@
       "label": "forwardHelpRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1030",
+      "source_location": "L1065",
       "_origin": "ast",
       "id": "workspace_api_forwardhelprequest",
       "community": 206,
@@ -12685,7 +12815,7 @@
       "label": "approveHelpRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1037",
+      "source_location": "L1072",
       "_origin": "ast",
       "id": "workspace_api_approvehelprequest",
       "community": 206,
@@ -12695,7 +12825,7 @@
       "label": "rejectHelpRequest()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1050",
+      "source_location": "L1085",
       "_origin": "ast",
       "id": "workspace_api_rejecthelprequest",
       "community": 206,
@@ -12705,7 +12835,7 @@
       "label": "helpTopicPresets",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1059",
+      "source_location": "L1094",
       "_origin": "ast",
       "id": "workspace_api_helptopicpresets",
       "community": 206,
@@ -12715,7 +12845,7 @@
       "label": "helpRequestStatusLabel",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1066",
+      "source_location": "L1101",
       "_origin": "ast",
       "id": "workspace_api_helprequeststatuslabel",
       "community": 206,
@@ -12725,7 +12855,7 @@
       "label": "helpTopicLabel()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1075",
+      "source_location": "L1110",
       "_origin": "ast",
       "id": "workspace_api_helptopiclabel",
       "community": 206,
@@ -12735,7 +12865,7 @@
       "label": "byTitle()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1080",
+      "source_location": "L1115",
       "_origin": "ast",
       "id": "workspace_api_bytitle",
       "community": 206,
@@ -12745,7 +12875,7 @@
       "label": "orderedProfiles()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/lib/workspace/api.ts",
-      "source_location": "L1083",
+      "source_location": "L1118",
       "_origin": "ast",
       "id": "workspace_api_orderedprofiles",
       "community": 206,
@@ -12988,7 +13118,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "workspace_types_courseterm",
-      "community": 10,
+      "community": 42,
       "norm_label": "courseterm"
     },
     {
@@ -13158,7 +13288,7 @@
       "source_location": "L83",
       "_origin": "ast",
       "id": "workspace_types_coursecatalogrow",
-      "community": 201,
+      "community": 209,
       "norm_label": "coursecatalogrow"
     },
     {
@@ -13348,7 +13478,7 @@
       "source_location": "L253",
       "_origin": "ast",
       "id": "workspace_types_assignmentrow",
-      "community": 10,
+      "community": 206,
       "norm_label": "assignmentrow"
     },
     {
@@ -13358,7 +13488,7 @@
       "source_location": "L271",
       "_origin": "ast",
       "id": "workspace_types_assignmentsubmissionrow",
-      "community": 10,
+      "community": 206,
       "norm_label": "assignmentsubmissionrow"
     },
     {
@@ -13368,7 +13498,7 @@
       "source_location": "L285",
       "_origin": "ast",
       "id": "workspace_types_coursesessionrow",
-      "community": 10,
+      "community": 206,
       "norm_label": "coursesessionrow"
     },
     {
@@ -13458,7 +13588,7 @@
       "source_location": "L391",
       "_origin": "ast",
       "id": "workspace_types_swinlearncoursecontextrow",
-      "community": 220,
+      "community": 21,
       "norm_label": "swinlearncoursecontextrow"
     },
     {
@@ -13508,7 +13638,7 @@
       "source_location": "L431",
       "_origin": "ast",
       "id": "workspace_types_cvskillssnapshot",
-      "community": 200,
+      "community": 43,
       "norm_label": "cvskillssnapshot"
     },
     {
@@ -13528,7 +13658,7 @@
       "source_location": "L441",
       "_origin": "ast",
       "id": "workspace_types_swinlearnmessagerow",
-      "community": 200,
+      "community": 43,
       "norm_label": "swinlearnmessagerow"
     },
     {
@@ -13538,7 +13668,7 @@
       "source_location": "L463",
       "_origin": "ast",
       "id": "workspace_types_swinlearnthreadrow",
-      "community": 220,
+      "community": 21,
       "norm_label": "swinlearnthreadrow"
     },
     {
@@ -13548,7 +13678,7 @@
       "source_location": "L476",
       "_origin": "ast",
       "id": "workspace_types_swinlearncontextdata",
-      "community": 220,
+      "community": 21,
       "norm_label": "swinlearncontextdata"
     },
     {
@@ -13578,7 +13708,7 @@
       "source_location": "L495",
       "_origin": "ast",
       "id": "workspace_types_submittedprojectcourserow",
-      "community": 220,
+      "community": 21,
       "norm_label": "submittedprojectcourserow"
     },
     {
@@ -13588,7 +13718,7 @@
       "source_location": "L502",
       "_origin": "ast",
       "id": "workspace_types_submittedprojectsdata",
-      "community": 220,
+      "community": 21,
       "norm_label": "submittedprojectsdata"
     },
     {
@@ -13698,7 +13828,7 @@
       "source_location": "L572",
       "_origin": "ast",
       "id": "workspace_types_coursewithmembers",
-      "community": 42,
+      "community": 206,
       "norm_label": "coursewithmembers"
     },
     {
@@ -13718,7 +13848,7 @@
       "source_location": "L583",
       "_origin": "ast",
       "id": "workspace_types_registrationeligibilityrow",
-      "community": 10,
+      "community": 181,
       "norm_label": "registrationeligibilityrow"
     },
     {
@@ -13728,7 +13858,7 @@
       "source_location": "L591",
       "_origin": "ast",
       "id": "workspace_types_registrationdata",
-      "community": 10,
+      "community": 181,
       "norm_label": "registrationdata"
     },
     {
@@ -13738,7 +13868,7 @@
       "source_location": "L597",
       "_origin": "ast",
       "id": "workspace_types_registrationbasketresult",
-      "community": 10,
+      "community": 181,
       "norm_label": "registrationbasketresult"
     },
     {
@@ -13808,7 +13938,7 @@
       "source_location": "L650",
       "_origin": "ast",
       "id": "workspace_types_courseofferinginput",
-      "community": 42,
+      "community": 48,
       "norm_label": "courseofferinginput"
     },
     {
@@ -13818,7 +13948,7 @@
       "source_location": "L657",
       "_origin": "ast",
       "id": "workspace_types_assignmentmutationinput",
-      "community": 10,
+      "community": 206,
       "norm_label": "assignmentmutationinput"
     },
     {
@@ -14478,7 +14608,7 @@
       "source_location": "L94",
       "_origin": "ast",
       "id": "admin_adminuserspage_adminuserspage",
-      "community": 215,
+      "community": 181,
       "norm_label": "adminuserspage()"
     },
     {
@@ -14825,7 +14955,7 @@
       "label": "roleName",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/shared/AccountPage.tsx",
-      "source_location": "L25",
+      "source_location": "L26",
       "_origin": "ast",
       "id": "shared_accountpage_rolename",
       "community": 215,
@@ -14835,7 +14965,7 @@
       "label": "progressRowClass()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/shared/AccountPage.tsx",
-      "source_location": "L31",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "shared_accountpage_progressrowclass",
       "community": 215,
@@ -14845,7 +14975,7 @@
       "label": "AccountPage()",
       "file_type": "code",
       "source_file": "src/features/swinlearn/pages/shared/AccountPage.tsx",
-      "source_location": "L47",
+      "source_location": "L48",
       "_origin": "ast",
       "id": "shared_accountpage_accountpage",
       "community": 216,
@@ -15528,7 +15658,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "shared_mycoursespage",
-      "community": 10,
+      "community": 206,
       "norm_label": "mycoursespage.tsx"
     },
     {
@@ -15538,7 +15668,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "shared_mycoursespage_termlabels",
-      "community": 10,
+      "community": 206,
       "norm_label": "termlabels"
     },
     {
@@ -15548,7 +15678,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "shared_mycoursespage_toreadabledate",
-      "community": 10,
+      "community": 206,
       "norm_label": "toreadabledate()"
     },
     {
@@ -15558,7 +15688,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "shared_mycoursespage_coursecardicons",
-      "community": 10,
+      "community": 206,
       "norm_label": "coursecardicons"
     },
     {
@@ -15568,7 +15698,7 @@
       "source_location": "L47",
       "_origin": "ast",
       "id": "shared_mycoursespage_coursecardicon",
-      "community": 10,
+      "community": 206,
       "norm_label": "coursecardicon()"
     },
     {
@@ -15578,7 +15708,7 @@
       "source_location": "L62",
       "_origin": "ast",
       "id": "shared_mycoursespage_coursecardprops",
-      "community": 10,
+      "community": 206,
       "norm_label": "coursecardprops"
     },
     {
@@ -15598,7 +15728,7 @@
       "source_location": "L182",
       "_origin": "ast",
       "id": "shared_mycoursespage_mycoursespage",
-      "community": 10,
+      "community": 181,
       "norm_label": "mycoursespage()"
     },
     {
@@ -15608,7 +15738,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "shared_workspacecalendarpage",
-      "community": 10,
+      "community": 206,
       "norm_label": "workspacecalendarpage.tsx"
     },
     {
@@ -15618,7 +15748,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "shared_workspacecalendarpage_calendaritem",
-      "community": 10,
+      "community": 206,
       "norm_label": "calendaritem"
     },
     {
@@ -15628,7 +15758,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "shared_workspacecalendarpage_formatdate",
-      "community": 10,
+      "community": 206,
       "norm_label": "formatdate()"
     },
     {
@@ -15638,7 +15768,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "shared_workspacecalendarpage_formattime",
-      "community": 10,
+      "community": 206,
       "norm_label": "formattime()"
     },
     {
@@ -15648,7 +15778,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "shared_workspacecalendarpage_workspacecalendarpage",
-      "community": 10,
+      "community": 206,
       "norm_label": "workspacecalendarpage()"
     },
     {
@@ -15958,7 +16088,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "student_registercoursespage",
-      "community": 10,
+      "community": 181,
       "norm_label": "registercoursespage.tsx"
     },
     {
@@ -15968,7 +16098,7 @@
       "source_location": "L18",
       "_origin": "ast",
       "id": "student_registercoursespage_termlabels",
-      "community": 10,
+      "community": 181,
       "norm_label": "termlabels"
     },
     {
@@ -15978,7 +16108,7 @@
       "source_location": "L24",
       "_origin": "ast",
       "id": "student_registercoursespage_getregistrationblockedmessage",
-      "community": 10,
+      "community": 181,
       "norm_label": "getregistrationblockedmessage()"
     },
     {
@@ -15988,7 +16118,7 @@
       "source_location": "L49",
       "_origin": "ast",
       "id": "student_registercoursespage_registercoursespage",
-      "community": 10,
+      "community": 181,
       "norm_label": "registercoursespage()"
     },
     {
@@ -15998,7 +16128,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage",
-      "community": 220,
+      "community": 21,
       "norm_label": "swinlearnpage.tsx"
     },
     {
@@ -16008,7 +16138,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_emptycontext",
-      "community": 220,
+      "community": 21,
       "norm_label": "emptycontext"
     },
     {
@@ -16018,7 +16148,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_coursetitle",
-      "community": 220,
+      "community": 21,
       "norm_label": "coursetitle()"
     },
     {
@@ -16028,7 +16158,7 @@
       "source_location": "L40",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_formatdatetime",
-      "community": 220,
+      "community": 21,
       "norm_label": "formatdatetime()"
     },
     {
@@ -16038,7 +16168,7 @@
       "source_location": "L48",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_messagecitations",
-      "community": 220,
+      "community": 21,
       "norm_label": "messagecitations()"
     },
     {
@@ -16048,7 +16178,7 @@
       "source_location": "L51",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_formatknowledgeindexstatus",
-      "community": 220,
+      "community": 21,
       "norm_label": "formatknowledgeindexstatus()"
     },
     {
@@ -16058,7 +16188,7 @@
       "source_location": "L69",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_formatcitationscore",
-      "community": 220,
+      "community": 21,
       "norm_label": "formatcitationscore()"
     },
     {
@@ -16068,7 +16198,7 @@
       "source_location": "L74",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_messagecitationlist",
-      "community": 220,
+      "community": 21,
       "norm_label": "messagecitationlist()"
     },
     {
@@ -16078,7 +16208,7 @@
       "source_location": "L114",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_iscvexportmessage",
-      "community": 220,
+      "community": 21,
       "norm_label": "iscvexportmessage()"
     },
     {
@@ -16088,7 +16218,7 @@
       "source_location": "L117",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_isperfectcvexportmessage",
-      "community": 220,
+      "community": 21,
       "norm_label": "isperfectcvexportmessage()"
     },
     {
@@ -16098,7 +16228,7 @@
       "source_location": "L120",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_isgradeexportmessage",
-      "community": 220,
+      "community": 21,
       "norm_label": "isgradeexportmessage()"
     },
     {
@@ -16108,7 +16238,7 @@
       "source_location": "L123",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_cvexportfilename",
-      "community": 220,
+      "community": 21,
       "norm_label": "cvexportfilename()"
     },
     {
@@ -16118,7 +16248,7 @@
       "source_location": "L126",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_downloadcvfile",
-      "community": 220,
+      "community": 21,
       "norm_label": "downloadcvfile()"
     },
     {
@@ -16128,7 +16258,7 @@
       "source_location": "L136",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_downloadcvmarkdown",
-      "community": 220,
+      "community": 21,
       "norm_label": "downloadcvmarkdown()"
     },
     {
@@ -16138,7 +16268,7 @@
       "source_location": "L140",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_isperfectcvmarkdown",
-      "community": 220,
+      "community": 21,
       "norm_label": "isperfectcvmarkdown()"
     },
     {
@@ -16148,7 +16278,7 @@
       "source_location": "L143",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_downloadcvword",
-      "community": 220,
+      "community": 21,
       "norm_label": "downloadcvword()"
     },
     {
@@ -16158,7 +16288,7 @@
       "source_location": "L151",
       "_origin": "ast",
       "id": "swinlearnpage_swinlearnpage_swinlearnellipsisicon",
-      "community": 220,
+      "community": 21,
       "norm_label": "swinlearnellipsisicon()"
     },
     {
@@ -24278,7 +24408,7 @@
       "source_location": "L721",
       "_origin": "ast",
       "id": "writing_skills_anthropic_best_practices_evaluation_and_iteration",
-      "community": 211,
+      "community": 71,
       "norm_label": "evaluation and iteration"
     },
     {
@@ -24288,7 +24418,7 @@
       "source_location": "L723",
       "_origin": "ast",
       "id": "writing_skills_anthropic_best_practices_build_evaluations_first",
-      "community": 211,
+      "community": 71,
       "norm_label": "build evaluations first"
     },
     {
@@ -24298,7 +24428,7 @@
       "source_location": "L756",
       "_origin": "ast",
       "id": "writing_skills_anthropic_best_practices_develop_skills_iteratively_with_the_agent",
-      "community": 211,
+      "community": 71,
       "norm_label": "develop skills iteratively with the agent"
     },
     {
@@ -24308,7 +24438,7 @@
       "source_location": "L812",
       "_origin": "ast",
       "id": "writing_skills_anthropic_best_practices_observe_how_agents_navigate_skills",
-      "community": 211,
+      "community": 71,
       "norm_label": "observe how agents navigate skills"
     },
     {
@@ -24318,7 +24448,7 @@
       "source_location": "L823",
       "_origin": "ast",
       "id": "writing_skills_anthropic_best_practices_anti_patterns_to_avoid",
-      "community": 71,
+      "community": 212,
       "norm_label": "anti-patterns to avoid"
     },
     {
@@ -24328,7 +24458,7 @@
       "source_location": "L825",
       "_origin": "ast",
       "id": "writing_skills_anthropic_best_practices_avoid_windows_style_paths",
-      "community": 71,
+      "community": 212,
       "norm_label": "avoid windows-style paths"
     },
     {
@@ -24338,7 +24468,7 @@
       "source_location": "L834",
       "_origin": "ast",
       "id": "writing_skills_anthropic_best_practices_avoid_offering_too_many_options",
-      "community": 71,
+      "community": 212,
       "norm_label": "avoid offering too many options"
     },
     {
@@ -28725,6 +28855,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
+      "source_location": "L45",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "package_dependencies",
+      "target": "package_dependencies_pdfkit"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
       "source_location": "L21",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -28767,9 +28907,9 @@
       "source_file": "package.json",
       "source_location": "L47",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_react_markdown",
-      "confidence_score": 1.0
+      "target": "package_dependencies_react_markdown"
     },
     {
       "relation": "contains",
@@ -28787,9 +28927,9 @@
       "source_file": "package.json",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_remark_gfm",
-      "confidence_score": 1.0
+      "target": "package_dependencies_remark_gfm"
     },
     {
       "relation": "contains",
@@ -34719,6 +34859,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "server/routes/workspace.js",
+      "source_location": "L1628",
+      "weight": 1.0,
+      "source": "routes_workspace",
+      "target": "routes_workspace_resolvegradeexportstudentinfo",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/routes/workspace.js",
       "source_location": "L73",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -35368,6 +35518,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "routes_workspace",
+      "target": "services_gradereport_buildgradereportpdf"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/routes/workspace.js",
+      "source_location": "L50",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_workspace",
       "target": "services_gradereport_buildgradereportworkbook"
     },
     {
@@ -35380,6 +35541,17 @@
       "confidence_score": 1.0,
       "source": "routes_workspace",
       "target": "services_gradereport_formatgradereportmarkdown"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/routes/workspace.js",
+      "source_location": "L50",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "routes_workspace",
+      "target": "services_gradereport_gradereportpdffilename"
     },
     {
       "relation": "imports",
@@ -40106,9 +40278,9 @@
       "source_file": "server/services/swinlearnMessageHandler.js",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler",
-      "target": "services_cvprojectscope_parsecvprojectrequest",
-      "confidence_score": 1.0
+      "target": "services_cvprojectscope_parsecvprojectrequest"
     },
     {
       "relation": "calls",
@@ -40117,9 +40289,9 @@
       "source_file": "server/services/swinlearnMessageHandler.js",
       "source_location": "L386",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler_resolveperfectcvassignmentidsfromtext",
-      "target": "services_cvprojectscope_parsecvprojectrequest",
-      "confidence_score": 1.0
+      "target": "services_cvprojectscope_parsecvprojectrequest"
     },
     {
       "relation": "calls",
@@ -40326,9 +40498,9 @@
       "source_file": "server/services/swinlearnMessageHandler.js",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler",
-      "target": "services_cvprojectscope_resolvecvprojects",
-      "confidence_score": 1.0
+      "target": "services_cvprojectscope_resolvecvprojects"
     },
     {
       "relation": "calls",
@@ -40337,9 +40509,9 @@
       "source_file": "server/services/swinlearnMessageHandler.js",
       "source_location": "L408",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler_resolveperfectcvassignmentidsfromtext",
-      "target": "services_cvprojectscope_resolvecvprojects",
-      "confidence_score": 1.0
+      "target": "services_cvprojectscope_resolvecvprojects"
     },
     {
       "relation": "imports",
@@ -43267,6 +43439,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "server/services/gradeReport.js",
+      "source_location": "L286",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport",
+      "target": "services_gradereport_buildgradereportpdf"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.js",
       "source_location": "L139",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -43357,6 +43539,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "server/services/gradeReport.js",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport",
+      "target": "services_gradereport_formatstudentinfo"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.js",
       "source_location": "L21",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -43387,6 +43579,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "server/services/gradeReport.js",
+      "source_location": "L283",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport",
+      "target": "services_gradereport_gradereportpdffilename"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.js",
       "source_location": "L136",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -43402,6 +43604,16 @@
       "confidence_score": 1.0,
       "source": "services_gradereport",
       "target": "services_gradereport_isgraderefinementrequest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.js",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport",
+      "target": "services_gradereport_student_info_rows"
     },
     {
       "relation": "contains",
@@ -43464,6 +43676,39 @@
       "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler",
       "target": "services_gradereport"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.js",
+      "source_location": "L298",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport_buildgradereportpdf",
+      "target": "services_gradereport_formatstudentinfo"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.js",
+      "source_location": "L158",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport_buildgradereportworkbook",
+      "target": "services_gradereport_formatstudentinfo"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.test.mjs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport_test",
+      "target": "services_gradereport_formatstudentinfo"
     },
     {
       "relation": "imports",
@@ -43552,6 +43797,17 @@
       "confidence_score": 1.0,
       "source": "services_gradereport_test",
       "target": "services_gradereport_formatgradereportcsv"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.js",
+      "source_location": "L338",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport_buildgradereportpdf",
+      "target": "services_gradereport_formatcompletedat"
     },
     {
       "relation": "calls",
@@ -43717,6 +43973,17 @@
       "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler_handlegradeanalysis",
       "target": "services_gradereport_buildfilteredgradereport"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/gradeReport.test.mjs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_gradereport_test",
+      "target": "services_gradereport_buildgradereportpdf"
     },
     {
       "relation": "contains",
@@ -48813,9 +49080,9 @@
       "source_file": "server/services/swinlearnMessageHandler.js",
       "source_location": "L379",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler",
-      "target": "services_swinlearnmessagehandler_resolveperfectcvassignmentidsfromtext",
-      "confidence_score": 1.0
+      "target": "services_swinlearnmessagehandler_resolveperfectcvassignmentidsfromtext"
     },
     {
       "relation": "contains",
@@ -48876,9 +49143,31 @@
       "source_file": "server/services/swinlearnMessageHandler.js",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler",
-      "target": "services_swinlearnprompt_isperfectcvrequest",
-      "confidence_score": 1.0
+      "target": "services_swinlearnprompt_formatcapabilitiesresponse"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/swinlearnMessageHandler.js",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_swinlearnmessagehandler",
+      "target": "services_swinlearnprompt_iscapabilitiesrequest"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/swinlearnMessageHandler.js",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_swinlearnmessagehandler",
+      "target": "services_swinlearnprompt_isperfectcvrequest"
     },
     {
       "relation": "calls",
@@ -48964,9 +49253,9 @@
       "source_file": "server/services/swinlearnMessageHandler.js",
       "source_location": "L479",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "services_swinlearnmessagehandler_handleswinlearnmessage",
-      "target": "services_swinlearnmessagehandler_resolveperfectcvassignmentidsfromtext",
-      "confidence_score": 1.0
+      "target": "services_swinlearnmessagehandler_resolveperfectcvassignmentidsfromtext"
     },
     {
       "relation": "calls",
@@ -48978,6 +49267,28 @@
       "weight": 1.0,
       "source": "services_swinlearnmessagehandler_handleswinlearnmessage",
       "target": "services_swinlearnprompt_buildswinlearninstructions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/services/swinlearnMessageHandler.js",
+      "source_location": "L506",
+      "weight": 1.0,
+      "source": "services_swinlearnmessagehandler_handleswinlearnmessage",
+      "target": "services_swinlearnprompt_formatcapabilitiesresponse"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/services/swinlearnMessageHandler.js",
+      "source_location": "L503",
+      "weight": 1.0,
+      "source": "services_swinlearnmessagehandler_handleswinlearnmessage",
+      "target": "services_swinlearnprompt_iscapabilitiesrequest"
     },
     {
       "relation": "calls",
@@ -49084,11 +49395,41 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "server/services/swinlearnPrompt.js",
+      "source_location": "L106",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_swinlearnprompt",
+      "target": "services_swinlearnprompt_capabilities_response"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/swinlearnPrompt.js",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_swinlearnprompt",
+      "target": "services_swinlearnprompt_capabilitiespatterns"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/swinlearnPrompt.js",
       "source_location": "L8",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "services_swinlearnprompt",
       "target": "services_swinlearnprompt_cvportfoliopatterns"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/swinlearnPrompt.js",
+      "source_location": "L127",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_swinlearnprompt",
+      "target": "services_swinlearnprompt_formatcapabilitiesresponse"
     },
     {
       "relation": "contains",
@@ -49109,6 +49450,16 @@
       "confidence_score": 1.0,
       "source": "services_swinlearnprompt",
       "target": "services_swinlearnprompt_isassignmentcompletionrequest"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "server/services/swinlearnPrompt.js",
+      "source_location": "L102",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "services_swinlearnprompt",
+      "target": "services_swinlearnprompt_iscapabilitiesrequest"
     },
     {
       "relation": "contains",
@@ -51829,9 +52180,9 @@
       "source_file": "src/features/swinlearn/components/MarkdownMessage.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "components_markdownmessage",
-      "target": "components_markdownmessage_markdownmessage",
-      "confidence_score": 1.0
+      "target": "components_markdownmessage_markdownmessage"
     },
     {
       "relation": "imports_from",
@@ -51840,9 +52191,9 @@
       "source_file": "src/features/swinlearn/pages/student/SwinlearnPage/SwinlearnPage.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "swinlearnpage_swinlearnpage",
-      "target": "components_markdownmessage",
-      "confidence_score": 1.0
+      "target": "components_markdownmessage"
     },
     {
       "relation": "imports",
@@ -51851,9 +52202,9 @@
       "source_file": "src/features/swinlearn/pages/student/SwinlearnPage/SwinlearnPage.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "swinlearnpage_swinlearnpage",
-      "target": "components_markdownmessage_markdownmessage",
-      "confidence_score": 1.0
+      "target": "components_markdownmessage_markdownmessage"
     },
     {
       "relation": "contains",
@@ -53625,6 +53976,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/features/swinlearn/lib/gradeReportExport.mjs",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_gradereportexport",
+      "target": "lib_gradereportexport_downloadgradereportpdf"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/gradeReportExport.mjs",
       "source_location": "L6",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -53640,6 +54001,16 @@
       "confidence_score": 1.0,
       "source": "lib_gradereportexport",
       "target": "lib_gradereportexport_gradereportfilename"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/gradeReportExport.mjs",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_gradereportexport",
+      "target": "lib_gradereportexport_gradereportpdffilename"
     },
     {
       "relation": "imports_from",
@@ -53675,6 +54046,17 @@
       "target": "lib_gradereportexport_gradereportfilename"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/gradeReportExport.mjs",
+      "source_location": "L82",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "lib_gradereportexport_downloadgradereportpdf",
+      "target": "lib_gradereportexport_gradereportpdffilename"
+    },
+    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -53684,6 +54066,17 @@
       "confidence_score": 1.0,
       "source": "swinlearnpage_swinlearnpage",
       "target": "lib_gradereportexport_downloadgradereportxlsx"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/student/SwinlearnPage/SwinlearnPage.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "swinlearnpage_swinlearnpage",
+      "target": "lib_gradereportexport_downloadgradereportpdf"
     },
     {
       "relation": "contains",
@@ -55151,6 +55544,16 @@
       "confidence_score": 1.0,
       "source": "workspace_api",
       "target": "workspace_api_downloadusersexport"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/lib/workspace/api.ts",
+      "source_location": "L770",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "workspace_api",
+      "target": "workspace_api_exportacademicprogresspdf"
     },
     {
       "relation": "contains",
@@ -58098,6 +58501,17 @@
       "confidence_score": 1.0,
       "source": "shared_accountpage",
       "target": "workspace_api_exportacademicprogressxlsx"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/swinlearn/pages/shared/AccountPage.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "shared_accountpage",
+      "target": "workspace_api_exportacademicprogresspdf"
     },
     {
       "relation": "imports",
@@ -74744,5 +75158,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1090f6c7c45f4d1776afb88740a27dd37e6d1fb3"
+  "built_at_commit": "6118258344ce4f9c99197d5dc02c18b0f8eb2fda"
 }

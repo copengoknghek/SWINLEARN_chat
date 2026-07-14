@@ -47,7 +47,7 @@ import {
   loadPrerequisiteContext,
 } from '../services/prerequisites.js'
 import { requestApprovalDeniedMessage, submitRegistrationRequests } from '../services/registrationRequests.js'
-import { buildGradeReport, buildGradeReportWorkbook, formatGradeReportMarkdown, gradeReportWorkbookFilename } from '../services/gradeReport.js'
+import { buildGradeReport, buildGradeReportWorkbook, buildGradeReportPdf, formatGradeReportMarkdown, gradeReportPdfFilename, gradeReportWorkbookFilename } from '../services/gradeReport.js'
 import { detectGradeAnalysisThreadContext, detectLanguage } from '../services/gradeAnalysis.js'
 import { routeIntent } from '../services/intentRouter.js'
 import {
@@ -1625,6 +1625,32 @@ workspaceRouter.get(
   }),
 )
 
+const resolveGradeExportStudentInfo = async (student) => {
+  if (!student) {
+    return { fullName: '', studentId: '', major: '' }
+  }
+
+  // A student may only have a child major set; fall back to the child major's
+  // parent relation to surface the main major (e.g. "Computer Science").
+  const childMajor = student.child_major_id
+    ? await prisma.childMajor.findUnique({
+        where: { id: student.child_major_id },
+        include: { mainMajor: true },
+      })
+    : null
+  const mainMajor = student.main_major_id
+    ? await prisma.mainMajor.findUnique({ where: { id: student.main_major_id } })
+    : childMajor?.mainMajor ?? null
+
+  const parts = [mainMajor?.title, childMajor?.title].filter(Boolean)
+
+  return {
+    fullName: student.full_name ?? '',
+    studentId: student.student_id ?? '',
+    major: parts.join(' - '),
+  }
+}
+
 workspaceRouter.get(
   '/academic-progress/export',
   asyncHandler(async (request, response) => {
@@ -1643,7 +1669,8 @@ workspaceRouter.get(
         completions: context.completions,
       }),
     )
-    const buffer = await buildGradeReportWorkbook(report)
+    const studentInfo = await resolveGradeExportStudentInfo(context.student)
+    const buffer = await buildGradeReportWorkbook(report, studentInfo)
 
     response.setHeader(
       'Content-Type',
@@ -1652,6 +1679,36 @@ workspaceRouter.get(
     response.setHeader(
       'Content-Disposition',
       `attachment; filename="${gradeReportWorkbookFilename()}"`,
+    )
+    response.send(Buffer.from(buffer))
+  }),
+)
+
+workspaceRouter.get(
+  '/academic-progress/export/pdf',
+  asyncHandler(async (request, response) => {
+    const context = await requireStudentRegistrationContext(request, response)
+
+    if (!context?.student) {
+      return
+    }
+
+    const report = buildGradeReport(
+      buildStudentProgress({
+        student: context.student,
+        courses: context.courses,
+        curriculumRules: context.curriculumRules,
+        childMajors: context.childMajors,
+        completions: context.completions,
+      }),
+    )
+    const studentInfo = await resolveGradeExportStudentInfo(context.student)
+    const buffer = await buildGradeReportPdf(report, studentInfo)
+
+    response.setHeader('Content-Type', 'application/pdf')
+    response.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${gradeReportPdfFilename()}"`,
     )
     response.send(Buffer.from(buffer))
   }),

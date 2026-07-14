@@ -1,14 +1,17 @@
 import assert from 'node:assert/strict'
 import ExcelJS from 'exceljs'
+import zlib from 'node:zlib'
 import { describe, it } from 'node:test'
 
 import {
   buildFilteredGradeReport,
   buildGradeReport,
   buildGradeReportWorkbook,
+  buildGradeReportPdf,
   extractGradeFilterTokens,
   formatGradeReportCsv,
   formatGradeReportMarkdown,
+  formatStudentInfo,
   isGradeRefinementRequest,
   warningTierForScore,
 } from './gradeReport.js'
@@ -132,19 +135,101 @@ describe('gradeReport', () => {
     assert.match(csv, /Warning Tier/)
   })
 
-  it('builds an xlsx workbook with formatted dates and column headers', async () => {
+  it('formats student info rows from a studentInfo object', () => {
+    const info = formatStudentInfo({
+      fullName: 'Jane Doe',
+      studentId: 'S12345',
+      major: 'Software Engineering - Artificial Intelligence',
+    })
+
+    assert.deepEqual(info, [
+      { label: 'Full name', value: 'Jane Doe' },
+      { label: 'Student ID', value: 'S12345' },
+      { label: 'Major', value: 'Software Engineering - Artificial Intelligence' },
+    ])
+  })
+
+  it('builds an xlsx workbook that is score-only with student info and no warning columns', async () => {
     const report = buildGradeReport(sampleProgress)
-    const buffer = await buildGradeReportWorkbook(report)
+    const buffer = await buildGradeReportWorkbook(report, {
+      fullName: 'Jane Doe',
+      studentId: 'S12345',
+      major: 'Software Engineering - Artificial Intelligence',
+    })
     const workbook = new ExcelJS.Workbook()
 
     await workbook.xlsx.load(buffer)
     const worksheet = workbook.getWorksheet('Grades')
 
     assert.ok(worksheet)
-    assert.equal(worksheet.rowCount, 5)
-    assert.equal(worksheet.getRow(1).getCell(1).value, 'Code')
-    assert.equal(worksheet.getRow(2).getCell(7).value, '2026-01-15')
-    assert.equal(worksheet.getColumn(2).width, 36)
+    // 3 student-info rows + 1 blank + 1 header + 4 course rows
+    assert.equal(worksheet.rowCount, 9)
+    assert.equal(worksheet.getRow(1).getCell(1).value, 'Full name')
+    assert.equal(worksheet.getRow(1).getCell(2).value, 'Jane Doe')
+    assert.equal(worksheet.getRow(3).getCell(1).value, 'Major')
+    assert.equal(worksheet.getRow(5).getCell(1).value, 'Code')
+    // warning columns removed: header row contains no 'Warning' text
+    const headerValues = worksheet.getRow(5).values
+    assert.ok(!headerValues.some((value) => typeof value === 'string' && value.includes('Warning')))
+    // first course row date is formatted
+    assert.equal(worksheet.getRow(6).getCell(7).value, '2026-01-15')
+  })
+
+  it('builds a pdf buffer prefixed with %PDF and containing student info', async () => {
+    const report = buildGradeReport(sampleProgress)
+    const buffer = await buildGradeReportPdf(report, {
+      fullName: 'Jane Doe',
+      studentId: 'S12345',
+      major: 'Software Engineering - Artificial Intelligence',
+    })
+
+    assert.ok(Buffer.isBuffer(buffer))
+    assert.equal(buffer.slice(0, 5).toString('latin1'), '%PDF-')
+
+    // pdfkit compresses its text streams and hex-encodes strings. Read the raw
+    // buffer, inflate each content stream, and decode the hex string tokens.
+    const decoded = []
+    const marker = Buffer.from('stream\n')
+    const endMarker = Buffer.from('endstream\n')
+    let searchFrom = 0
+
+    while (true) {
+      const start = buffer.indexOf(marker, searchFrom)
+      if (start === -1) {
+        break
+      }
+      const dataStart = start + marker.length
+      const end = buffer.indexOf(endMarker, dataStart)
+      if (end === -1) {
+        break
+      }
+      try {
+        const inflated = zlib.inflateSync(buffer.subarray(dataStart, end)).toString('latin1')
+        decoded.push(
+          inflated.replace(/<([0-9A-Fa-f]+)>/g, (_match, hex) =>
+            Buffer.from(hex, 'hex').toString('latin1'),
+          ),
+        )
+      } catch {
+        // non-text stream (e.g. font metadata) — ignore
+      }
+      searchFrom = end + endMarker.length
+    }
+
+    const text = decoded.join(' ')
+
+    // The student-info section and course table render; warnings are excluded.
+    // pdfkit kerns the combined major string and leaves adjustment numbers in
+    // the stream, so strip everything but letters before matching.
+    const flat = text.replace(/[^A-Za-z]/g, '')
+    assert.match(text, /Full name:/)
+    assert.match(text, /Major/i)
+    assert.match(flat, /Software/i)
+    assert.match(flat, /Engineering/i)
+    assert.match(flat, /Artificial/i)
+    assert.match(flat, /Intelligence/i)
+    assert.match(text, /COS10001/)
+    assert.ok(!text.includes('Attention needed'))
   })
 })
 

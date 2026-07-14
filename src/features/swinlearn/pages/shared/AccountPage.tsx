@@ -7,6 +7,7 @@ import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
 
 import {
+  exportAcademicProgressPdf,
   exportAcademicProgressXlsx,
   fetchAcademicProgress,
   getErrorMessage,
@@ -55,6 +56,7 @@ function AccountPage() {
   const [progressLoading, setProgressLoading] = useState(false)
   const [progressError, setProgressError] = useState('')
   const [exportingGrades, setExportingGrades] = useState(false)
+  const [exportingPdf, setExportingPdf] = useState(false)
   const [academicProgress, setAcademicProgress] = useState<AcademicProgressData | null>(null)
 
   const email = user?.email ?? 'Not signed in'
@@ -143,6 +145,19 @@ function AccountPage() {
       setProgressError(getErrorMessage(error, 'Grade report could not be exported.'))
     } finally {
       setExportingGrades(false)
+    }
+  }
+
+  const handleExportPdf = async () => {
+    setExportingPdf(true)
+    setProgressError('')
+
+    try {
+      await exportAcademicProgressPdf()
+    } catch (error) {
+      setProgressError(getErrorMessage(error, 'Grade report could not be exported.'))
+    } finally {
+      setExportingPdf(false)
     }
   }
 
@@ -238,9 +253,17 @@ function AccountPage() {
                       type="button"
                       className="workspace-secondary-action"
                       onClick={() => void handleExportGrades()}
-                      disabled={exportingGrades || academicProgress.completed_courses.length === 0}
+                      disabled={exportingGrades || exportingPdf || academicProgress.completed_courses.length === 0}
                     >
                       {exportingGrades ? 'Exporting...' : 'Export Excel'}
+                    </button>
+                    <button
+                      type="button"
+                      className="workspace-secondary-action"
+                      onClick={() => void handleExportPdf()}
+                      disabled={exportingGrades || exportingPdf || academicProgress.completed_courses.length === 0}
+                    >
+                      {exportingPdf ? 'Exporting...' : 'Export PDF'}
                     </button>
                     <span className="workspace-chip account-progress-total">
                       {academicProgress.total_credit_points} credit points

@@ -27,9 +27,7 @@
     "prisma:migrate:deploy": "prisma migrate deploy",
     "prisma:seed": "prisma db seed",
     "prisma:seed:rooms": "node prisma/seed-rooms-only.js",
-    "prisma:clear-demo": "node prisma/clear-demo-data.js",
-    "test": "node --test server/services/*.test.mjs",
-    "test:nlu": "RUN_LIVE_NLU=1 node --test server/services/nluEval.live.test.mjs"
+    "prisma:clear-demo": "node prisma/clear-demo-data.js"
   },
   "dependencies": {
     "@fortawesome/free-solid-svg-icons": "^7.2.0",

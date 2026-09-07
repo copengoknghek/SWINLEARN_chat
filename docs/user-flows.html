@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Swinlearn user flows</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --bg: #f7f7f5;
+      --fg: #1a1a1a;
+      --muted: #555;
+      --border: #d8d8d4;
+      --card: #fff;
+      --link: #0b5fff;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --fg: #eee;
+        --muted: #aaa;
+        --border: #333;
+        --card: #1c1c1c;
+        --link: #8cb4ff;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Segoe UI", Georgia, serif;
+      line-height: 1.5;
+      background: var(--bg);
+      color: var(--fg);
+    }
+    .wrap {
+      max-width: 920px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 4rem;
+    }
+    h1, h2, h3 { line-height: 1.25; }
+    h1 { font-size: 1.85rem; margin-bottom: 0.35rem; }
+    h2 {
+      margin-top: 2.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--border);
+    }
+    h3 { margin-top: 1.75rem; }
+    p, li { color: var(--fg); }
+    .lede { color: var(--muted); margin-bottom: 1.5rem; }
+    a { color: var(--link); }
+    nav.toc {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+    }
+    nav.toc ol { margin: 0.5rem 0 0; padding-left: 1.25rem; }
+    .caption {
+      font-size: 0.95rem;
+      color: var(--muted);
+      margin: 1rem 0 0.5rem;
+    }
+    .diagram {
+      background: var(--card);
+      border: 1px solid var(--border);
+      padding: 1rem;
+      overflow-x: auto;
+      margin-bottom: 1.5rem;
+    }
+    .mermaid { margin: 0; }
+    ul.gaps { padding-left: 1.25rem; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>Swinlearn user flows</h1>
+    <p class="lede">
+      As-is navigation and journeys for <strong>admin</strong>, <strong>teacher</strong>, and <strong>student</strong>.
+      Source of truth: <a href="./user-flows.md">user-flows.md</a>.
+      Requires network access for the Mermaid CDN.
+    </p>
+
+    <nav class="toc" aria-label="Table of contents">
+      <strong>Contents</strong>
+      <ol>
+        <li><a href="#shared-entry">Shared entry</a></li>
+        <li><a href="#role-sitemaps">Role sitemaps</a>
+          <ol>
+            <li><a href="#admin">Admin</a></li>
+            <li><a href="#teacher">Teacher</a></li>
+            <li><a href="#student">Student</a></li>
+          </ol>
+        </li>
+        <li><a href="#journeys">Cross-role journeys</a>
+          <ol>
+            <li><a href="#registration">Registration and approval</a></li>
+            <li><a href="#learning">Course learning loop</a></li>
+            <li><a href="#help">Help, Inbox, and consultation</a></li>
+            <li><a href="#ai">SWINLEARN AI and Perfect CV</a></li>
+            <li><a href="#admin-setup">Admin setup</a></li>
+          </ol>
+        </li>
+        <li><a href="#gaps">Gaps / future</a></li>
+      </ol>
+    </nav>
+
+    <h2 id="shared-entry">1. Shared entry</h2>
+    <p class="caption">Public site → login → optional password change → role home.</p>
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart TB
+  Home["/ Home"]
+  Courses["/courses"]
+  News["/news"]
+  Events["/events"]
+  Login["/login"]
+  ChangePw["/change-password"]
+  AdminHome["/admin/courses"]
+  TeacherHome["/teacher/my-courses"]
+  StudentHome["/student/my-courses"]
+
+  Home --> Login
+  Courses --> Login
+  News --> Login
+  Events --> Login
+  Login --> ChangePw
+  Login --> AdminHome
+  Login --> TeacherHome
+  Login --> StudentHome
+  ChangePw --> AdminHome
+  ChangePw --> TeacherHome
+  ChangePw --> StudentHome
+      </pre>
+    </div>
+
+    <h2 id="role-sitemaps">2. Role sitemaps</h2>
+
+    <h3 id="admin">Admin (/admin)</h3>
+    <p class="caption">Nav: Courses, Course Offer, Users, Requests, Inbox, Account. Home: /admin/courses.</p>
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart TB
+  Admin["/admin"]
+  Courses["courses"]
+  Offer["course-offer"]
+  Users["users"]
+  Requests["requests"]
+  Inbox["inbox"]
+  Account["account"]
+
+  Admin --> Courses
+  Admin --> Offer
+  Admin --> Users
+  Admin --> Requests
+  Admin --> Inbox
+  Admin --> Account
+      </pre>
+    </div>
+
+    <h3 id="teacher">Teacher (/teacher)</h3>
+    <p class="caption">Teaching courses nest course detail sections; plus Calendar, Inbox, Requests, Help, Account.</p>
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart TB
+  Teacher["/teacher"]
+  MyCourses["my-courses"]
+  Detail["my-courses/:courseId"]
+  Home["home"]
+  Modules["modules"]
+  Assignments["assignments"]
+  Grades["grades"]
+  Community["community"]
+  Calendar["calendar"]
+  Inbox["inbox"]
+  Requests["requests"]
+  Help["help"]
+  Account["account"]
+
+  Teacher --> MyCourses
+  MyCourses --> Detail
+  Detail --> Home
+  Detail --> Modules
+  Detail --> Assignments
+  Detail --> Grades
+  Detail --> Community
+  Teacher --> Calendar
+  Teacher --> Inbox
+  Teacher --> Requests
+  Teacher --> Help
+  Teacher --> Account
+      </pre>
+    </div>
+
+    <h3 id="student">Student (/student)</h3>
+    <p class="caption">My courses (same sections), Register, Calendar, Inbox, Help, Account, SWINLEARN.</p>
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart TB
+  Student["/student"]
+  MyCourses["my-courses"]
+  Detail["my-courses/:courseId"]
+  Home["home"]
+  Modules["modules"]
+  Assignments["assignments"]
+  Grades["grades"]
+  Community["community"]
+  Register["register"]
+  Calendar["calendar"]
+  Inbox["inbox"]
+  Help["help"]
+  Account["account"]
+  AI["swinlearn"]
+
+  Student --> MyCourses
+  MyCourses --> Detail
+  Detail --> Home
+  Detail --> Modules
+  Detail --> Assignments
+  Detail --> Grades
+  Detail --> Community
+  Student --> Register
+  Student --> Calendar
+  Student --> Inbox
+  Student --> Help
+  Student --> Account
+  Student --> AI
+      </pre>
+    </div>
+
+    <h2 id="journeys">3. Cross-role journeys</h2>
+
+    <h3 id="registration">3.1 Registration and approval</h3>
+    <p class="caption">Student Register → Admin Course Offer approve/reject.</p>
+    <div class="diagram">
+      <pre class="mermaid">
+sequenceDiagram
+  actor Student
+  actor Admin
+  participant Register as /student/register
+  participant Offer as /admin/course-offer
+  participant System
+
+  Student->>Register: Browse offerings, check eligibility
+  Student->>Register: Submit registration request
+  Register->>System: Create pending request
+  Admin->>Offer: Review pending requests for offering
+  alt Approve
+    Admin->>Offer: Approve
+    Offer->>System: Enrol student
+    System-->>Student: Course appears in My courses
+  else Reject
+    Admin->>Offer: Reject
+    System-->>Student: Status rejected on Register
+  end
+      </pre>
+    </div>
+
+    <h3 id="learning">3.2 Course learning loop</h3>
+    <p class="caption">Course detail: home, modules, assignments, grades, community (+ share/gamification).</p>
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart TB
+  List["My courses / Teaching courses"]
+  Open["Open course detail"]
+  Home["home"]
+  Modules["modules — content packages"]
+  Assignments["assignments — submit / manage"]
+  Grades["grades — view / analyse"]
+  Community["community — posts, comments, likes"]
+  Share["Share post — badges / gold"]
+
+  List --> Open
+  Open --> Home
+  Open --> Modules
+  Open --> Assignments
+  Open --> Grades
+  Open --> Community
+  Community --> Share
+      </pre>
+    </div>
+
+    <h3 id="help">3.3 Help, Inbox, and consultation requests</h3>
+    <p class="caption">Help → Admin Requests; consultations may forward to Teacher Requests; Inbox for messaging.</p>
+    <div class="diagram">
+      <pre class="mermaid">
+sequenceDiagram
+  actor Requester as Student or Teacher
+  actor Admin
+  actor Teacher
+  participant Help as /help
+  participant AdminReq as /admin/requests
+  participant TeacherReq as /teacher/requests
+  participant Inbox as /inbox
+
+  Requester->>Help: Submit general or consultation request
+  Help-->>AdminReq: Request appears as submitted
+  alt General help
+    Admin->>AdminReq: Approve or reject
+  else Consultation
+    Admin->>AdminReq: Forward to teacher optional room
+    AdminReq-->>TeacherReq: Forwarded consultation
+    Teacher->>TeacherReq: Respond approve or decline
+  end
+  Requester->>Inbox: Message threads / follow-ups
+  Admin->>Inbox: Message threads
+  Teacher->>Inbox: Message threads
+      </pre>
+    </div>
+
+    <h3 id="ai">3.4 SWINLEARN AI and Perfect CV</h3>
+    <p class="caption">Student-only /student/swinlearn — chat, grades, course QA, Perfect CV.</p>
+    <div class="diagram">
+      <pre class="mermaid">
+sequenceDiagram
+  actor Student
+  participant AI as /student/swinlearn
+  participant System
+
+  Student->>AI: Open SWINLEARN, create or select thread
+  Student->>AI: Send message optional attachments
+  AI->>System: Route intent grades / QA / CV / other
+  System-->>AI: Reply citations or CV draft
+  alt Perfect CV
+    Student->>AI: Pick projects, edit CV
+    Student->>AI: Export Word or PDF
+  else Grade report
+    Student->>AI: Request grade analysis / export
+  end
+      </pre>
+    </div>
+
+    <h3 id="admin-setup">3.5 Admin setup</h3>
+    <p class="caption">Users → Courses → Course Offer; Requests and Inbox for support.</p>
+    <div class="diagram">
+      <pre class="mermaid">
+flowchart TB
+  Users["/admin/users — CRUD, campus, import/export"]
+  Courses["/admin/courses — courses, curriculum, prerequisites"]
+  Offer["/admin/course-offer — offerings, staff, registration approve/reject"]
+  Requests["/admin/requests — help and consultations"]
+  Inbox["/admin/inbox"]
+
+  Users --> Courses
+  Courses --> Offer
+  Offer --> Requests
+  Requests --> Inbox
+      </pre>
+    </div>
+
+    <h2 id="gaps">4. Gaps / future</h2>
+    <ul class="gaps">
+      <li>No dedicated student hub for pending registrations beyond the Register page itself.</li>
+      <li>Community is course-scoped only (no global community nav item).</li>
+      <li>SWINLEARN AI and Perfect CV are student-only; teachers/admins have no equivalent workspace page.</li>
+      <li>Teacher Requests covers forwarded consultations, not course registration.</li>
+      <li>Admin has no My courses / calendar / help nav items (help/requests are admin-facing via Requests).</li>
+      <li>Course detail path uses optional <code>:section</code>; treat <code>home</code> as the primary entry.</li>
+      <li>Diagrams are maintained manually; update when routes or nav change.</li>
+    </ul>
+  </div>
+
+  <script type="module">
+    import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs'
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'neutral',
+      securityLevel: 'strict',
+    })
+  </script>
+</body>
+</html>

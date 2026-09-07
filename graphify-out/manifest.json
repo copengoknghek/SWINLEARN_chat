@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1783929195.826292,
-    "ast_hash": "63ee77aea32d1a67d68853c019ed7db9",
+    "mtime": 1783995326.3121068,
+    "ast_hash": "ab2c86b4c9d1ad85ec56802a216d5d74",
     "semantic_hash": ""
   },
   "prisma/migrations/20260610020624_init_mysql_schema/migration.sql": {
@@ -459,19 +459,9 @@
     "ast_hash": "c48d8b2de5344c107138c419d2355b58",
     "semantic_hash": ""
   },
-  "server/services/courseContentImport.test.mjs": {
-    "mtime": 1781686711.0045426,
-    "ast_hash": "d573dd9f7ac03bc74aa74a534d5088c5",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/pages/shared/CourseDetailPage.tsx": {
     "mtime": 1783906570.0760062,
     "ast_hash": "29446b9609a6d8a31aee05156fd41505",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/pages/shared/accountProfileInitials.test.mjs": {
-    "mtime": 1781850104.0442274,
-    "ast_hash": "e8aea38a445d0e89ece91b98ded12dff",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/shared/accountProfileInitials.ts": {
@@ -479,19 +469,9 @@
     "ast_hash": "a0dbadaa07a9e2cfc260724683e206bd",
     "semantic_hash": ""
   },
-  "src/features/swinlearn/pages/shared/courseDetailSections.test.mjs": {
-    "mtime": 1782870504.6027374,
-    "ast_hash": "7b4ca2af7c898654c904f97961f0de00",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/pages/shared/courseDetailSections.ts": {
     "mtime": 1782870504.7125757,
     "ast_hash": "ff4df6911a50f043d2eee1d44a3fa31c",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/styles/workspacePagesCss.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "ed813c816c601d468cdd92d421e22702",
     "semantic_hash": ""
   },
   ".agents/skills/brainstorming/scripts/helper.js": {
@@ -999,19 +979,9 @@
     "ast_hash": "97fc1a0cdc6b0ba5a48346566359e5a4",
     "semantic_hash": ""
   },
-  "server/services/swinlearnFiles.test.mjs": {
-    "mtime": 1782870504.627676,
-    "ast_hash": "0af17716c8af3ce756e8356dc295504f",
-    "semantic_hash": ""
-  },
   "server/services/swinlearnKnowledge.js": {
     "mtime": 1783906570.154849,
     "ast_hash": "e038eedda570018f685a4fda498434fe",
-    "semantic_hash": ""
-  },
-  "server/services/swinlearnKnowledge.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "7a8b2f08856a3907845ef3fa3685dbde",
     "semantic_hash": ""
   },
   "server/services/swinlearnPrompt.js": {
@@ -1019,24 +989,9 @@
     "ast_hash": "523fccb9d8602eb25756355ddf0e4ebd",
     "semantic_hash": ""
   },
-  "server/services/swinlearnPrompt.test.mjs": {
-    "mtime": 1783906569.9718616,
-    "ast_hash": "4fd9fedea1d90d7e45edd9cfb51d0b36",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/pages/student/SwinlearnPage/swinlearnPage.test.mjs": {
-    "mtime": 1783906569.9648483,
-    "ast_hash": "91bca74d764e3b1deff69975d7f01baf",
-    "semantic_hash": ""
-  },
   "server/services/swinlearnGroq.js": {
     "mtime": 1782870504.6883528,
     "ast_hash": "667ed85c41f83357aaa6b5e31cfa8167",
-    "semantic_hash": ""
-  },
-  "server/services/swinlearnGroq.test.mjs": {
-    "mtime": 1782870504.6027374,
-    "ast_hash": "71c435f3c08cc64d5d5c0f6597163de9",
     "semantic_hash": ""
   },
   "prisma/migrations/20260622120000_inbox_connections/migration.sql": {
@@ -1049,19 +1004,9 @@
     "ast_hash": "7cc3035c9afea4917ea20fb677161a1a",
     "semantic_hash": ""
   },
-  "server/services/inboxConnections.test.mjs": {
-    "mtime": 1782870504.5667708,
-    "ast_hash": "0c52222fb5ea2db0c7e4f8ac3399316e",
-    "semantic_hash": ""
-  },
   "public/logoSwinlearn.png": {
     "mtime": 1782186705.482018,
     "ast_hash": "035f78bb5cd2a0b7540901ef9b1bc0c5",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/pages/shared/InboxPage.test.mjs": {
-    "mtime": 1783906570.0574,
-    "ast_hash": "7c3a74ff6466161c778dfcdce77f27a3",
     "semantic_hash": ""
   },
   "server/services/embeddings.js": {
@@ -1069,19 +1014,9 @@
     "ast_hash": "2b396884dfd9ccd3d6aa9701e2033a9f",
     "semantic_hash": ""
   },
-  "server/services/embeddings.test.mjs": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "56b08c2304ecd5367b132cb6e2c920fd",
-    "semantic_hash": ""
-  },
   "server/services/swinlearnIndexing.js": {
     "mtime": 1783906570.154849,
     "ast_hash": "84eb5b9a051f5d98d55e43430ecdea51",
-    "semantic_hash": ""
-  },
-  "server/services/swinlearnIndexing.test.mjs": {
-    "mtime": 1783906569.97894,
-    "ast_hash": "b5c0d44438f064f74356e642e57ba640",
     "semantic_hash": ""
   },
   "server/services/textChunker.js": {
@@ -1089,19 +1024,9 @@
     "ast_hash": "fd9d245255a4b372d5ed48b0acf70a75",
     "semantic_hash": ""
   },
-  "server/services/textChunker.test.mjs": {
-    "mtime": 1782870504.572407,
-    "ast_hash": "b8bcc988bece4630ea553b79fb89f5d3",
-    "semantic_hash": ""
-  },
   "server/services/vectorStore.js": {
     "mtime": 1783906570.154849,
     "ast_hash": "008fa73e4a582be3da765b67adec8bde",
-    "semantic_hash": ""
-  },
-  "server/services/vectorStore.test.mjs": {
-    "mtime": 1783906569.9631865,
-    "ast_hash": "0faf5e38ac76dfc82b372e8100118353",
     "semantic_hash": ""
   },
   "prisma/migrations/20260624100000_community_posts/migration.sql": {
@@ -1114,11 +1039,6 @@
     "ast_hash": "af35a7ffa4ecf8630e60af020082dfbf",
     "semantic_hash": ""
   },
-  "server/services/community.test.mjs": {
-    "mtime": 1782870504.5832708,
-    "ast_hash": "145ddf0e39a3e068ba11c2a632ea9bbe",
-    "semantic_hash": ""
-  },
   "prisma/migrations/20260624120000_community_post_images/migration.sql": {
     "mtime": 1782870504.6903627,
     "ast_hash": "9001fc70d132ba13ad4e308a2bee129a",
@@ -1129,11 +1049,6 @@
     "ast_hash": "b57b79cea000be6e522d28bad1e99111",
     "semantic_hash": ""
   },
-  "server/services/communityFiles.test.mjs": {
-    "mtime": 1782870504.5713995,
-    "ast_hash": "a19f32d6d9278b03ec1b85361506b034",
-    "semantic_hash": ""
-  },
   "prisma/migrations/20260624140000_community_comment_replies/migration.sql": {
     "mtime": 1782870504.6027374,
     "ast_hash": "8c93ec9368f55d08fabfe5af8a86d051",
@@ -1142,11 +1057,6 @@
   "src/features/swinlearn/pages/shared/CommunityCommentThread.tsx": {
     "mtime": 1783906569.972859,
     "ast_hash": "f9f931d46105d21b6f0d625928706a2c",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/pages/shared/communityDisclosure.test.mjs": {
-    "mtime": 1782370472.5499516,
-    "ast_hash": "adf5043b4a0ba26536b05e7b4b1c5330",
     "semantic_hash": ""
   },
   "prisma/migrations/20260624180000_user_avatar/migration.sql": {
@@ -1199,11 +1109,6 @@
     "ast_hash": "5bff9bf1cd0def7358ddc445c535db34",
     "semantic_hash": ""
   },
-  "server/services/giphy.test.mjs": {
-    "mtime": 1782870504.5667708,
-    "ast_hash": "3f6ea308b722b6d86c8c4220a577ab12",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/components/GiphyPicker.tsx": {
     "mtime": 1782873566.7446203,
     "ast_hash": "0e8f616046a471d93cbddedb2ad7d4ea",
@@ -1217,11 +1122,6 @@
   "server/services/gamification.js": {
     "mtime": 1782870504.7125757,
     "ast_hash": "b290cd8368cd6093d71292a97dbc419f",
-    "semantic_hash": ""
-  },
-  "server/services/gamification.test.mjs": {
-    "mtime": 1782870504.6027374,
-    "ast_hash": "2930802170e8d9b687352104a244698c",
     "semantic_hash": ""
   },
   "server/services/scheduler.js": {
@@ -1239,34 +1139,14 @@
     "ast_hash": "6af76a8feb04d5d17b58a2f0d95bc8cf",
     "semantic_hash": ""
   },
-  "server/mappers.inbox.test.mjs": {
-    "mtime": 1782870504.6903627,
-    "ast_hash": "76369968909a7e9b28a0826eed3feeeb",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/components/WorkspaceAlertStack.tsx": {
     "mtime": 1782870504.7125757,
     "ast_hash": "35771475eb19df4034ec7e3951090729",
     "semantic_hash": ""
   },
-  "src/features/swinlearn/pages/admin/AdminUsersPage.test.mjs": {
-    "mtime": 1782870504.7125757,
-    "ast_hash": "e8eb5bd63c2603849cf96584813b13d8",
-    "semantic_hash": ""
-  },
   "server/services/adminUserWorkbook.js": {
     "mtime": 1782870504.6027374,
     "ast_hash": "209d46c0e7cb13d81e2d37fd1381cc3f",
-    "semantic_hash": ""
-  },
-  "server/services/adminUserWorkbook.test.mjs": {
-    "mtime": 1782870504.627676,
-    "ast_hash": "afcede9f31e46b0758d494445c4e443f",
-    "semantic_hash": ""
-  },
-  "src/indexHtml.test.mjs": {
-    "mtime": 1782870504.627676,
-    "ast_hash": "6e2d27bb99911fcbcfac13867e0f10ea",
     "semantic_hash": ""
   },
   "prisma/migrations/20260629110000_status_password_sync/migration.sql": {
@@ -1284,29 +1164,14 @@
     "ast_hash": "4ebe8d7f57727c123d0b08ba8f3641e7",
     "semantic_hash": ""
   },
-  "server/services/swinlearnCourseScope.test.mjs": {
-    "mtime": 1783906570.1054292,
-    "ast_hash": "8169f398a99af9d1f27e1b54eb6076dd",
-    "semantic_hash": ""
-  },
   "server/services/helpRequests.js": {
     "mtime": 1782870504.6903627,
     "ast_hash": "fde600b9415d59c9c1c957a93ccafc7c",
     "semantic_hash": ""
   },
-  "server/services/helpRequests.test.mjs": {
-    "mtime": 1782870504.6027374,
-    "ast_hash": "b806d4c2015c5ead4e57100399de69ca",
-    "semantic_hash": ""
-  },
   "server/services/roomAvailability.js": {
     "mtime": 1782870504.7125757,
     "ast_hash": "fbf486675e7e2e3d4f8987553aeff486",
-    "semantic_hash": ""
-  },
-  "server/services/roomAvailability.test.mjs": {
-    "mtime": 1782870504.7125757,
-    "ast_hash": "395b33745f7354bd53ecf570f5aae908",
     "semantic_hash": ""
   },
   "src/features/swinlearn/pages/admin/AdminRequestsPage.tsx": {
@@ -1339,19 +1204,9 @@
     "ast_hash": "31a4a7b9f7d796994bda398503cd9dd1",
     "semantic_hash": ""
   },
-  "server/services/courseGrades.test.mjs": {
-    "mtime": 1782870504.5642562,
-    "ast_hash": "cd71bfd661b71ec713aa9a9bdff22b78",
-    "semantic_hash": ""
-  },
   "server/services/studentProgress.js": {
     "mtime": 1782870504.6883528,
     "ast_hash": "8607794d36304dc406131403cb60dc3a",
-    "semantic_hash": ""
-  },
-  "server/services/studentProgress.test.mjs": {
-    "mtime": 1782870504.5567095,
-    "ast_hash": "db1c8aef0267ff67062036ae32a3d33a",
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/workspace/courseGrades.ts": {
@@ -1379,29 +1234,14 @@
     "ast_hash": "9c571fdd8cad675dd8e943218b1ff203",
     "semantic_hash": ""
   },
-  "server/services/githubProjectSnapshot.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "91e36aa8eafc03218012a4ccc8488cd7",
-    "semantic_hash": ""
-  },
   "server/services/submissionIndexing.js": {
     "mtime": 1783906570.145383,
     "ast_hash": "ce93dff3f259d09182b9da1c0b4bb3d2",
     "semantic_hash": ""
   },
-  "server/services/submissionIndexing.test.mjs": {
-    "mtime": 1783906570.0750055,
-    "ast_hash": "888295c1fec377cb31b6afdb81ec87d0",
-    "semantic_hash": ""
-  },
   "server/services/cvProjectScope.js": {
     "mtime": 1783906569.9749112,
     "ast_hash": "7c3cb8b1981e431ea9024c866504ee49",
-    "semantic_hash": ""
-  },
-  "server/services/cvProjectScope.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "890b09b1eb1746e469b633d1d916a9e2",
     "semantic_hash": ""
   },
   "prisma/migrations/20260702140000_inbox_message_gif/migration.sql": {
@@ -1414,24 +1254,9 @@
     "ast_hash": "3d417475976dade80804b815f7f935ff",
     "semantic_hash": ""
   },
-  "server/services/inboxMessages.test.mjs": {
-    "mtime": 1783906570.0750055,
-    "ast_hash": "43f6a9406dd2327aedaac3c02dc536be",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/lib/composerEnterSubmit.mjs": {
     "mtime": 1783906570.154849,
     "ast_hash": "796d602d3a9319dc1e300bdab5ab19e5",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/lib/composerEnterSubmit.test.mjs": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "664e04059fcff1a4cf254b4776946954",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/pages/shared/CommunityCommentThread.test.mjs": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "4aef953a2b44a02b109c3e01f5e334a6",
     "semantic_hash": ""
   },
   "prisma/migrations/20260703120000_user_cv_profile/migration.sql": {
@@ -1442,11 +1267,6 @@
   "server/services/perfectCv.js": {
     "mtime": 1783906570.0750055,
     "ast_hash": "5a9f173021d7bf39a70f50afcc4a67eb",
-    "semantic_hash": ""
-  },
-  "server/services/perfectCv.test.mjs": {
-    "mtime": 1783906569.9809303,
-    "ast_hash": "01220ead7af293f83fda5987d4c5b5ee",
     "semantic_hash": ""
   },
   "src/features/swinlearn/components/cv/PerfectCvEditPanel.tsx": {
@@ -1464,11 +1284,6 @@
     "ast_hash": "0ae5dc0a7aa0ae3a5245da27dbe9b79c",
     "semantic_hash": ""
   },
-  "src/features/swinlearn/lib/perfectCvMerge.test.mjs": {
-    "mtime": 1783906570.145383,
-    "ast_hash": "1f337641e0a0f3363788877e0c68e449",
-    "semantic_hash": ""
-  },
   "prisma/migrations/20260703140000_cv_headline_role/migration.sql": {
     "mtime": 1783906570.154849,
     "ast_hash": "8f5066cace2a684b81dd8f763f2c4db4",
@@ -1484,11 +1299,6 @@
     "ast_hash": "3eae9d267db55022c623fdd7abcf2f27",
     "semantic_hash": ""
   },
-  "src/features/swinlearn/lib/perfectCvFormat.test.mjs": {
-    "mtime": 1783906569.970862,
-    "ast_hash": "1a7dce8a5e19f3c02068e9af77a69c66",
-    "semantic_hash": ""
-  },
   "prisma/migrations/20260706120000_community_read_cursor/migration.sql": {
     "mtime": 1783906570.1814291,
     "ast_hash": "5de2ffa94f03c0c4bb8a222246399891",
@@ -1499,24 +1309,9 @@
     "ast_hash": "de1e5b918e28dce4a628732276bc2658",
     "semantic_hash": ""
   },
-  "server/services/communityUnread.test.mjs": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "61f22dc4f343fa3ac598a5efa183f4d0",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/pages/shared/myCoursesCommunityBadge.test.mjs": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "e510d46bd3a29614d8b50951a8799e1b",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/lib/swinlearnKnowledgeIndex.mjs": {
     "mtime": 1783906570.1054292,
     "ast_hash": "6453fc981d9f86447f194f72c20e7c67",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/pages/admin/AdminCourseOfferPage.test.mjs": {
-    "mtime": 1783906569.9779286,
-    "ast_hash": "01c3c6a217e56a6e943b5906d497e3ba",
     "semantic_hash": ""
   },
   "src/features/swinlearn/components/SwinlearnKnowledgeIndexPanel.tsx": {
@@ -1524,19 +1319,9 @@
     "ast_hash": "0f4440235a76a3d17d50614c4023e429",
     "semantic_hash": ""
   },
-  "src/features/swinlearn/lib/swinlearnKnowledgeIndex.test.mjs": {
-    "mtime": 1783906569.972859,
-    "ast_hash": "1b507f588e8b56cd4a7b263b2ac4979c",
-    "semantic_hash": ""
-  },
   "server/services/gradeReport.js": {
     "mtime": 1783992926.9132595,
     "ast_hash": "ab56bcbde4dccae041d5475f6c8e7866",
-    "semantic_hash": ""
-  },
-  "server/services/gradeReport.test.mjs": {
-    "mtime": 1783992926.914781,
-    "ast_hash": "259f0d49cb80df09bdff231b155a6c99",
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/gradeReportExport.mjs": {
@@ -1549,24 +1334,9 @@
     "ast_hash": "cdac4966c93eb73d962bf964010a47c3",
     "semantic_hash": ""
   },
-  "src/features/swinlearn/layouts/WorkspaceLayout/WorkspaceLayout.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "b5473e8b0ab39bdd008e65a470b3bf73",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/lib/cvProjectMarkdown.mjs": {
     "mtime": 1783906570.1814291,
     "ast_hash": "6ef132ebef11e0cf941774c02410da24",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/lib/cvProjectMarkdown.test.mjs": {
-    "mtime": 1783906569.9631865,
-    "ast_hash": "853da9433beea614ca31003b087e5cec",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/pages/admin/AdminCoursesPage.test.mjs": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "82f9c34daeb5358efc8c10e30032d7a7",
     "semantic_hash": ""
   },
   "server/services/gradeAnalysis.js": {
@@ -1574,19 +1344,9 @@
     "ast_hash": "ecc660d659d8edaa191a1cf67273edcc",
     "semantic_hash": ""
   },
-  "server/services/gradeAnalysis.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "bd7bca95c5d253c82fd55ad99b079466",
-    "semantic_hash": ""
-  },
   "src/features/swinlearn/lib/gradeProgressMetrics.mjs": {
     "mtime": 1783906570.058338,
     "ast_hash": "21d846643ca729c195e7f36c51abb91d",
-    "semantic_hash": ""
-  },
-  "src/features/swinlearn/lib/gradeProgressMetrics.test.mjs": {
-    "mtime": 1783906569.9749112,
-    "ast_hash": "321886a54e7099bb76e4926a000ab189",
     "semantic_hash": ""
   },
   "src/features/swinlearn/lib/gradeWarningDetail.mjs": {
@@ -1594,19 +1354,9 @@
     "ast_hash": "3582f0c457c40e7c8c168c799aba3ffd",
     "semantic_hash": ""
   },
-  "src/features/swinlearn/lib/gradeWarningDetail.test.mjs": {
-    "mtime": 1783906569.9631865,
-    "ast_hash": "84946cdc6a2b51dd48ce34837a82fc2b",
-    "semantic_hash": ""
-  },
   "server/services/gradeAnalysisIntent.js": {
     "mtime": 1783906569.967862,
     "ast_hash": "b7ced35eb1d676cbbdab36db716138b2",
-    "semantic_hash": ""
-  },
-  "server/services/gradeAnalysisIntent.test.mjs": {
-    "mtime": 1783906569.9809303,
-    "ast_hash": "7eee76b2eca86d8e1fd5b23552f0c98f",
     "semantic_hash": ""
   },
   "server/services/geminiChat.js": {
@@ -1614,39 +1364,14 @@
     "ast_hash": "9b76da7c27c66874a4ecf08427944a15",
     "semantic_hash": ""
   },
-  "server/services/geminiChat.test.mjs": {
-    "mtime": 1783570698.552552,
-    "ast_hash": "c2b55b562ef8d6aa74a80533b6d92c22",
-    "semantic_hash": ""
-  },
   "server/services/intentRouter.js": {
     "mtime": 1783906570.1814291,
     "ast_hash": "934f2f72bfc1d1dbf678312b01da3445",
     "semantic_hash": ""
   },
-  "server/services/intentRouter.test.mjs": {
-    "mtime": 1783906570.154849,
-    "ast_hash": "aca516d8e1ea524ed895ae1bbbff56e5",
-    "semantic_hash": ""
-  },
   "server/services/swinlearnMessageHandler.js": {
     "mtime": 1783992926.916868,
     "ast_hash": "922cff0a350858ce1bf8f37c7918aa37",
-    "semantic_hash": ""
-  },
-  "server/services/nluEval.live.test.mjs": {
-    "mtime": 1783906570.1814291,
-    "ast_hash": "61eefa566402d46b8ead7f9211b39f7c",
-    "semantic_hash": ""
-  },
-  "server/services/swinlearnMessageHandler.test.mjs": {
-    "mtime": 1783992926.9132595,
-    "ast_hash": "b42fd94bcc5d72bde19b7af421471909",
-    "semantic_hash": ""
-  },
-  "server/services/swinlearnNluParsing.test.mjs": {
-    "mtime": 1783906569.9819417,
-    "ast_hash": "293a8ea9a6239c0e59e54558c10cec1d",
     "semantic_hash": ""
   },
   "docs/testing/chatbot-e2e-checklist.md": {

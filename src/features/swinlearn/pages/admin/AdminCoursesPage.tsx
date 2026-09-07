@@ -957,7 +957,7 @@ function AdminCoursesPage() {
               </div>
             </div>
 
-            <section className="workspace-panel">
+            <section className="workspace-panel admin-courses-list-panel">
               <div className="workspace-section-heading">
                 <div>
                   <h2>Curriculum courses</h2>
@@ -986,21 +986,29 @@ function AdminCoursesPage() {
                 />
               </label>
 
-              <div className="workspace-table" role="table" aria-label="Curriculum courses">
+              <div className="admin-courses-table-scroll">
+              <div className="workspace-table admin-courses-table" role="table" aria-label="Curriculum courses">
+                <div className="admin-courses-table-header" role="row">
+                  <span>Course</span>
+                  <span>Type</span>
+                  <span>Scope</span>
+                </div>
                 {curriculumCoursePageState.items.map(({ course, rule }) => {
                   return (
                     <button
                       key={rule.id}
                       type="button"
-                      className={`workspace-row workspace-row--button${selectedCourseId === course.id ? ' workspace-row--active' : ''}`}
+                      className={`workspace-row workspace-row--button admin-courses-row${selectedCourseId === course.id ? ' workspace-row--active' : ''}`}
                       onClick={() => openCourseRuleDialog(course)}
                     >
-                      <span>
+                      <span className="admin-courses-course">
                         <strong>{course.code}</strong>
                         <small>{course.title}</small>
                       </span>
-                      <span>{ruleTypeLabels[rule.rule_type]}</span>
-                      <span>
+                      <span className="admin-courses-column admin-courses-column--type">
+                        {ruleTypeLabels[rule.rule_type]}
+                      </span>
+                      <span className="admin-courses-column admin-courses-column--scope">
                         {scopeLabels[rule.scope]}
                         <small>{data ? ruleScopeDetail(rule, data) : 'Scope'}</small>
                       </span>
@@ -1016,6 +1024,7 @@ function AdminCoursesPage() {
                 {selectedCurriculumRules.length > 0 && filteredCurriculumCourseRows.length === 0 && (
                   <div className="workspace-empty-state">No curriculum courses match this search.</div>
                 )}
+              </div>
               </div>
 
               {filteredCurriculumCourseRows.length > 0 && (
@@ -1043,7 +1052,7 @@ function AdminCoursesPage() {
               )}
             </section>
 
-            <section className="workspace-panel">
+            <section className="workspace-panel admin-courses-list-panel">
               <div className="workspace-section-heading">
                 <div>
                   <h2>Catalog</h2>
@@ -1063,20 +1072,28 @@ function AdminCoursesPage() {
                 />
               </label>
 
-              <div className="workspace-table" role="table" aria-label="Course catalog">
+              <div className="admin-courses-table-scroll">
+              <div className="workspace-table admin-courses-table" role="table" aria-label="Course catalog">
+                <div className="admin-courses-table-header" role="row">
+                  <span>Course</span>
+                  <span>Record</span>
+                  <span>Offerings</span>
+                </div>
                 {catalogCoursePageState.items.map(({ course, offeringCount }) => (
                   <button
                     key={course.id}
                     type="button"
-                    className={`workspace-row workspace-row--button${selectedCourseId === course.id ? ' workspace-row--active' : ''}`}
+                    className={`workspace-row workspace-row--button admin-courses-row${selectedCourseId === course.id ? ' workspace-row--active' : ''}`}
                     onClick={() => openCourseRuleDialog(course)}
                   >
-                    <span>
+                    <span className="admin-courses-course">
                       <strong>{course.code}</strong>
                       <small>{course.title}</small>
                     </span>
-                    <span>Catalog</span>
-                    <span>{offeringCount} offerings</span>
+                    <span className="admin-courses-column admin-courses-column--type">Catalog</span>
+                    <span className="admin-courses-column admin-courses-column--offerings">
+                      {offeringCount} offerings
+                    </span>
                   </button>
                 ))}
 
@@ -1086,6 +1103,7 @@ function AdminCoursesPage() {
                 {(data?.courses.length ?? 0) > 0 && filteredCatalogCourseRows.length === 0 && (
                   <div className="workspace-empty-state">No catalog courses match this search.</div>
                 )}
+              </div>
               </div>
 
               {filteredCatalogCourseRows.length > 0 && (

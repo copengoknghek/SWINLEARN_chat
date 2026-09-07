@@ -58,6 +58,30 @@ export const mapChildMajor = (major) => ({
   sort_order: major.sortOrder,
 })
 
+export const mapCvProfile = (profile) => {
+  if (!profile) {
+    return {
+      phone: null,
+      headline_role: null,
+      certifications: null,
+      updated_at: null,
+    }
+  }
+
+  return {
+    phone: profile.phone ?? null,
+    headline_role: profile.headlineRole ?? null,
+    certifications: profile.certifications ?? null,
+    updated_at: profile.updatedAt?.toISOString() ?? null,
+  }
+}
+
+export const mapCvEducation = (user) => ({
+  institution: 'Swinburne University of Technology',
+  major_title: user?.childMajor?.title ?? null,
+  campus: user?.campus ?? null,
+})
+
 export const mapCourse = (course) => ({
   id: course.id,
   code: course.code,
@@ -172,6 +196,10 @@ export const mapSubmission = (submission) => ({
   student_id: submission.studentId,
   body: submission.body,
   file_paths: Array.isArray(submission.filePaths) ? submission.filePaths : [],
+  github_url: submission.githubUrl ?? null,
+  index_status: submission.indexStatus ?? 'pending',
+  index_error: submission.indexError ?? null,
+  indexed_at: submission.indexedAt?.toISOString() ?? null,
   submitted_at: submission.submittedAt.toISOString(),
   updated_at: submission.updatedAt?.toISOString(),
 })
@@ -290,6 +318,10 @@ export const mapSwinlearnMessage = (message) => ({
   role: message.role,
   content: message.content,
   citations: Array.isArray(message.citations) ? message.citations : [],
+  metadata:
+    message.metadata && typeof message.metadata === 'object' && !Array.isArray(message.metadata)
+      ? message.metadata
+      : null,
   selected_offering_ids: Array.isArray(message.selectedOfferingIds) ? message.selectedOfferingIds : [],
   model: message.model,
   openai_response_id: message.openaiResponseId,
@@ -334,6 +366,7 @@ export const mapMessage = (message) => ({
   thread_id: message.threadId,
   sender_id: message.senderId,
   body: message.body,
+  gif_url: message.gifUrl ?? null,
   created_at: message.createdAt.toISOString(),
 })
 

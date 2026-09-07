@@ -137,6 +137,42 @@
   text-align: center;
 }
 
+.workspace-nav-link--inbox {
+  position: relative;
+}
+
+.workspace-nav-icon-wrap {
+  display: inline-flex;
+  position: relative;
+}
+
+.workspace-nav-badge {
+  align-items: center;
+  background: #ee2d1c;
+  border: 2px solid #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(238, 45, 28, 0.18);
+  color: #ffffff;
+  display: inline-flex;
+  font-size: 0.58rem;
+  font-weight: 900;
+  height: 18px;
+  justify-content: center;
+  line-height: 1;
+  min-width: 18px;
+  padding: 0 3px;
+  pointer-events: none;
+  position: absolute;
+  right: -8px;
+  top: -8px;
+  width: auto;
+  z-index: 2;
+}
+
+.workspace-nav-link--active .workspace-nav-badge {
+  border-color: var(--accent);
+}
+
 .workspace-nav-link--stacked .workspace-nav-icon {
   height: 1.45rem;
   width: 1.45rem;

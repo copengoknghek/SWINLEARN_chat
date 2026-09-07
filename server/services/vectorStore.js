@@ -23,6 +23,29 @@ export function buildUploadFilter(threadId, userId) {
   }
 }
 
+export function buildSubmissionFilter(userId, offeringIds = []) {
+  const must = [
+    { key: 'source', match: { value: 'submission' } },
+    { key: 'studentId', match: { value: userId } },
+  ]
+
+  if (offeringIds.length > 0) {
+    must.push({ key: 'offeringId', match: { any: offeringIds } })
+  }
+
+  return { must }
+}
+
+export function buildSubmissionDeleteFilter({ assignmentId, studentId }) {
+  return {
+    must: [
+      { key: 'source', match: { value: 'submission' } },
+      { key: 'studentId', match: { value: studentId } },
+      { key: 'assignmentId', match: { value: assignmentId } },
+    ],
+  }
+}
+
 export function buildRetrievalFilter({ offeringIds = [], threadId, userId } = {}) {
   const filters = []
 
@@ -34,8 +57,16 @@ export function buildRetrievalFilter({ offeringIds = [], threadId, userId } = {}
     filters.push(buildUploadFilter(threadId, userId))
   }
 
+  if (userId) {
+    filters.push(buildSubmissionFilter(userId, offeringIds))
+  }
+
   if (filters.length === 1) {
     return filters[0]
+  }
+
+  if (filters.length === 0) {
+    return null
   }
 
   return { should: filters }
@@ -75,14 +106,18 @@ export function mapSearchResultToDocument(result) {
     courseCode: payload.courseCode ?? null,
     id: String(result?.id ?? ''),
     locator: {
+      assignmentId: payload.assignmentId ?? null,
       assignmentTitle: payload.assignmentTitle ?? null,
       attachmentId: payload.attachmentId ?? null,
       chunkIndex: payload.chunkIndex ?? null,
+      courseCode: payload.courseCode ?? null,
+      githubUrl: payload.githubUrl ?? null,
       itemTitle: payload.itemTitle ?? null,
       messageId: payload.messageId ?? null,
       moduleTitle: payload.moduleTitle ?? null,
       offeringId: payload.offeringId ?? null,
       packageId: payload.packageId ?? null,
+      studentId: payload.studentId ?? null,
       threadId: payload.threadId ?? null,
       userId: payload.userId ?? null,
     },

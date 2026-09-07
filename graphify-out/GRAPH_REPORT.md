@@ -1,16 +1,16 @@
-# Graph Report - swinlearn  (2026-06-30)
+# Graph Report - swinlearn  (2026-07-14)
 
 ## Corpus Check
-- 264 files · ~389,580 words
+- 267 files · ~404,711 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 2271 nodes · 3554 edges · 199 communities (164 shown, 35 thin omitted)
-- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 3 edges (avg confidence: 0.8)
+- 2554 nodes · 4244 edges · 201 communities (166 shown, 35 thin omitted)
+- Extraction: 100% EXTRACTED · 0% INFERRED · 0% AMBIGUOUS · INFERRED: 4 edges (avg confidence: 0.8)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e8bca6f0`
+- Built from commit: `94177d9c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -59,8 +59,6 @@
 - [[_COMMUNITY_Community 42|Community 42]]
 - [[_COMMUNITY_Community 43|Community 43]]
 - [[_COMMUNITY_Community 44|Community 44]]
-- [[_COMMUNITY_Community 45|Community 45]]
-- [[_COMMUNITY_Community 46|Community 46]]
 - [[_COMMUNITY_Community 47|Community 47]]
 - [[_COMMUNITY_Community 48|Community 48]]
 - [[_COMMUNITY_Community 49|Community 49]]
@@ -73,7 +71,6 @@
 - [[_COMMUNITY_Community 56|Community 56]]
 - [[_COMMUNITY_Community 57|Community 57]]
 - [[_COMMUNITY_Community 58|Community 58]]
-- [[_COMMUNITY_Community 59|Community 59]]
 - [[_COMMUNITY_Community 60|Community 60]]
 - [[_COMMUNITY_Community 61|Community 61]]
 - [[_COMMUNITY_Community 62|Community 62]]
@@ -149,7 +146,6 @@
 - [[_COMMUNITY_Community 132|Community 132]]
 - [[_COMMUNITY_Community 133|Community 133]]
 - [[_COMMUNITY_Community 134|Community 134]]
-- [[_COMMUNITY_Community 135|Community 135]]
 - [[_COMMUNITY_Community 136|Community 136]]
 - [[_COMMUNITY_Community 138|Community 138]]
 - [[_COMMUNITY_Community 139|Community 139]]
@@ -180,22 +176,17 @@
 - [[_COMMUNITY_Community 165|Community 165]]
 - [[_COMMUNITY_Community 166|Community 166]]
 - [[_COMMUNITY_Community 167|Community 167]]
-- [[_COMMUNITY_Community 168|Community 168]]
 - [[_COMMUNITY_Community 169|Community 169]]
-- [[_COMMUNITY_Community 170|Community 170]]
 - [[_COMMUNITY_Community 171|Community 171]]
 - [[_COMMUNITY_Community 172|Community 172]]
 - [[_COMMUNITY_Community 173|Community 173]]
 - [[_COMMUNITY_Community 174|Community 174]]
 - [[_COMMUNITY_Community 175|Community 175]]
 - [[_COMMUNITY_Community 176|Community 176]]
-- [[_COMMUNITY_Community 177|Community 177]]
 - [[_COMMUNITY_Community 178|Community 178]]
-- [[_COMMUNITY_Community 179|Community 179]]
 - [[_COMMUNITY_Community 180|Community 180]]
 - [[_COMMUNITY_Community 181|Community 181]]
 - [[_COMMUNITY_Community 182|Community 182]]
-- [[_COMMUNITY_Community 183|Community 183]]
 - [[_COMMUNITY_Community 184|Community 184]]
 - [[_COMMUNITY_Community 185|Community 185]]
 - [[_COMMUNITY_Community 187|Community 187]]
@@ -205,83 +196,98 @@
 - [[_COMMUNITY_Community 192|Community 192]]
 - [[_COMMUNITY_Community 193|Community 193]]
 - [[_COMMUNITY_Community 194|Community 194]]
-- [[_COMMUNITY_Community 195|Community 195]]
+- [[_COMMUNITY_Community 196|Community 196]]
 - [[_COMMUNITY_Community 197|Community 197]]
 - [[_COMMUNITY_Community 198|Community 198]]
 - [[_COMMUNITY_Community 199|Community 199]]
+- [[_COMMUNITY_Community 200|Community 200]]
+- [[_COMMUNITY_Community 201|Community 201]]
+- [[_COMMUNITY_Community 202|Community 202]]
+- [[_COMMUNITY_Community 205|Community 205]]
+- [[_COMMUNITY_Community 206|Community 206]]
+- [[_COMMUNITY_Community 207|Community 207]]
+- [[_COMMUNITY_Community 208|Community 208]]
+- [[_COMMUNITY_Community 215|Community 215]]
+- [[_COMMUNITY_Community 216|Community 216]]
+- [[_COMMUNITY_Community 219|Community 219]]
+- [[_COMMUNITY_Community 220|Community 220]]
 
 ## God Nodes (most connected - your core abstractions)
-1. `apiRequest()` - 78 edges
+1. `apiRequest()` - 83 edges
 2. `httpError()` - 55 edges
-3. `Writing Skills` - 23 edges
-4. `scripts` - 22 edges
+3. `scripts` - 25 edges
+4. `Writing Skills` - 23 edges
 5. `profileName()` - 22 edges
-6. `useAuthContext()` - 19 edges
-7. `getErrorMessage()` - 18 edges
-8. `compilerOptions` - 17 edges
-9. `compilerOptions` - 16 edges
-10. `tasteskill: Anti-Slop Frontend Skill` - 16 edges
+6. `useAuthContext()` - 21 edges
+7. `handleSwinlearnMessage()` - 20 edges
+8. `getErrorMessage()` - 20 edges
+9. `compilerOptions` - 17 edges
+10. `compilerOptions` - 16 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `readCreditPoints()` --calls--> `httpError()`  [EXTRACTED]
   server/routes/admin.js → server/http.js
 - `authPayload()` --calls--> `mapUserProfile()`  [EXTRACTED]
   server/routes/auth.js → server/mappers.js
-- `RegisterCoursesPage()` --calls--> `useAuthContext()`  [EXTRACTED]
-  src/features/swinlearn/pages/student/RegisterCoursesPage.tsx → src/context/AuthContext.tsx
-- `_generate_intelligent_overrides()` --calls--> `search()`  [INFERRED]
-  .cursor/skills/ui-ux-pro-max/scripts/design_system.py → .cursor/skills/ui-ux-pro-max/scripts/core.py
-- `main()` --calls--> `seedConsultationRooms()`  [EXTRACTED]
-  prisma/seed-rooms-only.js → prisma/consultationRooms.js
+- `formatGradeAnalysisResult()` --calls--> `calculateGpa()`  [EXTRACTED]
+  server/services/gradeAnalysis.js → src/features/swinlearn/lib/gradeProgressMetrics.mjs
+- `formatGradeAnalysisResult()` --calls--> `calculateRequiredRemainingAverage()`  [EXTRACTED]
+  server/services/gradeAnalysis.js → src/features/swinlearn/lib/gradeProgressMetrics.mjs
+- `classifyGradeAnalysisIntent()` --calls--> `routeIntent()`  [INFERRED]
+  server/services/gradeAnalysisIntent.js → server/services/intentRouter.js
 
 ## Import Cycles
 - None detected.
 
-## Communities (199 total, 35 thin omitted)
+## Communities (201 total, 35 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.13
-Nodes (25): blockedHtmlTags, buildAssetLookup(), collectAssignmentSources(), copyAssetEntries(), encodePublicPath(), findEndOfCentralDirectory(), importCanvasCourseContent(), normalizeCanvasCourseData() (+17 more)
+Cohesion: 0.09
+Nodes (34): assertStaffCanTeachCourse(), assertTeacherCanTeachCourse(), courseContentUpload, createUserRecord(), loadTeachingEligibilityContext(), mapOfferingKnowledgeIndex(), offeringsInclude, readCreditPoints() (+26 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.09
-Nodes (22): scripts, agentmemory:down, agentmemory:logs, agentmemory:up, build, dev, dev:api, dev:down (+14 more)
+Cohesion: 0.08
+Nodes (25): scripts, agentmemory:down, agentmemory:logs, agentmemory:up, build, dev, dev:api, dev:attach (+17 more)
 
 ### Community 2 - "Community 2"
-Cohesion: 0.14
-Nodes (16): addHeaderRow(), buildImportTemplateWorkbook(), buildMajorTitleMaps(), buildUsersExportWorkbook(), campusLabels, EXPORT_HEADERS, IMPORT_HEADERS, majorTitleForUser() (+8 more)
+Cohesion: 0.17
+Nodes (14): addHeaderRow(), buildImportTemplateWorkbook(), buildMajorTitleMaps(), buildUsersExportWorkbook(), campusLabels, EXPORT_HEADERS, IMPORT_HEADERS, majorTitleForUser() (+6 more)
 
 ### Community 3 - "Community 3"
-Cohesion: 0.52
-Nodes (5): buildExcludedCourseMessage(), isAssignmentListingQuestion(), parseCourseCodesFromMessage(), resolveMessageCourseScope(), offerings
+Cohesion: 0.07
+Nodes (29): CommunityConfirmDialog(), CommunityConfirmDialogProps, CommunityHeartBurst, communityHeartPattern, CommunityHeartStyle, CommunityVoteButton(), CommunityVoteButtonProps, GiphyPicker() (+21 more)
 
 ### Community 4 - "Community 4"
-Cohesion: 0.17
-Nodes (10): CourseDetailSection, courseDetailSectionLabels, courseDetailSections, courseDetailSectionSet, scrollCourseContentIntoView(), ScrollScheduler, ScrollTarget, summarizeCourseDetail() (+2 more)
+Cohesion: 0.06
+Nodes (37): buildSharePath(), CommunityShareModal(), CommunityShareModalProps, ShareTab, CourseDetailPage(), defaultAssignmentForm(), formatTerm(), itemTypeLabel (+29 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.12
-Nodes (18): mapCoursePrerequisiteGroup(), mapCoursePrerequisiteOption(), mapCourseRegistrationRequest(), mapStudentCourseCompletion(), courseRequirementMessage(), creditRequirementMessage(), evaluateCourseEligibility(), evaluateRegistrationBasket() (+10 more)
+Cohesion: 0.10
+Nodes (26): formatGradeAnalysisDecline(), targetGradeToGoalKey(), buildFilteredGradeReport(), buildGradeReport(), buildGradeReportPdf(), buildGradeReportWorkbook(), csvRow(), enrichProgressWithWarnings() (+18 more)
+
+### Community 6 - "Community 6"
+Cohesion: 0.44
+Nodes (8): buildIntentRouterUserPrompt(), CONTEXT_HINTS, defaultRouteFallback(), normalizeIntentRoute(), parseIntentRouteJson(), routeIntent(), routeIntentGroq(), VALID_INTENTS
 
 ### Community 7 - "Community 7"
 Cohesion: 0.06
 Nodes (40): BM25, detect_domain(), _load_csv(), Lowercase, split, remove punctuation, filter short words, Build BM25 index from documents, Score all documents against query, Load CSV and return list of dicts, Core search function using BM25 (+32 more)
 
 ### Community 8 - "Community 8"
-Cohesion: 0.10
-Nodes (16): WorkspaceAlertStack(), WorkspaceAlertStackProps, HelpPage(), helpTopics, monthLabel(), toDateString(), fetchConsultationTeachers(), fetchHelpRequests() (+8 more)
+Cohesion: 0.50
+Nodes (4): Build evaluations first, Develop Skills iteratively with the agent, Evaluation and iteration, Observe how agents navigate Skills
 
 ### Community 9 - "Community 9"
-Cohesion: 0.09
-Nodes (21): APPENDICES - Real Source-Backed Reference Material, Appendix A - Install Commands per Design System, Appendix B - Canonical Sources (read these before reinventing), Appendix C - Apple Liquid Glass: Honest Web Approximation, Apple Liquid Glass (Apple platforms only), Atlassian, Bootstrap, Carbon (+13 more)
+Cohesion: 0.13
+Nodes (15): Appendix B - Canonical Sources (read these before reinventing), Apple Liquid Glass (Apple platforms only), Atlassian, Bootstrap, Carbon, Fluent UI, GOV.UK, Material Web (+7 more)
 
 ### Community 10 - "Community 10"
-Cohesion: 0.04
-Nodes (48): MyCoursesPage(), getRegistrationBlockedMessage(), RegisterCoursesPage(), termLabels, checkRegistrationBasket(), courseLabel(), fetchRegistrationData(), registerForOfferings() (+40 more)
+Cohesion: 0.22
+Nodes (9): assignmentCoachingMessage(), assignmentCompletionPatterns, CAPABILITIES_RESPONSE, capabilitiesPatterns, cvPortfolioPatterns, gradeExportPatterns, isAssignmentCompletionRequest(), isGradeExportRequest() (+1 more)
 
 ### Community 11 - "Community 11"
-Cohesion: 0.14
-Nodes (32): adjustGold(), awardCommentLikeGold(), awardCommentReceivedGold(), awardPostLikeGold(), awardShareReceivedGold(), BADGE_LABELS, badgesForUser(), CHAMPION_BADGE_TYPES (+24 more)
+Cohesion: 0.13
+Nodes (31): adjustGold(), awardCommentLikeGold(), awardCommentReceivedGold(), awardPostLikeGold(), awardShareReceivedGold(), BADGE_LABELS, badgesForUser(), CHAMPION_BADGE_TYPES (+23 more)
 
 ### Community 12 - "Community 12"
 Cohesion: 0.11
@@ -308,8 +314,8 @@ Cohesion: 0.20
 Nodes (10): 10. REFERENCE VOCABULARY (Pattern Names the Agent Should Know), Animation Library Choice, Cards & Containers, Galleries & Media, Hero Paradigms, Layout & Grids, Micro-Interactions & Effects, Navigation & Menus (+2 more)
 
 ### Community 18 - "Community 18"
-Cohesion: 0.20
-Nodes (10): 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 1.A Dial Inference (design read → dial values), 1.B Use-Case Presets, 1.C How the Dials Drive Output, 1. THE THREE DIALS (Core Configuration), 2.A When to reach for a real design system (use official packages), 2.B When the brief is an aesthetic, not a system (+2 more)
+Cohesion: 0.13
+Nodes (15): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline, 13. OUT OF SCOPE, 14. FINAL PRE-FLIGHT CHECK, 1.A Dial Inference (design read → dial values) (+7 more)
 
 ### Community 19 - "Community 19"
 Cohesion: 0.25
@@ -320,8 +326,8 @@ Cohesion: 0.07
 Nodes (29): Accessibility, Available Domains, Available Stacks, Common Rules for Professional UI, Example Workflow, How to Use This Skill, Icons & Visual Elements, Interaction (+21 more)
 
 ### Community 21 - "Community 21"
-Cohesion: 0.10
-Nodes (21): activeRegistrationOfferings(), annotatePeople(), communityCommentInclude(), communityPostInclude(), connectionPairWhere(), evaluateRegistrationSelection(), loadPairConnection(), loadVisibleOffering() (+13 more)
+Cohesion: 0.07
+Nodes (22): MarkdownMessage(), PerfectCvProjectPicker(), PerfectCvProjectPickerProps, emptyContext, MessageCitationList(), messageCitations(), createSwinlearnThread(), deleteSwinlearnThread() (+14 more)
 
 ### Community 22 - "Community 22"
 Cohesion: 0.29
@@ -356,8 +362,8 @@ Cohesion: 0.12
 Nodes (16): Additional Forbidden Patterns, Anti-Patterns (Do NOT Use), Buttons, Cards, Color Palette, Component Specs, Design System Master File, Global Rules (+8 more)
 
 ### Community 30 - "Community 30"
-Cohesion: 0.29
-Nodes (6): Agentmemory (optional), Docker MySQL, MySQL Development, MySQL Workbench, Native MySQL, Stop Containers
+Cohesion: 0.22
+Nodes (8): Agentmemory (optional), Docker Desktop, Docker MySQL, Fix "network ... not found" in Docker Desktop, MySQL Development, MySQL Workbench, Native MySQL, Stop Containers
 
 ### Community 31 - "Community 31"
 Cohesion: 0.07
@@ -388,68 +394,56 @@ Cohesion: 0.10
 Nodes (19): Bulletproofing Elements, Creation Log: Systematic Debugging Skill, Enhancement 1: TDD Reference, Extraction Decisions, Final Outcome, Initial Version, Iterations, Key Insight (+11 more)
 
 ### Community 42 - "Community 42"
-Cohesion: 0.40
-Nodes (5): 0.A Read these signals first, 0.B Output a one-line "Design Read" before generating, 0. BRIEF INFERENCE (Read the Room Before Anything Else), 0.C If the brief is ambiguous, ask one question, do not guess, 0.D Anti-Default Discipline
+Cohesion: 0.04
+Nodes (60): AdminCourseOfferPage(), currentYear, emptyOfferingForm(), memberRoleLabel, termLabels, toReadableDate(), CourseOfferFilters, CourseOfferFilterValue (+52 more)
 
 ### Community 43 - "Community 43"
-Cohesion: 0.07
-Nodes (36): AdminCourseOfferPage(), currentYear, emptyOfferingForm(), memberRoleLabel, termLabels, toReadableDate(), CourseOfferFilters, CourseOfferFilterValue (+28 more)
+Cohesion: 0.04
+Nodes (73): campusLabels, CreateUserForm, CredentialResult, EditUserForm, emptyCreateForm, emptyEditForm, statusFilterLabels, addStudentCourseCompletion() (+65 more)
 
 ### Community 44 - "Community 44"
 Cohesion: 0.16
-Nodes (18): buildCommunityShareMessage(), excerpt(), loadOfferingMemberIds(), shareCommunityPostViaInbox(), assertCanAddGroupMember(), assertCanCreateGroup(), assertCanOpenConversation(), assertCanRequestConnection() (+10 more)
-
-### Community 45 - "Community 45"
-Cohesion: 0.19
-Nodes (9): AccountPage(), roleName, accountAvatarInitials(), fetchAcademicProgress(), fetchCatalog(), removeProfileAvatar(), uploadProfileAvatar(), AcademicProgressData (+1 more)
-
-### Community 46 - "Community 46"
-Cohesion: 0.06
-Nodes (10): CalendarView, CoursesPage(), normalizeSearch(), pluralize(), fanpageEvents, fanpageNews, features, footerLinks (+2 more)
+Nodes (19): connectionPairWhere(), loadPairConnection(), buildCommunityShareMessage(), excerpt(), loadOfferingMemberIds(), shareCommunityPostViaInbox(), assertCanAddGroupMember(), assertCanCreateGroup() (+11 more)
 
 ### Community 47 - "Community 47"
-Cohesion: 0.05
-Nodes (48): memberProfileName(), AdminUsersPage(), CommunityAuthorHeader(), CommunityAuthorHeaderProps, CommunityConfirmDialog(), CommunityConfirmDialogProps, CommunityHeartBurst, communityHeartPattern (+40 more)
+Cohesion: 0.40
+Nodes (10): childMajorIdFromRule(), courseIdFromRule(), field(), getCourseTeachingMainMajorIds(), getTeacherCourseEligibilityError(), itemId(), mainMajorIdFromChild(), mainMajorIdFromRule() (+2 more)
 
 ### Community 48 - "Community 48"
-Cohesion: 0.05
-Nodes (48): CourseDialogMode, courseMatchesSearch(), CourseSaveCurriculumRuleInput, CourseSearchRow, courseToForm(), ExistingRule, filterCourseRows(), getCourseSaveCurriculumRuleError() (+40 more)
+Cohesion: 0.12
+Nodes (22): CourseDialogMode, courseMatchesSearch(), CourseSaveCurriculumRuleInput, CourseSearchRow, courseToForm(), ExistingRule, filterCourseRows(), getCourseSaveCurriculumRuleError() (+14 more)
 
 ### Community 49 - "Community 49"
 Cohesion: 0.80
 Nodes (4): `course_prerequisite_groups`, `course_prerequisite_options`, `courses`, `student_course_completions`
 
 ### Community 50 - "Community 50"
-Cohesion: 0.40
-Nodes (10): childMajorIdFromRule(), courseIdFromRule(), field(), getCourseTeachingMainMajorIds(), getTeacherCourseEligibilityError(), itemId(), mainMajorIdFromChild(), mainMajorIdFromRule() (+2 more)
+Cohesion: 0.13
+Nodes (14): 10. Mixed-language robustness, 1. Grade table — show, refine & export, 2. Grade analysis — agree (messy replies), 3. Grade analysis — pick a goal (words & numbers), 4. Course knowledge QA — paraphrased questions, 5. Tutor explanation — understandable, not doing the work, 6. CV export — from submitted projects, 7. Perfect CV (+6 more)
 
 ### Community 51 - "Community 51"
 Cohesion: 0.07
-Nodes (48): demoCourseCodes, demoUserIds, CONSULTATION_ROOM_NAMES, seedConsultationRooms(), aiCurriculumCourses, aiPrerequisitesByCourseCode, curriculumRuleForCourse(), main() (+40 more)
+Nodes (51): demoCourseCodes, demoUserIds, CONSULTATION_ROOM_NAMES, seedConsultationRooms(), aiCurriculumCourses, aiPrerequisitesByCourseCode, curriculumRuleForCourse(), main() (+43 more)
 
 ### Community 52 - "Community 52"
 Cohesion: 0.11
 Nodes (17): Acknowledging Correct Feedback, Code Review Reception, Common Mistakes, Forbidden Responses, From External Reviewers, From your human partner, GitHub Thread Replies, Gracefully Correcting Your Pushback (+9 more)
 
 ### Community 53 - "Community 53"
-Cohesion: 0.14
-Nodes (18): assertStaffCanTeachCourse(), assertTeacherCanTeachCourse(), courseContentUpload, createUserRecord(), loadTeachingEligibilityContext(), offeringsInclude, readCreditPoints(), userWorkbookUpload (+10 more)
+Cohesion: 0.15
+Nodes (14): createSwinlearnAttachments(), documentExtensions, documentMimeTypes, extractUploadText(), imageExtensions, legacyWordExtensions, officeDocumentExtensions, officeParserExtensions (+6 more)
 
 ### Community 54 - "Community 54"
 Cohesion: 0.73
 Nodes (5): `assignments`, `course_content_assets`, `course_content_items`, `course_content_modules`, `course_content_packages`
 
 ### Community 56 - "Community 56"
-Cohesion: 0.24
-Nodes (9): allowedGifHostSuffixes, assertCommunityBody(), assertCommunityCommentContent(), assertCommunityGifUrl(), assertCommunityPostContent(), canDeleteCommunityComment(), canDeleteCommunityPost(), canModerateCommunity() (+1 more)
+Cohesion: 0.17
+Nodes (15): isThreadVisible(), allowedGifHostSuffixes, assertCommunityBody(), assertCommunityCommentContent(), assertCommunityGifUrl, assertCommunityPostContent(), assertGifUrl(), canDeleteCommunityComment() (+7 more)
 
 ### Community 57 - "Community 57"
 Cohesion: 0.11
 Nodes (17): Anti-Pattern 1: Testing Mock Behavior, Anti-Pattern 2: Test-Only Methods in Production, Anti-Pattern 3: Mocking Without Understanding, Anti-Pattern 4: Incomplete Mocks, Anti-Pattern 5: Integration Tests as Afterthought, Gate Function, Gate Function, Gate Function (+9 more)
-
-### Community 59 - "Community 59"
-Cohesion: 0.20
-Nodes (9): adminCoursesCss, adminCoursesPage, communityConfirmDialog, courseDetailPage, css, globalCss, inboxPage, workspaceLayout (+1 more)
 
 ### Community 60 - "Community 60"
 Cohesion: 0.12
@@ -552,8 +546,8 @@ Cohesion: 0.25
 Nodes (7): Anti-patterns, Checklist, Quick start, See also, Troubleshooting, Why, Workflow
 
 ### Community 85 - "Community 85"
-Cohesion: 0.25
-Nodes (7): graphify reference: extra exports and benchmark, Step 6b - Wiki (only if --wiki flag), Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag), Step 7b - SVG export (only if --svg flag), Step 7c - GraphML export (only if --graphml flag), Step 7d - MCP server (only if --mcp flag), Step 8 - Token reduction benchmark (only if total_words > 5000)
+Cohesion: 0.13
+Nodes (25): blockedHtmlTags, buildAssetLookup(), collectAssignmentSources(), copyAssetEntries(), encodePublicPath(), findEndOfCentralDirectory(), importCanvasCourseContent(), normalizeCanvasCourseData() (+17 more)
 
 ### Community 86 - "Community 86"
 Cohesion: 0.25
@@ -740,28 +734,24 @@ Cohesion: 0.50
 Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
 ### Community 132 - "Community 132"
-Cohesion: 0.50
-Nodes (3): For /graphify add, For --watch, graphify reference: add a URL and watch a folder
+Cohesion: 0.16
+Nodes (12): CvProjectPreview(), CvProjectPreviewProps, classifyCvProjectMarkdownLine(), cvProjectMarkdownToWordHtml(), lineToWordHtml(), renderInlineMarkdownToHtml(), WORD_STYLES, cvExportFilename() (+4 more)
 
 ### Community 133 - "Community 133"
-Cohesion: 0.50
-Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify reference: commit hook and native CLAUDE.md integration
+Cohesion: 0.06
+Nodes (53): deleteCatalogCourse(), chunkArray(), createEmbedder(), createGeminiEmbedder(), createOllamaEmbedder(), defaultEmbedBatchSize, defaultEmbedDimensions, defaultGeminiEmbedBatchSize (+45 more)
 
 ### Community 134 - "Community 134"
-Cohesion: 0.50
-Nodes (3): For /graphify explain, For /graphify path, graphify reference: query, path, explain
-
-### Community 135 - "Community 135"
-Cohesion: 0.50
-Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
+Cohesion: 0.25
+Nodes (7): graphify reference: extra exports and benchmark, Step 6b - Wiki (only if --wiki flag), Step 7 - Neo4j export (only if --neo4j or --neo4j-push flag), Step 7b - SVG export (only if --svg flag), Step 7c - GraphML export (only if --graphml flag), Step 7d - MCP server (only if --mcp flag), Step 8 - Token reduction benchmark (only if total_words > 5000)
 
 ### Community 136 - "Community 136"
 Cohesion: 0.50
 Nodes (3): Boundaries, Output, Scan
 
 ### Community 138 - "Community 138"
-Cohesion: 0.50
-Nodes (4): Build evaluations first, Develop Skills iteratively with the agent, Evaluation and iteration, Observe how agents navigate Skills
+Cohesion: 0.20
+Nodes (16): resolveCvScopeAssignmentList(), generateGeminiChatReply(), formatUnknownUnderstanding(), isGibberish(), buildExcludedCourseMessage(), buildExplicitRoute(), cvKeywordHint(), fallbackSwinlearnAnswer() (+8 more)
 
 ### Community 139 - "Community 139"
 Cohesion: 0.50
@@ -779,9 +769,21 @@ Nodes (4): File Organization, Self-Contained Skill, Skill with Heavy Reference, 
 Cohesion: 0.50
 Nodes (4): Pattern, Reference, Skill Types, Technique
 
+### Community 145 - "Community 145"
+Cohesion: 0.50
+Nodes (3): For /graphify add, For --watch, graphify reference: add a URL and watch a folder
+
+### Community 146 - "Community 146"
+Cohesion: 0.50
+Nodes (3): For git commit hook, For native CLAUDE.md integration, graphify reference: commit hook and native CLAUDE.md integration
+
 ### Community 150 - "Community 150"
-Cohesion: 0.12
-Nodes (16): buildSharePath(), CommunityShareModal(), CommunityShareModalProps, ShareTab, GiphyPicker(), GiphyPickerProps, buildCourseDetailPath(), fetchInboxData() (+8 more)
+Cohesion: 0.50
+Nodes (3): For /graphify explain, For /graphify path, graphify reference: query, path, explain
+
+### Community 158 - "Community 158"
+Cohesion: 0.50
+Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphify reference: incremental update and cluster-only
 
 ### Community 165 - "Community 165"
 Cohesion: 0.83
@@ -791,109 +793,117 @@ Nodes (3): `community_comments`, `community_post_likes`, `community_posts`
 Cohesion: 0.70
 Nodes (4): `swinlearn_attachments`, `swinlearn_knowledge_indexes`, `swinlearn_messages`, `swinlearn_threads`
 
-### Community 168 - "Community 168"
-Cohesion: 0.40
-Nodes (4): api, css, page, types
-
 ### Community 169 - "Community 169"
-Cohesion: 0.08
-Nodes (29): campusLabels, CreateUserForm, CredentialResult, EditUserForm, emptyCreateForm, emptyEditForm, statusFilterLabels, addStudentCourseCompletion() (+21 more)
-
-### Community 170 - "Community 170"
-Cohesion: 0.22
-Nodes (19): httpError(), approveConsultation(), approveGeneralRequest(), assertConsultationSlot(), buildConsultationEndsAt(), forwardToTeacher(), listHelpRequestsForTeacher(), listHelpRequestsForUser() (+11 more)
+Cohesion: 0.19
+Nodes (12): GRADE_LABELS, gradeFromScore(), gradeLabel(), isPassingScore(), readFinalScore(), byCourseCode(), courseKey(), findChildMajor() (+4 more)
 
 ### Community 171 - "Community 171"
-Cohesion: 0.14
-Nodes (14): devDependencies, eslint, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, prisma, @types/node (+6 more)
+Cohesion: 0.13
+Nodes (15): devDependencies, eslint, @eslint/js, eslint-plugin-react-hooks, eslint-plugin-react-refresh, globals, nodemon, prisma (+7 more)
 
 ### Community 172 - "Community 172"
-Cohesion: 0.25
-Nodes (17): fallbackSwinlearnAnswer(), ensureIndexedOfferings(), buildAssignmentsIndexDocument(), buildCourseKnowledgeDocument(), buildSwinlearnKnowledgeDocuments(), collectAssignmentsFromOffering(), courseLabel(), ensureSwinlearnKnowledgeIndex() (+9 more)
+Cohesion: 0.28
+Nodes (15): buildAssignmentsIndexDocument(), buildCourseKnowledgeDocument(), buildSwinlearnKnowledgeDocuments(), collectAssignmentsFromOffering(), courseLabel(), ensureSwinlearnKnowledgeIndex(), formatTerm(), itemType() (+7 more)
 
 ### Community 173 - "Community 173"
-Cohesion: 0.13
-Nodes (15): dependencies, dotenv, exceljs, express, @fortawesome/free-solid-svg-icons, @fortawesome/react-fontawesome, multer, node-cron (+7 more)
+Cohesion: 0.11
+Nodes (18): dependencies, dotenv, exceljs, express, @fortawesome/free-solid-svg-icons, @fortawesome/react-fontawesome, multer, node-cron (+10 more)
 
 ### Community 174 - "Community 174"
-Cohesion: 0.29
-Nodes (5): buildSwinlearnGroqPayload(), createSwinlearnGroqClient(), defaultSwinlearnContextChars, documentContext(), extractGroqAssistantText()
+Cohesion: 0.15
+Nodes (14): buildGradeAnalysisIntentSystemPrompt(), buildGradeAnalysisIntentUserPrompt(), classifyGradeAnalysisIntent(), CONTEXT_HINTS, defaultIntentFallback(), GRADE_ANALYSIS_INTENT_SYSTEM_PROMPT, normalizeGradeAnalysisIntent(), parseGradeAnalysisIntentJson() (+6 more)
 
 ### Community 175 - "Community 175"
-Cohesion: 0.20
-Nodes (11): GRADE_LABELS, gradeFromScore(), gradeLabel(), isPassingScore(), readFinalScore(), buildStudentProgress(), getCurriculumCourseIds(), childMajors (+3 more)
+Cohesion: 0.09
+Nodes (24): activeRegistrationOfferings(), evaluateRegistrationSelection(), mapChildMajor(), mapCourse(), mapCoursePrerequisiteGroup(), mapCoursePrerequisiteOption(), mapCourseRegistrationRequest(), mapCurriculumRule() (+16 more)
 
 ### Community 176 - "Community 176"
 Cohesion: 0.29
 Nodes (6): name, prisma, seed, private, type, version
 
-### Community 177 - "Community 177"
-Cohesion: 0.06
-Nodes (41): createSwinlearnAttachments(), htmlToPlainText(), deleteCatalogCourse(), createGeminiEmbedder(), defaultEmbedDimensions, l2Normalize(), documentExtensions, documentMimeTypes (+33 more)
-
 ### Community 178 - "Community 178"
 Cohesion: 0.07
-Nodes (23): conversationLabel(), conversationMatchesSearch(), displayName(), emptyInbox, INBOX_COLORS, inboxAccentFor(), InboxPage(), initialsFor() (+15 more)
+Nodes (25): canSubmitReply(), conversationLabel(), conversationMatchesSearch(), displayName(), emptyInbox, INBOX_COLORS, inboxAccentFor(), InboxPage() (+17 more)
 
 ### Community 181 - "Community 181"
-Cohesion: 0.08
-Nodes (31): ChangePasswordPage(), AuthContext, AuthContextValue, AuthProvider(), AuthProviderProps, useAuthContext(), AuthProfile, AuthUser (+23 more)
+Cohesion: 0.05
+Nodes (46): AdminUsersPage(), ChangePasswordPage(), AuthContext, AuthContextValue, AuthProvider(), AuthProviderProps, useAuthContext(), AuthProfile (+38 more)
 
 ### Community 182 - "Community 182"
 Cohesion: 1.00
 Nodes (3): `community_comment_images`, `community_comment_likes`, `community_comments`
 
-### Community 183 - "Community 183"
-Cohesion: 0.50
-Nodes (3): commentThread, courseDetailPage, css
-
 ### Community 184 - "Community 184"
-Cohesion: 0.07
-Nodes (30): decideConnection(), mapSwinlearnCourseContext(), buildCommunityCommentTree(), isThreadVisible(), mapAssignment(), mapChildMajor(), mapCommunityComment(), mapCommunityPost() (+22 more)
+Cohesion: 0.31
+Nodes (8): communityUpload, createCommunityCommentImages(), createCommunityPostImages(), documentExtensions, documentMimeTypes, imageExtensions, validateCommunityAttachment(), validateCommunityImage()
 
 ### Community 185 - "Community 185"
-Cohesion: 0.24
-Nodes (11): createCatalogCourseWithRule(), readCreditPoints(), requireCurriculumRule(), byCourseCode(), courseKey(), findChildMajor(), getCurriculumForChildMajor(), requiredRuleTypes (+3 more)
+Cohesion: 0.29
+Nodes (6): APPENDICES - Real Source-Backed Reference Material, Appendix A - Install Commands per Design System, Appendix C - Apple Liquid Glass: Honest Web Approximation, Safer web approximation skeleton, What is NOT official, What is official
 
 ### Community 187 - "Community 187"
 Cohesion: 0.50
 Nodes (3): `gold_transactions`, `share_events`, `student_badges`
 
-### Community 190 - "Community 190"
-Cohesion: 0.06
-Nodes (48): statusFilters, apiRequest(), ApiRequestOptions, courseCardIcons, termLabels, CalendarItem, emptyContext, ApiAuthPayload (+40 more)
-
-### Community 192 - "Community 192"
-Cohesion: 0.31
-Nodes (8): communityUpload, createCommunityCommentImages(), createCommunityPostImages(), documentExtensions, documentMimeTypes, imageExtensions, validateCommunityAttachment(), validateCommunityImage()
-
-### Community 197 - "Community 197"
-Cohesion: 0.47
-Nodes (4): assignmentCoachingMessage(), assignmentCompletionPatterns, buildSwinlearnInstructions(), isAssignmentCompletionRequest()
-
-### Community 198 - "Community 198"
+### Community 189 - "Community 189"
 Cohesion: 0.50
 Nodes (4): 7. DIAL DEFINITIONS (Technical Reference), DESIGN_VARIANCE (Level 1-10), MOTION_INTENSITY (Level 1-10), VISUAL_DENSITY (Level 1-10)
 
+### Community 192 - "Community 192"
+Cohesion: 0.07
+Nodes (59): htmlToPlainText(), applyFollowUpRequestOverrides(), assignmentCountLabel(), assignmentTailPatterns, backendTech, buildClarificationSyntheticMessage(), buildCvScopeReply(), buildSubmittedAssignmentConfirmationReply() (+51 more)
+
+### Community 194 - "Community 194"
+Cohesion: 0.05
+Nodes (49): annotatePeople(), communityCommentInclude(), communityPostInclude(), decideConnection(), loadVisibleOffering(), offeringsInclude, readAssignmentIds(), readJsonArray() (+41 more)
+
+### Community 200 - "Community 200"
+Cohesion: 0.08
+Nodes (49): defaultSkillsText(), PerfectCvEditPanel(), PerfectCvEditPanelProps, PerfectCvPreview(), PerfectCvPreviewProps, buildContactBlock(), buildEducationBlock(), buildEducationDescription() (+41 more)
+
+### Community 201 - "Community 201"
+Cohesion: 0.06
+Nodes (10): ApiRequestOptions, CalendarView, CoursesPage(), normalizeSearch(), pluralize(), fanpageEvents, fanpageNews, features (+2 more)
+
+### Community 206 - "Community 206"
+Cohesion: 0.05
+Nodes (59): statusFilters, apiRequest(), WorkspaceAlertStack(), WorkspaceAlertStackProps, HelpPage(), helpTopics, monthLabel(), toDateString() (+51 more)
+
+### Community 215 - "Community 215"
+Cohesion: 0.11
+Nodes (21): memberProfileName(), CommunityAuthorHeader(), CommunityAuthorHeaderProps, ProfileAvatar(), ProfileAvatarProfile, ProfileAvatarProps, roleName, accountAvatarInitials() (+13 more)
+
+### Community 216 - "Community 216"
+Cohesion: 0.16
+Nodes (18): calculateGpa(), calculateRequiredRemainingAverage(), GRADE_POINTS, gradePointForGrade(), gradePointToMinScore(), groupCoursesByGradeBand(), buildGradeWarningDetail(), detectGradeAnalysisThreadContext() (+10 more)
+
+### Community 219 - "Community 219"
+Cohesion: 0.17
+Nodes (20): httpError(), approveConsultation(), approveGeneralRequest(), assertConsultationSlot(), buildConsultationEndsAt(), forwardToTeacher(), listAllHelpRequests(), listHelpRequestsForTeacher() (+12 more)
+
+### Community 220 - "Community 220"
+Cohesion: 0.60
+Nodes (4): downloadGradeReportPdf(), downloadGradeReportXlsx(), gradeReportFilename(), gradeReportPdfFilename()
+
 ## Knowledge Gaps
-- **1051 isolated node(s):** `find-polluter.sh script`, `fs`, `path`, `{ execSync }`, `name` (+1046 more)
+- **1101 isolated node(s):** `name`, `private`, `version`, `type`, `dev` (+1096 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **35 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `httpError()` connect `Community 170` to `Community 192`, `Community 0`, `Community 2`, `Community 5`, `Community 44`, `Community 177`, `Community 51`, `Community 53`, `Community 21`, `Community 185`, `Community 189`?**
-  _High betweenness centrality (0.005) - this node is a cross-community bridge._
-- **Why does `tasteskill: Anti-Slop Frontend Skill` connect `Community 18` to `Community 198`, `Community 9`, `Community 42`, `Community 16`, `Community 17`, `Community 19`, `Community 22`, `Community 23`, `Community 24`, `Community 26`, `Community 27`, `Community 28`?**
-  _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **Why does `prisma` connect `Community 51` to `Community 21`, `Community 53`?**
-  _High betweenness centrality (0.002) - this node is a cross-community bridge._
-- **What connects `find-polluter.sh script`, `fs`, `path` to the rest of the system?**
-  _1077 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `useAuthContext()` connect `Community 181` to `Community 4`, `Community 43`, `Community 206`, `Community 178`, `Community 21`, `Community 215`, `Community 216`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **Why does `httpError()` connect `Community 219` to `Community 0`, `Community 2`, `Community 194`, `Community 133`, `Community 169`, `Community 44`, `Community 175`, `Community 85`, `Community 53`, `Community 184`?**
+  _High betweenness centrality (0.010) - this node is a cross-community bridge._
+- **What connects `name`, `private`, `version` to the rest of the system?**
+  _1127 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.1310344827586207 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08846153846153847 - nodes in this community are weakly interconnected._
 - **Should `Community 1` be split into smaller, more focused modules?**
-  _Cohesion score 0.09090909090909091 - nodes in this community are weakly interconnected._
-- **Should `Community 2` be split into smaller, more focused modules?**
-  _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08 - nodes in this community are weakly interconnected._
+- **Should `Community 3` be split into smaller, more focused modules?**
+  _Cohesion score 0.07142857142857142 - nodes in this community are weakly interconnected._
+- **Should `Community 4` be split into smaller, more focused modules?**
+  _Cohesion score 0.06161616161616162 - nodes in this community are weakly interconnected._

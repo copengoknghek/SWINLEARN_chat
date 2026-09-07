@@ -24,7 +24,7 @@ export const assertCommunityBody = (body) => assertCommunityPostContent(body, 0)
 
 const allowedGifHostSuffixes = ['giphy.com', 'tenor.com']
 
-export const assertCommunityGifUrl = (value) => {
+export const assertGifUrl = (value) => {
   const trimmed = String(value ?? '').trim()
 
   if (!trimmed) {
@@ -62,9 +62,12 @@ export const assertCommunityGifUrl = (value) => {
   return trimmed
 }
 
+/** @deprecated use assertGifUrl */
+export const assertCommunityGifUrl = assertGifUrl
+
 export const assertCommunityCommentContent = ({ body, gifUrl, imageCount = 0 }) => {
   const trimmedBody = String(body ?? '').trim()
-  const normalizedGifUrl = assertCommunityGifUrl(gifUrl)
+  const normalizedGifUrl = assertGifUrl(gifUrl)
 
   if (!trimmedBody && imageCount === 0 && !normalizedGifUrl) {
     const error = new Error('Add text, a file, or a GIF.')

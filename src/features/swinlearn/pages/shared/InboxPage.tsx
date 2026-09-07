@@ -1,10 +1,12 @@
 import { faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react'
 import { useOutletContext } from 'react-router-dom'
 import { useAuthContext } from '../../../../context/AuthContext'
 import type { Role } from '../../../../hooks/useAuth'
 import { WorkspaceAlertStack } from '../../components/WorkspaceAlertStack'
+import { GiphyPicker } from '../../components/GiphyPicker'
+import { handleEnterToSubmit } from '../../lib/composerEnterSubmit.mjs'
 import {
   cancelConnection,
   courseLabel,
@@ -116,6 +118,40 @@ const messageMatchesSearch = (body: string, query: string) => {
   return trimmedQuery === '' || body.toLowerCase().includes(trimmedQuery)
 }
 
+const inboxMessagePreview = (message: { body: string; gif_url?: string | null }) => {
+  const body = message.body.trim()
+
+  if (body) {
+    return body
+  }
+
+  if (message.gif_url) {
+    return '[GIF]'
+  }
+
+  return ''
+}
+
+const canSubmitReply = (body: string, gifUrl: string) => Boolean(body.trim() || gifUrl.trim())
+
+const renderInboxMessageBody = (
+  message: { body: string; gif_url?: string | null },
+  highlightQuery = '',
+) => (
+  <>
+    {message.body.trim() !== '' && (
+      <p className="inbox-bubble-text">
+        {highlightQuery ? renderHighlightedBody(message.body, highlightQuery) : message.body}
+      </p>
+    )}
+    {message.gif_url && (
+      <div className="inbox-bubble-gif">
+        <img src={message.gif_url} alt="GIF" loading="eager" />
+      </div>
+    )}
+  </>
+)
+
 const renderHighlightedBody = (body: string, query: string) => {
   const trimmedQuery = query.trim()
 
@@ -212,7 +248,8 @@ function InboxPage() {
   const [searchResults, setSearchResults] = useState<PersonSearchResult[]>([])
   const [searching, setSearching] = useState(false)
   const [hasSearched, setHasSearched] = useState(false)
-  const [replyMessage, setReplyMessage] = useState('')
+  const [replyDraft, setReplyDraft] = useState({ body: '', gifUrl: '' })
+  const [showReplyGifPicker, setShowReplyGifPicker] = useState(false)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
@@ -228,6 +265,13 @@ function InboxPage() {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false)
   const [inConversationMatchIndex, setInConversationMatchIndex] = useState(0)
   const messageRefs = useRef<Record<string, HTMLElement | null>>({})
+  const messageListRef = useRef<HTMLDivElement>(null)
+  const messagesEndRef = useRef<HTMLDivElement>(null)
+  const replyFormRef = useRef<HTMLFormElement>(null)
+  const replyTextareaRef = useRef<HTMLTextAreaElement>(null)
+  const replyDraftRef = useRef(replyDraft)
+
+  replyDraftRef.current = replyDraft
 
   const loadInbox = useCallback(async () => {
     try {
@@ -326,6 +370,48 @@ function InboxPage() {
       .map((message) => message.id)
   }, [conversations, selectedConversationId, inConversationSearchQuery])
 
+  const scrollMessagesToBottom = useCallback(() => {
+    const list = messageListRef.current
+
+    if (!list) {
+      return
+    }
+
+    list.scrollTop = list.scrollHeight
+  }, [])
+
+  useLayoutEffect(() => {
+    if (
+      !selectedConversationId ||
+      rightPane !== 'conversation' ||
+      settingsView ||
+      !selectedConversation?.messages.length
+    ) {
+      return undefined
+    }
+
+    scrollMessagesToBottom()
+
+    const list = messageListRef.current
+
+    if (!list) {
+      return undefined
+    }
+
+    const observer = new ResizeObserver(() => {
+      scrollMessagesToBottom()
+    })
+    observer.observe(list)
+
+    return () => observer.disconnect()
+  }, [
+    rightPane,
+    scrollMessagesToBottom,
+    selectedConversation?.messages.length,
+    selectedConversationId,
+    settingsView,
+  ])
+
   const scrollToConversationMatch = useCallback(
     (index: number) => {
       const matchId = inConversationMatchIds[index]
@@ -394,10 +480,12 @@ function InboxPage() {
     }
   }
 
-  const handleReply = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
+  const handleReply = async (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault()
 
-    if (!selectedConversationId || replyMessage.trim() === '') {
+    const { body, gifUrl } = replyDraftRef.current
+
+    if (!selectedConversationId || !canSubmitReply(body, gifUrl)) {
       return
     }
 
@@ -406,14 +494,25 @@ function InboxPage() {
     setNotice('')
 
     try {
-      await sendInboxMessage(selectedConversationId, replyMessage.trim())
-      setReplyMessage('')
+      await sendInboxMessage(selectedConversationId, {
+        body: body.trim(),
+        gifUrl: gifUrl.trim() || undefined,
+      })
+      setReplyDraft({ body: '', gifUrl: '' })
+      setShowReplyGifPicker(false)
       await loadInbox()
+      window.requestAnimationFrame(() => scrollMessagesToBottom())
     } catch (replyError) {
       setError(getErrorMessage(replyError, 'Reply could not be sent'))
     } finally {
       setSaving(false)
     }
+  }
+
+  const handleReplyGifSelect = (gifUrl: string) => {
+    setReplyDraft((current) => ({ ...current, gifUrl }))
+    setShowReplyGifPicker(false)
+    window.requestAnimationFrame(() => replyTextareaRef.current?.focus())
   }
 
   const handleOpenConversation = async (recipientId: string) => {
@@ -796,6 +895,7 @@ function InboxPage() {
             const isMatch = messageMatchesSearch(message.body, inConversationSearchQuery)
             const isActiveMatch =
               isMatch && inConversationMatchIds[inConversationMatchIndex] === message.id
+            const showSenderName = selectedConversation.is_group || !isOwnMessage
 
             return (
               <article
@@ -807,8 +907,10 @@ function InboxPage() {
                 }${isActiveMatch ? ' inbox-bubble--match-active' : ''}`}
                 key={message.id}
               >
-                <strong>{senderLabel(selectedConversation, message.sender_id)}</strong>
-                <p>{renderHighlightedBody(message.body, inConversationSearchQuery)}</p>
+                {showSenderName && (
+                  <strong>{senderLabel(selectedConversation, message.sender_id)}</strong>
+                )}
+                {renderInboxMessageBody(message, inConversationSearchQuery)}
                 <span>{formatMessageTime(message.created_at)}</span>
               </article>
             )
@@ -987,7 +1089,9 @@ function InboxPage() {
                       )}
                     </span>
                     <span className="inbox-thread-preview">
-                      {conversation.last_message?.body ?? 'No messages yet'}
+                      {conversation.last_message
+                        ? inboxMessagePreview(conversation.last_message)
+                        : 'No messages yet'}
                     </span>
                   </span>
                 </button>
@@ -1191,17 +1295,20 @@ function InboxPage() {
                   </button>
                 </header>
 
-                <div className="inbox-message-list">
+                <div className="inbox-message-list" ref={messageListRef}>
                   {selectedConversation.messages.map((message) => {
                     const isOwnMessage = message.sender_id === user?.id
+                    const showSenderName = selectedConversation.is_group || !isOwnMessage
 
                     return (
                       <article
                         className={`inbox-bubble${isOwnMessage ? ' inbox-bubble--own' : ''}`}
                         key={message.id}
                       >
-                        <strong>{senderLabel(selectedConversation, message.sender_id)}</strong>
-                        <p>{message.body}</p>
+                        {showSenderName && (
+                          <strong>{senderLabel(selectedConversation, message.sender_id)}</strong>
+                        )}
+                        {renderInboxMessageBody(message)}
                         <span>{formatMessageTime(message.created_at)}</span>
                       </article>
                     )
@@ -1212,35 +1319,88 @@ function InboxPage() {
                       No messages yet. Say hello to start the conversation.
                     </div>
                   )}
+                  <div ref={messagesEndRef} aria-hidden="true" />
                 </div>
 
                 <form
+                  ref={replyFormRef}
                   className="workspace-form inbox-reply-form"
                   onSubmit={(event) => void handleReply(event)}
                 >
-                  <label>
-                    <span>Reply</span>
-                    <textarea
-                      value={replyMessage}
-                      onChange={(event) => setReplyMessage(event.target.value)}
-                      placeholder="Write a message..."
-                    />
-                  </label>
-                  <button
-                    type="submit"
-                    className="inbox-send-button"
-                    disabled={saving || replyMessage.trim() === ''}
-                    aria-label={saving ? 'Sending message' : 'Send message'}
-                  >
-                    <svg
-                      className="inbox-send-icon"
-                      viewBox="0 0 512 512"
-                      aria-hidden="true"
-                      focusable="false"
+                  <div className="inbox-reply-row">
+                    <div className="inbox-reply-composer">
+                      <label className="sr-only" htmlFor="inbox-reply-textarea">
+                        Reply
+                      </label>
+                      {replyDraft.gifUrl.trim() !== '' && (
+                        <div className="inbox-reply-composer-gif">
+                          <img src={replyDraft.gifUrl.trim()} alt="Selected GIF" />
+                          <button
+                            type="button"
+                            className="inbox-reply-composer-gif-remove"
+                            aria-label="Remove GIF"
+                            onClick={() =>
+                              setReplyDraft((current) => ({ ...current, gifUrl: '' }))
+                            }
+                          >
+                            ×
+                          </button>
+                        </div>
+                      )}
+                      <textarea
+                        id="inbox-reply-textarea"
+                        ref={replyTextareaRef}
+                        value={replyDraft.body}
+                        onChange={(event) =>
+                          setReplyDraft((current) => ({ ...current, body: event.target.value }))
+                        }
+                        onKeyDown={(event) =>
+                          handleEnterToSubmit(event, () => replyFormRef.current?.requestSubmit(), {
+                            canSubmit:
+                              !saving && canSubmitReply(replyDraft.body, replyDraft.gifUrl),
+                          })
+                        }
+                        placeholder="Write a message..."
+                        rows={1}
+                      />
+                      <button
+                        type="button"
+                        className={`inbox-reply-gif-button${
+                          showReplyGifPicker || replyDraft.gifUrl
+                            ? ' inbox-reply-gif-button--active'
+                            : ''
+                        }`}
+                        aria-label="Add GIF to message"
+                        aria-pressed={showReplyGifPicker}
+                        onClick={() => setShowReplyGifPicker((current) => !current)}
+                      >
+                        GIF
+                      </button>
+                    </div>
+                    <button
+                      type="submit"
+                      className="inbox-send-button"
+                      disabled={saving || !canSubmitReply(replyDraft.body, replyDraft.gifUrl)}
+                      aria-label={saving ? 'Sending message' : 'Send message'}
                     >
-                      <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 .9L284 415.8l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 481.2 160 468V364.6L30.8 298.9C19.4 293.1 12.4 281.2 13 268.4s8.5-24.1 20.5-28.7l448-192c11.2-4.8 24.2-3 34.6 4.9zM432 80L192 323.2V432l52.7-56.9c6.7-7.2 17.2-9.4 26.2-5.3L405 448 432 80z" />
-                    </svg>
-                  </button>
+                      <svg
+                        className="inbox-send-icon"
+                        viewBox="0 0 512 512"
+                        aria-hidden="true"
+                        focusable="false"
+                      >
+                        <path d="M498.1 5.6c10.1 7 15.4 19.1 13.5 31.2l-64 416c-1.5 9.7-7.4 18.2-16 23s-18.9 5.4-28 .9L284 415.8l-68.5 74.1c-8.9 9.7-22.9 12.9-35.2 8.1S160 481.2 160 468V364.6L30.8 298.9C19.4 293.1 12.4 281.2 13 268.4s8.5-24.1 20.5-28.7l448-192c11.2-4.8 24.2-3 34.6 4.9zM432 80L192 323.2V432l52.7-56.9c6.7-7.2 17.2-9.4 26.2-5.3L405 448 432 80z" />
+                      </svg>
+                    </button>
+                  </div>
+                  {showReplyGifPicker && (
+                    <GiphyPicker
+                      open={showReplyGifPicker}
+                      onClose={() => setShowReplyGifPicker(false)}
+                      onError={setError}
+                      onSelect={handleReplyGifSelect}
+                    />
+                  )}
                 </form>
               </>
             ) : (

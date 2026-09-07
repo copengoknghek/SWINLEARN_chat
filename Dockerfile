@@ -1,3 +1,5 @@
+# Run the full stack with: npm run dev  (or scripts/start-stack.cmd)
+# Do not run this image alone — api, mysql, qdrant, and ollama are in docker-compose.yml.
 FROM node:22-bookworm
 
 WORKDIR /app

@@ -5,21 +5,141 @@ const assignmentCompletionPatterns = [
   /\bsubmit-ready\b/i,
 ]
 
+const cvPortfolioPatterns = [
+  /\b(cv|resume|curriculum vitae)\b/i,
+  /\bportfolio\b/i,
+  /\bproject bullets?\b/i,
+  /\bmy submitted projects?\b/i,
+  /\bcv-ready\b/i,
+  /\bexport\b.*\b(cv|resume|projects?)\b/i,
+  /\bmake\b[\s\S]{0,40}\b(cv|resume)\b/i,
+  /\bhelp\s+(?:me\s+)?(?:put|add|get|build|make|write|create)\b[\s\S]{0,50}\b(cv|resume|portfolio)\b/i,
+  /\b(i\s+)?(?:want|need)\b[\s\S]{0,40}\b(cv|resume|portfolio)\b/i,
+  /\b(cv|resume|portfolio)\b[\s\S]{0,60}\b(for|from|about)\b/i,
+  /\b(for|from)\b[\s\S]{0,60}\b(cv|resume|portfolio)\b/i,
+]
+
+const perfectCvPatterns = [
+  /\bperfect\s+cv\b/i,
+  /\bwhole\s+cv\b/i,
+  /\bfull\s+cv\b/i,
+  /\bcomplete\s+cv\b/i,
+  /\bbuild\s+my\s+(perfect\s+)?cv\b/i,
+]
+
+const gradeExportPatterns = [
+  /\bexport\b.*\b(grade|grades|marks?|scores?)\b/i,
+  /\b(grade|grades)\b.*\b(table|report|export|download)\b/i,
+  /\bmy\s+grades?\b/i,
+  /\bdownload\s+grades?\b/i,
+  /\bgrade\s+table\b/i,
+  /\b(show|view|see)\b.*\b(grade|grades|marks?|scores?)\b/i,
+  /\b(xem|hiển thị|hien thi)\b.*\b(bản điểm|ban diem|điểm|diem)\b/i,
+  /\b(bản điểm|ban diem)\b.*\b(của tôi|cua toi|tôi|toi)\b/i,
+]
+
+const capabilitiesPatterns = [
+  /\bwhat can you do\b/i,
+  /\bwhat (are|do) you (do|offer|help (me )?with)\b/i,
+  /\bwhat (else )?(can|do) (i|we) (ask|use|do)\b/i,
+  /\bhow (can|do) (i|you|we) use (you|this|it)\b/i,
+  /\bwhat are your (features|abilities|capabilities)\b/i,
+  // Vietnamese. Note: \b boundaries are unreliable around diacritics, so these
+  // are written without word boundaries.
+  /(bạn|cậu)[\s\S]{0,40}(có thể|giúp|làm|biết|làm được)[\s\S]{0,40}(gì|những gì|cái gì)/i,
+  /tính năng/i,
+  /hỏi[\s\S]{0,20}(gì|những gì)/i,
+  /(bạn|cậu)[\s\S]{0,20}(giúp|làm|biết)[\s\S]{0,20}(gì|như thế nào)/i,
+]
+
+export const cvProjectTemplate = `**PROJECT NAME**
+Role: [Frontend|Backend|Full Stack|Data/ML|UI/UX|General] | Technologies: [comma-separated tools]
+GitHub: [full URL from submission sources — omit this entire line when none]
+
+• [Achievement bullet describing actual work evidenced in the submission]
+• [Optional bullet — only when submission sources support it]`
+
+export function isCvPortfolioRequest(message) {
+  const text = String(message ?? '')
+
+  if (isPerfectCvRequest(text)) {
+    return true
+  }
+
+  return cvPortfolioPatterns.some((pattern) => pattern.test(text))
+}
+
+export function isPerfectCvRequest(message, intent = '') {
+  if (String(intent ?? '') === 'perfect_cv') {
+    return true
+  }
+
+  const text = String(message ?? '')
+
+  return perfectCvPatterns.some((pattern) => pattern.test(text))
+}
+
+export function isGradeExportRequest(message, intent = '') {
+  if (String(intent ?? '') === 'grade_export') {
+    return true
+  }
+
+  const text = String(message ?? '')
+
+  return gradeExportPatterns.some((pattern) => pattern.test(text))
+}
+
 export function isAssignmentCompletionRequest(message) {
   const text = String(message ?? '')
+
+  if (isCvPortfolioRequest(text) || isGradeExportRequest(text)) {
+    return false
+  }
 
   return assignmentCompletionPatterns.some((pattern) => pattern.test(text))
 }
 
+export function isCapabilitiesRequest(message) {
+  return capabilitiesPatterns.some((pattern) => pattern.test(String(message ?? '')))
+}
+
+const CAPABILITIES_RESPONSE = {
+  vi: [
+    'Mình là SWINLEARN — trợ lý học tập của bạn. Dưới đây là những gì mình giúp được:',
+    '',
+    '- Kiểm tra & phân tích bảng điểm: xem bảng điểm, tính GPA và chọn mục tiêu tốt nghiệp.',
+    '- Tóm tắt kiến thức môn học: giải thích bài học, tài liệu và trả lời câu hỏi từ PDF bạn đã tải lên.',
+    '- Tạo CV hoàn hảo: xây dựng CV từ các dự án bạn đã nộp trong bài tập.',
+    '',
+    'Bạn muốn bắt đầu với việc nào? (Ví dụ: "xem bảng điểm của mình" hoặc "tóm tắt tuần 2")',
+  ].join('\n'),
+  en: [
+    "I'm SWINLEARN — your study assistant. Here's what I can help with:",
+    '',
+    '- Check & analyze your grade table: view grades, calculate GPA, and pick a graduation goal.',
+    '- Summarize course knowledge: explain lessons, course material, and answer questions from your uploaded PDFs.',
+    '- Build a Perfect CV: turn your submitted assignment projects into a CV.',
+    '',
+    "Which would you like to start with? (e.g. 'show my grade table' or 'summarize week 2')",
+  ].join('\n'),
+}
+
+export function formatCapabilitiesResponse(locale = 'en') {
+  return locale === 'vi' ? CAPABILITIES_RESPONSE.vi : CAPABILITIES_RESPONSE.en
+}
+
 export function buildSwinlearnInstructions({
   courseLabels = [],
+  cvMode = false,
+  perfectCvMode = false,
   scopedCourseCodes = [],
   scopeMode = 'pool',
+  knowledgePoolEmpty = false,
 } = {}) {
   const courses =
     courseLabels.length > 0
       ? courseLabels.map((label) => `- ${label}`).join('\n')
-      : '- No enrolled course context was selected.'
+      : '- No courses selected for knowledge retrieval.'
 
   const scopedRules =
     scopedCourseCodes.length > 0
@@ -28,23 +148,71 @@ export function buildSwinlearnInstructions({
           'Answer only using sources whose course code or title matches those courses.',
           'If the sources do not contain assignments or content for that course, say so explicitly.',
         ]
-      : scopeMode === 'pool'
+      : knowledgePoolEmpty
         ? [
-            'The student may ask about any course in the selected knowledge pool.',
-            'When answering about a specific course, use only sources for that course.',
+            'No courses are selected for knowledge retrieval.',
+            'Answer general study questions without inventing course-specific modules, assignments, or readings.',
           ]
-        : []
+        : scopeMode === 'pool'
+          ? [
+              'The student may ask about any course in the selected knowledge pool.',
+              'When answering about a specific course, use only sources for that course.',
+            ]
+          : []
+
+  const cvRules = perfectCvMode
+    ? [
+        'The student wants a Perfect CV. Output only the ## Professional Experience section.',
+        'Header, contact, education, skills, and certifications are in the perfect_cv_profile source — do not repeat or rewrite them.',
+        'Use teacher assignment sources for project name and brief context only.',
+        'Use student submission sources for all achievement bullets, technologies, tools, and outcomes.',
+        'Never include an assignment that does not have a student submission source.',
+        'Do not invent technologies, employers, dates, metrics, GitHub URLs, or outcomes.',
+        'Role must describe project contribution (Frontend, Backend, Full Stack, Data/ML, UI/UX, or General) — never use Student as the role.',
+        'Infer role from submission text, README, manifests, and inferred contribution hints in submission sources.',
+        'Include a GitHub: line with the full URL when submission sources contain a GitHub project link; omit that line entirely when none is present.',
+        'Write only about work, technologies, tools, and outcomes evidenced in submission sources.',
+        'Never mention missing or absent features — omit unsupported bullets instead.',
+        'Do not use placeholder brackets or filler text such as [functionality] or [metric/result].',
+        'Preserve the project order listed in the perfect_cv_profile source.',
+        'Format each project exactly with this Markdown template:',
+        cvProjectTemplate,
+      ]
+    : cvMode
+    ? [
+        'The student wants CV help for specific submitted assignment project(s) only.',
+        'Use teacher assignment sources for project name and brief context only.',
+        'Use student submission sources for all achievement bullets, technologies, tools, and outcomes.',
+        'Never include an assignment that does not have a student submission source.',
+        'Do not invent technologies, employers, dates, metrics, GitHub URLs, or outcomes.',
+        'Role must describe project contribution (Frontend, Backend, Full Stack, Data/ML, UI/UX, or General) — never use Student as the role.',
+        'Infer role from submission text, README, manifests, and inferred contribution hints in submission sources.',
+        'Include a GitHub: line with the full URL when submission sources contain a GitHub project link; omit that line entirely when none is present.',
+        'Write only about work, technologies, tools, and outcomes evidenced in submission sources.',
+        'Never mention missing or absent features (no API, no backend, no dataset, no metrics, etc.) — omit unsupported bullets instead.',
+        'Do not use placeholder brackets or filler text such as [functionality] or [metric/result].',
+        'At the top, list Included projects and Skipped (not submitted) when relevant.',
+        'Format each project exactly with this Markdown template:',
+        cvProjectTemplate,
+      ]
+    : []
 
   return [
     'You are SWINLEARN, a Socratic AI study tutor inside a university learning workspace.',
-    'Use only the student\'s enrolled course knowledge and uploaded study files provided through retrieval.',
+    knowledgePoolEmpty
+      ? 'No course knowledge pool is selected. Answer general study questions and do not invent course-specific content.'
+      : 'Use only the student\'s enrolled course knowledge and uploaded study files provided through retrieval.',
     'Never reuse facts from earlier chat messages unless the current retrieved sources support them.',
     'If the answer is not supported by those sources, say what is missing and suggest where the student can look next.',
     'Do not invent modules, lecture topics, files, weeks, or readings when a course only has catalog metadata or no imported knowledge package.',
     'Do not attribute assignments, modules, or readings from one course to another course.',
     'Cite the course, module, item, file, or uploaded document whenever you use retrieved knowledge.',
-    'Do not complete assignments for the student. Do not produce submit-ready essays, reports, code, final answers, or full solutions.',
-    'For assignment-like requests, give Socratic coaching: clarify the concept, ask guiding questions, explain rubric language, give a small analogous example on different material, and suggest next steps.',
+    ...(cvMode || perfectCvMode
+      ? cvRules
+      : [
+          'Do not complete assignments for the student. Do not produce submit-ready essays, reports, code, final answers, or full solutions.',
+          'For assignment-like requests, give Socratic coaching: clarify the concept, ask guiding questions, explain rubric language, give a small analogous example on different material, and suggest next steps.',
+        ]),
     'Reply in the same language as the student when practical. Keep answers concise and study-focused.',
     ...scopedRules,
     '',

@@ -129,6 +129,15 @@ export type StudentCourseCompletionRow = {
   created_by: string | null
 }
 
+export type GradeWarningTier = 'critical' | 'warning' | 'info'
+
+export type GradeWarningSummary = {
+  critical: number
+  warning: number
+  info: number
+  total: number
+}
+
 export type AcademicProgressCourseRow = {
   id: string
   course_id: string
@@ -141,12 +150,15 @@ export type AcademicProgressCourseRow = {
   counts_toward_total: boolean
   earned_credit_points: number
   completed_at: string
+  warning_tier?: GradeWarningTier | null
+  warning_message?: string | null
 }
 
 export type AcademicProgressData = {
   total_credit_points: number
   passed_course_count: number
   completed_courses: AcademicProgressCourseRow[]
+  warning_summary?: GradeWarningSummary
 }
 
 export type CourseOfferingRow = {
@@ -262,6 +274,10 @@ export type AssignmentSubmissionRow = {
   student_id: string
   body: string
   file_paths: string[]
+  github_url?: string | null
+  index_status?: 'pending' | 'ready' | 'error' | 'skipped' | string
+  index_error?: string | null
+  indexed_at?: string | null
   submitted_at: string
   updated_at?: string
 }
@@ -354,6 +370,7 @@ export type CourseContentPackageRow = CourseContentPackageSummaryRow & {
 export type CourseDetailData = {
   course: CourseWithMembers
   contentPackage: CourseContentPackageRow | null
+  knowledge_index: SwinlearnKnowledgeIndexRow
   assignments: AssignmentRow[]
   submissions: AssignmentSubmissionRow[]
   profiles: ProfileRow[]
@@ -398,12 +415,44 @@ export type SwinlearnAttachmentRow = {
   created_at: string
 }
 
+export type CvProfileRow = {
+  phone: string | null
+  headline_role: string | null
+  certifications: string | null
+  updated_at?: string | null
+}
+
+export type CvEducationSnapshot = {
+  institution: string
+  major_title: string | null
+  campus: ProfileCampus | null
+}
+
+export type CvSkillsSnapshot = {
+  tools: string[]
+  roles: string[]
+}
+
+export type CvProfileData = {
+  cv_profile: CvProfileRow
+  education: CvEducationSnapshot
+}
+
 export type SwinlearnMessageRow = {
   id: string
   thread_id: string
   role: 'student' | 'assistant' | string
   content: string
   citations: SwinlearnCitationRow[]
+  metadata?: {
+    assignmentIds?: string[]
+    contentType?: 'cv_export' | 'perfect_cv_export' | 'grade_export' | string
+    cvProfile?: Pick<CvProfileRow, 'phone' | 'headline_role' | 'certifications'>
+    education?: CvEducationSnapshot
+    skills?: CvSkillsSnapshot
+    report?: AcademicProgressData
+    analysisState?: 'offered' | 'awaiting_goal' | 'complete' | 'declined' | string
+  } | null
   selected_offering_ids: string[]
   model: string | null
   openai_response_id: string | null
@@ -426,6 +475,32 @@ export type SwinlearnThreadRow = {
 
 export type SwinlearnContextData = {
   courses: SwinlearnCourseContextRow[]
+}
+
+export type SubmittedProjectFileRow = {
+  name: string
+  url: string
+}
+
+export type SubmittedProjectAssignmentRow = {
+  assignment_id: string
+  title: string
+  submitted_at: string
+  body_preview: string
+  file_count: number
+  files: SubmittedProjectFileRow[]
+  github_url: string | null
+}
+
+export type SubmittedProjectCourseRow = {
+  offering_id: string
+  course_code: string
+  course_title: string
+  assignments: SubmittedProjectAssignmentRow[]
+}
+
+export type SubmittedProjectsData = {
+  courses: SubmittedProjectCourseRow[]
 }
 
 export type SwinlearnSendMessageResult = {
@@ -465,6 +540,7 @@ export type InboxMessageRow = {
   thread_id: string
   sender_id: string
   body: string
+  gif_url: string | null
   created_at: string
 }
 
@@ -495,6 +571,7 @@ export type CatalogData = {
 
 export type CourseWithMembers = CourseRow & {
   members: CourseMembershipRow[]
+  community_unread_count?: number
 }
 
 export type RegistrationRequirementFailure = {
@@ -529,6 +606,7 @@ export type AdminCourseData = CatalogData & {
   prerequisiteOptions: CoursePrerequisiteOptionRow[]
   studentCompletions: StudentCourseCompletionRow[]
   offerings: CourseWithMembers[]
+  knowledgeIndexes: Record<string, SwinlearnKnowledgeIndexRow>
   contentPackages: CourseContentPackageSummaryRow[]
   registrationRequests: CourseRegistrationRequestRow[]
   profiles: ProfileRow[]
@@ -587,6 +665,12 @@ export type AssignmentMutationInput = {
 export type InboxData = {
   conversations: ConversationRow[]
   connections: ConnectionRow[]
+}
+
+export type InboxBadgeSummary = {
+  unread_conversations: number
+  pending_requests: number
+  total: number
 }
 
 export type CommunityImageRow = {

@@ -16,6 +16,8 @@ import {
   mapCourseContentPackage,
   mapCourse,
   mapCurriculumRule,
+  mapCvEducation,
+  mapCvProfile,
   mapHelpRequest,
   mapConsultationTeacher,
   mapMainMajor,
@@ -37,7 +39,6 @@ import {
   buildPersonSearchWhere,
   connectionStateFor,
   orderPair,
-  pairKey,
 } from '../services/inboxConnections.js'
 import { getCurriculumForChildMajor } from '../services/curriculum.js'
 import {
@@ -46,6 +47,14 @@ import {
   loadPrerequisiteContext,
 } from '../services/prerequisites.js'
 import { requestApprovalDeniedMessage, submitRegistrationRequests } from '../services/registrationRequests.js'
+import { buildGradeReport, buildGradeReportWorkbook, buildGradeReportPdf, formatGradeReportMarkdown, gradeReportPdfFilename, gradeReportWorkbookFilename } from '../services/gradeReport.js'
+import { detectGradeAnalysisThreadContext, detectLanguage } from '../services/gradeAnalysis.js'
+import { routeIntent } from '../services/intentRouter.js'
+import {
+  buildExplicitRoute,
+  handleSwinlearnMessage,
+  UI_INTENTS,
+} from '../services/swinlearnMessageHandler.js'
 import { buildStudentProgress } from '../services/studentProgress.js'
 import {
   assertCommunityCommentContent,
@@ -54,6 +63,7 @@ import {
   canDeleteCommunityPost,
   collectCommunityCommentSubtreeIds,
 } from '../services/community.js'
+import { countCommunityUnreadByOffering, markCommunityRead } from '../services/communityUnread.js'
 import { searchGiphy } from '../services/giphy.js'
 import {
   awardCommentLikeGold,
@@ -76,6 +86,12 @@ import {
 } from '../services/communityFiles.js'
 import { shareCommunityPostViaInbox } from '../services/communityShare.js'
 import {
+  acceptConnectionWithWelcomeMessage,
+  assertInboxMessageContent,
+  countInboxBadge,
+  ensureDirectConversation,
+} from '../services/inboxMessages.js'
+import {
   listHelpRequestsForTeacher,
   listHelpRequestsForUser,
   listTeachersForConsultation,
@@ -91,33 +107,22 @@ import {
   createSwinlearnRagServices,
   ensureIndexedOfferings,
   indexThreadUpload,
-  retrieve,
 } from '../services/swinlearnIndexing.js'
 import {
-  buildAssignmentsIndexDocument,
   ensureSwinlearnKnowledgeIndex,
+  buildKnowledgeIndexView,
   indexStatusForPackage,
   loadOfferingKnowledge,
   loadSwinlearnContext,
-  loadSwinlearnKnowledgeDocuments,
+  markSwinlearnIndexesStaleForOffering,
   normalizeSelectedOfferingIds,
+  resolveIndexOfferingIds,
 } from '../services/swinlearnKnowledge.js'
-import {
-  createSwinlearnGroqClient,
-  defaultSwinlearnContextChars,
-  defaultSwinlearnModel,
-  defaultSwinlearnVisionModel,
-} from '../services/swinlearnGroq.js'
-import {
-  assignmentCoachingMessage,
-  buildSwinlearnInstructions,
-  isAssignmentCompletionRequest,
-} from '../services/swinlearnPrompt.js'
-import {
-  buildExcludedCourseMessage,
-  isAssignmentListingQuestion,
-  resolveMessageCourseScope,
-} from '../services/swinlearnCourseScope.js'
+import { createSwinlearnGroqClient } from '../services/swinlearnGroq.js'
+import { resolveMessageCourseScope } from '../services/swinlearnCourseScope.js'
+import { parseGithubRepoUrl } from '../services/githubProjectSnapshot.js'
+import { detectCvThreadContext, loadSubmittedProjectsForStudent } from '../services/cvProjectScope.js'
+import { indexAssignmentSubmission } from '../services/submissionIndexing.js'
 import {
   profileAvatarUpload,
   removeStoredAvatar,
@@ -134,6 +139,7 @@ const offeringsInclude = {
   course: true,
   staff: true,
   enrollments: true,
+  swinlearnKnowledgeIndex: true,
 }
 
 workspaceRouter.get(
@@ -206,6 +212,93 @@ workspaceRouter.post(
     })
 
     response.json(mapUserProfile(user))
+  }),
+)
+
+const loadStudentCvProfileContext = async (userId) => {
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    include: {
+      childMajor: true,
+      cvProfile: true,
+    },
+  })
+
+  return user
+}
+
+workspaceRouter.get(
+  '/cv-profile',
+  asyncHandler(async (request, response) => {
+    const user = requireRole(request, response, ['student'])
+
+    if (!user) {
+      return
+    }
+
+    const student = await loadStudentCvProfileContext(user.id)
+
+    response.json({
+      cv_profile: mapCvProfile(student?.cvProfile),
+      education: mapCvEducation(student),
+    })
+  }),
+)
+
+workspaceRouter.patch(
+  '/cv-profile',
+  asyncHandler(async (request, response) => {
+    const user = requireRole(request, response, ['student'])
+
+    if (!user) {
+      return
+    }
+
+    const phone =
+      request.body.phone === undefined ? undefined : String(request.body.phone ?? '').trim() || null
+    const headlineRole =
+      request.body.headline_role === undefined
+        ? undefined
+        : String(request.body.headline_role ?? '').trim() || null
+    const certifications =
+      request.body.certifications === undefined
+        ? undefined
+        : String(request.body.certifications ?? '').trim() || null
+
+    if (phone === undefined && headlineRole === undefined && certifications === undefined) {
+      sendError(response, 400, 'Provide phone, headline_role, and/or certifications to update.')
+      return
+    }
+
+    const data = {}
+
+    if (phone !== undefined) {
+      data.phone = phone
+    }
+
+    if (headlineRole !== undefined) {
+      data.headlineRole = headlineRole
+    }
+
+    if (certifications !== undefined) {
+      data.certifications = certifications
+    }
+
+    const profile = await prisma.userCvProfile.upsert({
+      where: { userId: user.id },
+      create: {
+        userId: user.id,
+        ...data,
+      },
+      update: data,
+    })
+
+    const student = await loadStudentCvProfileContext(user.id)
+
+    response.json({
+      cv_profile: mapCvProfile(profile),
+      education: mapCvEducation(student),
+    })
   }),
 )
 
@@ -348,6 +441,23 @@ workspaceRouter.get(
       orderBy: [{ academicYear: 'desc' }, { term: 'asc' }],
     })
 
+    if (request.currentUser.role === 'student') {
+      const offeringIds = offerings.map((offering) => offering.id)
+      const unreadByOffering = await countCommunityUnreadByOffering(
+        prisma,
+        request.currentUser.id,
+        offeringIds,
+      )
+
+      response.json(
+        offerings.map((offering) => ({
+          ...mapOffering(offering),
+          community_unread_count: unreadByOffering[offering.id]?.total ?? 0,
+        })),
+      )
+      return
+    }
+
     response.json(offerings.map(mapOffering))
   }),
 )
@@ -438,9 +548,32 @@ workspaceRouter.get(
       assignments: assignments.map(mapAssignment),
       contentPackage: contentPackage ? mapCourseContentPackage(contentPackage) : null,
       course: mapOffering(offering),
+      knowledge_index: buildKnowledgeIndexView(offering.swinlearnKnowledgeIndex, contentPackage?.id ?? null, {
+        requireVectors: swinlearnRag.configured,
+      }),
       profiles: profiles.map(mapUserProfile),
       submissions: submissions.map(mapSubmission),
     })
+  }),
+)
+
+workspaceRouter.post(
+  '/courses/:id/community/read',
+  asyncHandler(async (request, response) => {
+    if (request.currentUser.role !== 'student') {
+      sendError(response, 403, 'Only students can mark community as read.')
+      return
+    }
+
+    const offering = await loadVisibleOffering(request.currentUser, request.params.id)
+
+    if (!offering) {
+      sendError(response, 404, 'Course offering was not found.')
+      return
+    }
+
+    await markCommunityRead(prisma, request.currentUser.id, offering.id)
+    response.json({ ok: true })
   }),
 )
 
@@ -465,6 +598,10 @@ workspaceRouter.get(
       collectCommunityAuthorIds(posts, request.currentUser.id),
     )
     const communityContext = mapCommunityContext(request, offering, gamificationContext)
+
+    if (request.currentUser.role === 'student') {
+      await markCommunityRead(prisma, request.currentUser.id, offering.id)
+    }
 
     response.json({
       posts: posts.map((post) => mapCommunityPost(post, communityContext)),
@@ -948,6 +1085,11 @@ const readSelectedOfferingIds = (body, enrolledOfferingIds) =>
     enrolledOfferingIds,
   )
 
+const readAssignmentIds = (body) =>
+  readJsonArray(body.assignment_ids)
+    .map((id) => String(id).trim())
+    .filter(Boolean)
+
 const mapSwinlearnCourseContext = (offering) => {
   const contentPackage = offering.contentPackages?.[0] ?? null
   const currentPackageId = contentPackage?.id ?? null
@@ -1052,26 +1194,26 @@ const createSwinlearnAttachments = async ({
   return { attachments, documents, imageInputs }
 }
 
-const fallbackSwinlearnAnswer = async ({ selectedOfferingIds }) => {
-  const documents = await loadSwinlearnKnowledgeDocuments({
-    maxChars: 12000,
-    offeringIds: selectedOfferingIds,
-    prisma,
-  })
+workspaceRouter.get(
+  '/swinlearn/submitted-projects',
+  asyncHandler(async (request, response) => {
+    const user = requireRole(request, response, ['student'])
 
-  if (documents.length === 0) {
-    return 'You are not enrolled in any course content I can read yet.'
-  }
+    if (!user) {
+      return
+    }
 
-  const summaries = documents.map((document) => document.text.split('\n').slice(0, 12).join('\n'))
+    const offerings = await loadSwinlearnContext(prisma, user.id)
+    const offeringIds = offerings.map((offering) => offering.id)
+    const courses = await loadSubmittedProjectsForStudent({
+      offeringIds,
+      prisma,
+      studentId: user.id,
+    })
 
-  return [
-    'SWINLEARN is not connected to Groq yet, so I can only show a local course-content preview.',
-    'Ask an admin to configure GROQ_API_KEY for full tutoring and summaries.',
-    '',
-    summaries.join('\n\n---\n\n'),
-  ].join('\n')
-}
+    response.json({ courses })
+  }),
+)
 
 workspaceRouter.get(
   '/swinlearn/context',
@@ -1093,17 +1235,22 @@ workspaceRouter.get(
 workspaceRouter.post(
   '/swinlearn/index',
   asyncHandler(async (request, response) => {
-    const user = requireRole(request, response, ['student'])
+    const user = requireRole(request, response, ['admin', 'teacher'])
 
     if (!user) {
       return
     }
 
-    const offerings = await loadSwinlearnContext(prisma, user.id)
-    const selectedOfferingIds = readSelectedOfferingIds(
-      request.body,
-      offerings.map((offering) => offering.id),
+    const selectedOfferingIds = await resolveIndexOfferingIds(
+      prisma,
+      readJsonArray(request.body.selected_offering_ids ?? request.body.offering_ids),
     )
+
+    if (selectedOfferingIds.length === 0) {
+      sendError(response, 400, 'Select at least one valid course offering to index.')
+      return
+    }
+
     const rag = createSwinlearnRagServices()
     const indexes = []
 
@@ -1111,6 +1258,7 @@ workspaceRouter.post(
       indexes.push(
         ...(await ensureIndexedOfferings({
           embedder: rag.embedder,
+          force: true,
           offeringIds: selectedOfferingIds,
           prisma,
           vectorStore: rag.vectorStore,
@@ -1119,6 +1267,7 @@ workspaceRouter.post(
     } else {
       for (const offeringId of selectedOfferingIds) {
         const index = await ensureSwinlearnKnowledgeIndex({
+          force: true,
           offeringId,
           prisma,
         })
@@ -1334,107 +1483,55 @@ workspaceRouter.post(
     const courseLabels = offerings
       .filter((offering) => scopedOfferingIds.includes(offering.id))
       .map((offering) => `${offering.course.code} - ${offering.course.title}`)
-    const instructions = buildSwinlearnInstructions({
-      courseLabels,
-      scopeMode: courseScope.scopeMode,
-      scopedCourseCodes: courseScope.courseCodes,
-    })
-    let documents = []
-
-    if (courseScope.scopeMode === 'excluded') {
-      documents = []
-    } else if (rag.configured) {
-      documents = await retrieve({
-        embedder: rag.embedder,
-        offeringIds: scopedOfferingIds,
-        query: message,
-        threadId: thread.id,
-        userId: user.id,
-        vectorStore: rag.vectorStore,
-      })
-
-      if (documents.length === 0 && scopedOfferingIds.length > 0) {
-        documents = await loadSwinlearnKnowledgeDocuments({
-          maxChars: defaultSwinlearnContextChars,
-          offeringIds: scopedOfferingIds,
-          prisma,
-        })
-      }
-    } else {
-      const indexes = []
-
-      for (const offeringId of scopedOfferingIds) {
-        const index = await ensureSwinlearnKnowledgeIndex({
-          offeringId,
-          prisma,
-        })
-
-        if (index?.status === 'ready') {
-          indexes.push(index)
-        }
-      }
-
-      const courseDocuments = await loadSwinlearnKnowledgeDocuments({
-        maxChars: defaultSwinlearnContextChars,
-        offeringIds: indexes.map((index) => index.offeringId),
-        prisma,
-      })
-
-      documents = [...courseDocuments, ...uploadDocuments]
-    }
-
-    if (
-      courseScope.scopeMode !== 'excluded' &&
-      isAssignmentListingQuestion(message) &&
-      scopedOfferingIds.length === 1
-    ) {
-      const offering = await loadOfferingKnowledge(prisma, scopedOfferingIds[0])
-
-      if (offering) {
-        documents = [buildAssignmentsIndexDocument(offering), ...documents]
-      }
-    }
-
     const history = await loadThreadMessages(thread.id)
-    let assistantText = ''
-    let citations = []
-    let providerResponseId = null
+    const gradeAnalysisContext = detectGradeAnalysisThreadContext(history)
+    const responseLocale = detectLanguage(message)
+    const cvThreadContext = detectCvThreadContext(history)
+    const explicitUiIntent = String(request.body.intent ?? '').trim()
+    const assignmentIds = readAssignmentIds(request.body)
+    const perfectCvRequest = explicitUiIntent === UI_INTENTS.perfect_cv
 
-    if (courseScope.scopeMode === 'excluded') {
-      assistantText = buildExcludedCourseMessage(
-        courseScope.excludedFromPool.length > 0 ? courseScope.excludedFromPool : courseScope.courseCodes,
-      )
-    } else if (isAssignmentCompletionRequest(message)) {
-      assistantText = assignmentCoachingMessage(message)
-    } else if (!groq.configured) {
-      assistantText = await fallbackSwinlearnAnswer({
-        selectedOfferingIds: scopedOfferingIds,
-      })
-    } else {
-      const result = await groq.createResponse({
-        documents,
-        history,
-        imageInputs,
-        instructions,
+    const route =
+      buildExplicitRoute(explicitUiIntent) ??
+      (await routeIntent({
+        contextHint: gradeAnalysisContext?.state,
+        groqApiKey: process.env.GROQ_API_KEY,
         message,
-        model: imageInputs.length > 0 ? defaultSwinlearnVisionModel : defaultSwinlearnModel,
-      })
+      }))
 
-      assistantText = result.text || 'I could not generate a response from the selected course knowledge.'
-      citations = result.citations
-      providerResponseId = result.raw?.id ?? null
-    }
+    const handlerResult = await handleSwinlearnMessage({
+      assignmentIds,
+      courseLabels,
+      courseScope,
+      cvThreadContext,
+      explicitUiIntent,
+      gradeAnalysisContext,
+      groq,
+      history,
+      imageInputs,
+      loadOfferingKnowledgeImpl: loadOfferingKnowledge,
+      message,
+      offerings,
+      perfectCvRequest,
+      prisma,
+      rag,
+      responseLocale,
+      route,
+      scopedOfferingIds,
+      selectedOfferingIds,
+      studentId: user.id,
+      thread,
+      uploadDocuments,
+      userId: user.id,
+    })
 
     const assistantMessage = await prisma.swinlearnMessage.create({
       data: {
-        citations,
-        content: assistantText,
-        model: groq.configured
-          ? imageInputs.length > 0
-            ? defaultSwinlearnVisionModel
-            : defaultSwinlearnModel
-          : null,
-        openaiResponseId: providerResponseId,
+        citations: handlerResult.citations,
+        content: handlerResult.assistantText,
+        metadata: handlerResult.metadata,
+        model: handlerResult.model,
+        openaiResponseId: handlerResult.providerResponseId,
         role: 'assistant',
         selectedOfferingIds,
         threadId: thread.id,
@@ -1515,6 +1612,55 @@ workspaceRouter.get(
     }
 
     response.json(
+      buildGradeReport(
+        buildStudentProgress({
+          student: context.student,
+          courses: context.courses,
+          curriculumRules: context.curriculumRules,
+          childMajors: context.childMajors,
+          completions: context.completions,
+        }),
+      ),
+    )
+  }),
+)
+
+const resolveGradeExportStudentInfo = async (student) => {
+  if (!student) {
+    return { fullName: '', studentId: '', major: '' }
+  }
+
+  // A student may only have a child major set; fall back to the child major's
+  // parent relation to surface the main major (e.g. "Computer Science").
+  const childMajor = student.child_major_id
+    ? await prisma.childMajor.findUnique({
+        where: { id: student.child_major_id },
+        include: { mainMajor: true },
+      })
+    : null
+  const mainMajor = student.main_major_id
+    ? await prisma.mainMajor.findUnique({ where: { id: student.main_major_id } })
+    : childMajor?.mainMajor ?? null
+
+  const parts = [mainMajor?.title, childMajor?.title].filter(Boolean)
+
+  return {
+    fullName: student.full_name ?? '',
+    studentId: student.student_id ?? '',
+    major: parts.join(' - '),
+  }
+}
+
+workspaceRouter.get(
+  '/academic-progress/export',
+  asyncHandler(async (request, response) => {
+    const context = await requireStudentRegistrationContext(request, response)
+
+    if (!context?.student) {
+      return
+    }
+
+    const report = buildGradeReport(
       buildStudentProgress({
         student: context.student,
         courses: context.courses,
@@ -1523,6 +1669,48 @@ workspaceRouter.get(
         completions: context.completions,
       }),
     )
+    const studentInfo = await resolveGradeExportStudentInfo(context.student)
+    const buffer = await buildGradeReportWorkbook(report, studentInfo)
+
+    response.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    )
+    response.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${gradeReportWorkbookFilename()}"`,
+    )
+    response.send(Buffer.from(buffer))
+  }),
+)
+
+workspaceRouter.get(
+  '/academic-progress/export/pdf',
+  asyncHandler(async (request, response) => {
+    const context = await requireStudentRegistrationContext(request, response)
+
+    if (!context?.student) {
+      return
+    }
+
+    const report = buildGradeReport(
+      buildStudentProgress({
+        student: context.student,
+        courses: context.courses,
+        curriculumRules: context.curriculumRules,
+        childMajors: context.childMajors,
+        completions: context.completions,
+      }),
+    )
+    const studentInfo = await resolveGradeExportStudentInfo(context.student)
+    const buffer = await buildGradeReportPdf(report, studentInfo)
+
+    response.setHeader('Content-Type', 'application/pdf')
+    response.setHeader(
+      'Content-Disposition',
+      `attachment; filename="${gradeReportPdfFilename()}"`,
+    )
+    response.send(Buffer.from(buffer))
   }),
 )
 
@@ -1668,6 +1856,8 @@ workspaceRouter.post(
       },
     })
 
+    await markSwinlearnIndexesStaleForOffering(prisma, assignment.offeringId)
+
     response.status(201).json(mapAssignment(assignment))
   }),
 )
@@ -1694,6 +1884,8 @@ workspaceRouter.patch(
             : undefined,
       },
     })
+
+    await markSwinlearnIndexesStaleForOffering(prisma, assignment.offeringId)
 
     response.json(mapAssignment(assignment))
   }),
@@ -1730,6 +1922,24 @@ workspaceRouter.post(
       return
     }
 
+    const assignment = await prisma.assignment.findUnique({
+      where: { id: request.params.id },
+      include: {
+        offering: {
+          include: {
+            course: true,
+          },
+        },
+      },
+    })
+
+    if (!assignment) {
+      sendError(response, 404, 'Assignment was not found.')
+      return
+    }
+
+    const body = String(request.body.body ?? '')
+    const githubUrl = parseGithubRepoUrl(body)?.url ?? null
     const existing = await prisma.assignmentSubmission.findUnique({
       where: {
         assignmentId_studentId: {
@@ -1740,7 +1950,7 @@ workspaceRouter.post(
     })
     const existingPaths = Array.isArray(existing?.filePaths) ? existing.filePaths : []
     const filePaths = request.files.map((file) => file.path.replace(/\\/g, '/'))
-    const submission = await prisma.assignmentSubmission.upsert({
+    let submission = await prisma.assignmentSubmission.upsert({
       where: {
         assignmentId_studentId: {
           assignmentId: request.params.id,
@@ -1748,17 +1958,41 @@ workspaceRouter.post(
         },
       },
       update: {
-        body: String(request.body.body ?? ''),
+        body,
         filePaths: [...existingPaths, ...filePaths],
+        githubUrl,
+        indexStatus: 'pending',
+        indexError: null,
         submittedAt: new Date(),
       },
       create: {
         assignmentId: request.params.id,
         studentId: user.id,
-        body: String(request.body.body ?? ''),
+        body,
         filePaths,
+        githubUrl,
       },
     })
+
+    try {
+      submission = await indexAssignmentSubmission({
+        assignment,
+        embedder: swinlearnRag.embedder,
+        offering: assignment.offering,
+        prisma,
+        studentId: user.id,
+        submission,
+        vectorStore: swinlearnRag.vectorStore,
+      })
+    } catch (error) {
+      submission = await prisma.assignmentSubmission.update({
+        where: { id: submission.id },
+        data: {
+          indexError: error instanceof Error ? error.message : 'Indexing failed.',
+          indexStatus: 'error',
+        },
+      })
+    }
 
     response.json(mapSubmission(submission))
   }),
@@ -1848,6 +2082,13 @@ const annotatePeople = async (currentUser, users) => {
     }
   })
 }
+
+workspaceRouter.get(
+  '/inbox/badge',
+  asyncHandler(async (request, response) => {
+    response.json(await countInboxBadge(prisma, request.currentUser.id))
+  }),
+)
 
 workspaceRouter.get(
   '/inbox',
@@ -2000,11 +2241,17 @@ const decideConnection = async (request, response, nextStatus) => {
     return
   }
 
-  const updated = await prisma.connection.update({
-    where: { id: connection.id },
-    data: { status: nextStatus, decidedAt: new Date() },
-    include: { userA: true, userB: true },
-  })
+  const updated =
+    nextStatus === 'accepted'
+      ? await acceptConnectionWithWelcomeMessage(prisma, {
+          connection,
+          accepterId: currentUserId,
+        })
+      : await prisma.connection.update({
+          where: { id: connection.id },
+          data: { status: nextStatus, decidedAt: new Date() },
+          include: { userA: true, userB: true },
+        })
 
   response.json(mapConnection(updated, currentUserId))
 }
@@ -2106,44 +2353,19 @@ workspaceRouter.post(
 
     assertCanOpenConversation({ sender, target, connection })
 
-    const key = pairKey(sender.id, recipientId)
-    const existing = await prisma.inboxThread.findUnique({ where: { pairKey: key } })
+    const { thread, created } = await ensureDirectConversation(prisma, sender.id, recipientId)
 
-    if (existing) {
-      await prisma.inboxThreadParticipant.updateMany({
-        where: {
-          threadId: existing.id,
-          userId: sender.id,
-        },
-        data: { hiddenAt: null },
-      })
-
-      response.status(200).json({ id: existing.id })
-      return
-    }
-
-    const thread = await prisma.inboxThread.create({
-      data: {
-        subject: '',
-        pairKey: key,
-        createdById: sender.id,
-        participants: {
-          create: [
-            { userId: sender.id, lastReadAt: new Date() },
-            { userId: recipientId },
-          ],
-        },
-      },
-    })
-
-    response.status(201).json({ id: thread.id })
+    response.status(created ? 201 : 200).json({ id: thread.id })
   }),
 )
 
 workspaceRouter.post(
   '/inbox/conversations/:id/messages',
   asyncHandler(async (request, response) => {
-    const body = requireBodyString(request.body, 'body')
+    const { body, gifUrl } = assertInboxMessageContent({
+      body: request.body.body,
+      gifUrl: request.body.gif_url,
+    })
     const participant = await prisma.inboxThreadParticipant.findUnique({
       where: {
         threadId_userId: {
@@ -2164,6 +2386,7 @@ workspaceRouter.post(
           threadId: request.params.id,
           senderId: request.currentUser.id,
           body,
+          gifUrl,
         },
       }),
       prisma.inboxThread.update({
